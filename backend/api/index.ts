@@ -1,19 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { AppModule } from './app.module';
+import { AppModule } from '../src/app.module';
+
+// Variável para armazenar a instância do app (Shared entre requisições serverless)
+let cachedApp: any;
 
 async function bootstrap() {
+  if (cachedApp) return cachedApp;
+
   const app = await NestFactory.create(AppModule);
 
-  // CORS (necessário para Swagger e frontend)
+  // CORS
   app.enableCors({
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
 
-  // PREFIXO GLOBAL
+  // PREFIXO GLOBAL (Importante: Deve casar com o que a Vercel roteia)
   app.setGlobalPrefix('api');
 
   // VALIDATION PIPE
@@ -36,29 +41,13 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);
 
-  // Se não estiver na Vercel, escuta numa porta
-  if (!process.env.VERCEL) {
-    const port = process.env.PORT || 3000;
-    await app.listen(port, '0.0.0.0');
-    console.log(`🚀 Backend rodando em http://localhost:${port}/api`);
-    console.log(`📚 Swagger disponível em http://localhost:${port}/api/docs`);
-  }
-
-  return app;
+  await app.init();
+  cachedApp = app.getHttpAdapter().getInstance();
+  return cachedApp;
 }
 
-// Handler para Vercel Serverless
-let app: any;
+// Handler Principal para Vercel
 export default async (req: any, res: any) => {
-  if (!app) {
-    const nestApp = await bootstrap();
-    await nestApp.init();
-    app = nestApp.getHttpAdapter().getInstance();
-  }
+  const app = await bootstrap();
   return app(req, res);
 };
-
-// Execução para ambiente local (nest start)
-if (!process.env.VERCEL) {
-  bootstrap();
-}

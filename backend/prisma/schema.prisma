@@ -1,0 +1,376 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Salon {
+  id                    String                 @id @default(uuid())
+  name                  String
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  /// NONE | EVOLUTION | OFFICIAL
+  whatsappProvider      String                 @default("NONE")
+  whatsappToken         String?
+  whatsappPhoneId       String?
+  whatsappTemplate24h   String?
+  whatsappTemplate2h    String?
+  appointments          Appointment[]
+  appointmentSlots      AppointmentSlot[]
+  clients               Client[]
+  financialTransactions FinancialTransaction[]
+  expenses              Expense[]
+  orders                Order[]
+  payments              Payment[]
+  products              Product[]
+  professionals         Professional[]
+  professionalAdvances  ProfessionalAdvance[]
+  scheduleBlocks        ScheduleBlock[]
+  services              Service[]
+  serviceCategories     ServiceCategory[]
+  serviceNiches         ServiceNicho[]
+  stockMovements        StockMovement[]
+  users                 User[]
+}
+
+model User {
+  id             String        @id @default(uuid())
+  name           String
+  email          String        @unique
+  password       String
+  /// ADMIN | MANAGER | PROFESSIONAL
+  role           String        @default("ADMIN")
+  refreshToken   String?
+  salonId        String
+  professionalId String?
+  isActive       Boolean       @default(true)
+  permissions    String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  professional   Professional? @relation(fields: [professionalId], references: [id])
+  salon          Salon         @relation(fields: [salonId], references: [id])
+
+  @@index([salonId])
+}
+
+model Professional {
+  id               String                 @id @default(uuid())
+  name             String
+  commission       Float
+  contractType     String                 @default("COMMISSION")
+  salonId          String
+  isActive         Boolean                @default(true)
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  appointments     Appointment[]
+  appointmentSlots AppointmentSlot[]
+  commissions      Commission[]
+  salon            Salon                  @relation(fields: [salonId], references: [id])
+  advances         ProfessionalAdvance[]
+  schedules        ProfessionalSchedule[]
+  scheduleBlocks   ScheduleBlock[]
+  users            User[]
+  services         Service[]              @relation("ProfessionalToService")
+  categories       ServiceCategory[]      @relation("ProfessionalToServiceCategory")
+  niches           ServiceNicho[]         @relation("ProfessionalToServiceNicho")
+
+  @@index([salonId])
+}
+
+model ProfessionalSchedule {
+  id             String       @id @default(uuid())
+  professionalId String
+  dayOfWeek      Int
+  startTime      String
+  endTime        String
+  createdAt      DateTime     @default(now())
+  professional   Professional @relation(fields: [professionalId], references: [id])
+
+  @@index([professionalId, dayOfWeek])
+}
+
+model Client {
+  id           String        @id @default(uuid())
+  name         String
+  phone        String?
+  salonId      String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  appointments Appointment[]
+  salon        Salon         @relation(fields: [salonId], references: [id])
+  orders       Order[]
+
+  @@index([salonId])
+}
+
+model ServiceNicho {
+  id            String            @id @default(uuid())
+  name          String
+  order         Int               @default(0)
+  salonId       String
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  categories    ServiceCategory[]
+  salon         Salon             @relation(fields: [salonId], references: [id])
+  professionals Professional[]    @relation("ProfessionalToServiceNicho")
+
+  @@index([salonId])
+}
+
+model ServiceCategory {
+  id                 String               @id @default(uuid())
+  name               String
+  order              Int                  @default(0)
+  salonId            String
+  nicheId            String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  services           Service[]
+  niche              ServiceNicho?        @relation(fields: [nicheId], references: [id])
+  salon              Salon                @relation(fields: [salonId], references: [id])
+  professionals      Professional[]       @relation("ProfessionalToServiceCategory")
+
+  @@index([salonId])
+  @@index([nicheId])
+}
+
+model Service {
+  id                 String              @id @default(uuid())
+  name               String
+  price              Float
+  duration           Int
+  bufferTime         Int                 @default(0)
+  salonId            String
+  categoryId         String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  appointments       Appointment[]
+  category           ServiceCategory     @relation(fields: [categoryId], references: [id])
+  salon              Salon               @relation(fields: [salonId], references: [id])
+  professionals      Professional[]      @relation("ProfessionalToService")
+
+  @@index([salonId])
+}
+
+model Appointment {
+  id             String            @id @default(uuid())
+  date           DateTime          // Início
+  endDate        DateTime?         // Término (Manual ou calculado)
+  duration       Int?              // Duração manual em minutos
+  /// SCHEDULED | CONFIRMED | CHECKED_IN | COMPLETED | CANCELLED | NO_SHOW
+  status         String            @default("SCHEDULED")
+  cancelReason   String?
+  salonId        String
+  clientId       String
+  professionalId String
+  serviceId      String
+  orderId        String?
+  notified24h    Boolean           @default(false)
+  notified2h     Boolean           @default(false)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  order          Order?            @relation(fields: [orderId], references: [id])
+  service        Service           @relation(fields: [serviceId], references: [id])
+  professional   Professional      @relation(fields: [professionalId], references: [id])
+  client         Client            @relation(fields: [clientId], references: [id])
+  salon          Salon             @relation(fields: [salonId], references: [id])
+  slots          AppointmentSlot[]
+  commission     Commission?
+  payment        Payment?
+
+  @@index([salonId, date])
+  @@index([professionalId, date])
+  @@index([clientId])
+  @@index([serviceId])
+  @@index([orderId])
+}
+
+model AppointmentSlot {
+  id             String       @id @default(uuid())
+  salonId        String
+  professionalId String
+  appointmentId  String?
+  start          DateTime
+  createdAt      DateTime     @default(now())
+  appointment    Appointment? @relation(fields: [appointmentId], references: [id])
+  professional   Professional @relation(fields: [professionalId], references: [id])
+  salon          Salon        @relation(fields: [salonId], references: [id])
+
+  @@unique([professionalId, start])
+  @@index([salonId, start])
+}
+
+model Payment {
+  id                    String                 @id @default(uuid())
+  amount                Float
+  method                String
+  salonId               String
+  appointmentId         String?                @unique
+  orderId               String?
+  createdAt             DateTime               @default(now())
+  financialTransactions FinancialTransaction[]
+  order                 Order?                 @relation(fields: [orderId], references: [id])
+  appointment           Appointment?           @relation(fields: [appointmentId], references: [id])
+  salon                 Salon                  @relation(fields: [salonId], references: [id])
+
+  @@index([salonId])
+}
+
+model Commission {
+  id             String       @id @default(uuid())
+  amount         Float
+  /// PENDING | PAID
+  status         String       @default("PENDING")
+  professionalId String
+  appointmentId  String       @unique
+  createdAt      DateTime     @default(now())
+  appointment    Appointment  @relation(fields: [appointmentId], references: [id])
+  professional   Professional @relation(fields: [professionalId], references: [id])
+
+  @@index([professionalId])
+}
+
+model ScheduleBlock {
+  id             String        @id @default(uuid())
+  salonId        String
+  professionalId String?
+  start          DateTime
+  end            DateTime
+  reason         String?
+  createdAt      DateTime      @default(now())
+  professional   Professional? @relation(fields: [professionalId], references: [id])
+  salon          Salon         @relation(fields: [salonId], references: [id])
+
+  @@index([salonId, start])
+  @@index([professionalId, start])
+}
+
+model FinancialTransaction {
+  id            String   @id @default(uuid())
+  salonId       String
+  /// ENTRADA | SAIDA
+  type          String
+  /// COMANDA | SANGRIA | MANUAL | DESPESA
+  category      String
+  description   String?
+  amount        Float
+  method        String?
+  referenceId   String?  // ID do registro de origem (Expense, Order, etc)
+  referenceType String?  // Tipo da referência (EXPENSE, ORDER, etc)
+  paymentId     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  payment       Payment? @relation(fields: [paymentId], references: [id])
+  salon         Salon    @relation(fields: [salonId], references: [id])
+
+  @@index([salonId])
+  @@index([type])
+  @@index([category])
+  @@index([referenceId])
+}
+
+model Expense {
+  id          String   @id @default(uuid())
+  salonId     String
+  description String
+  value       Float
+  date        DateTime @default(now())
+  category    String
+  status      String   @default("PAID") // PAID, PENDING, CANCELLED
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  salon       Salon    @relation(fields: [salonId], references: [id])
+
+  @@index([salonId])
+  @@index([date])
+}
+
+model Product {
+  id             String          @id @default(uuid())
+  name           String
+  description    String?
+  price          Float
+  costPrice      Float?
+  stock          Int             @default(0)
+  minStock       Int             @default(0)
+  salonId        String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  orderProducts  OrderProduct[]
+  salon          Salon           @relation(fields: [salonId], references: [id])
+  stockMovements StockMovement[]
+
+  @@index([salonId])
+}
+
+model StockMovement {
+  id        String   @id @default(uuid())
+  /// IN | OUT
+  type      String
+  quantity  Int
+  /// PURCHASE | SALE | LOSS | ADJUSTMENT | SERVICE_USE
+  reason    String?
+  productId String
+  salonId   String
+  createdAt DateTime @default(now())
+  salon     Salon    @relation(fields: [salonId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@index([salonId])
+  @@index([productId])
+}
+
+model Order {
+  id           String         @id @default(uuid())
+  salonId      String
+  clientId     String
+  /// OPEN | CLOSED | CANCELLED
+  status       String         @default("OPEN")
+  totalAmount  Float          @default(0)
+  discount     Float          @default(0)
+  totalPaid    Float          @default(0)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  appointments Appointment[]
+  client       Client         @relation(fields: [clientId], references: [id])
+  salon        Salon          @relation(fields: [salonId], references: [id])
+  products     OrderProduct[]
+  payments     Payment[]
+
+  @@index([salonId])
+  @@index([clientId])
+}
+
+model OrderProduct {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  unitPrice Float
+  createdAt DateTime @default(now())
+  product   Product  @relation(fields: [productId], references: [id])
+  order     Order    @relation(fields: [orderId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model ProfessionalAdvance {
+  id             String       @id @default(uuid())
+  description    String
+  amount         Float
+  deductedAmount Float        @default(0)
+  date           DateTime     @default(now())
+  professionalId String
+  salonId        String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  salon          Salon        @relation(fields: [salonId], references: [id])
+  professional   Professional @relation(fields: [professionalId], references: [id])
+
+  @@index([professionalId])
+  @@index([salonId])
+}

@@ -321,7 +321,7 @@ export default function CollaboratorsPage() {
             {showForm && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center lg:pl-[230px] p-4">
                     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowForm(false)} />
-                    <div className="card w-full max-w-lg animate-zoom-in border border-white/5 relative z-10 p-8 bg-[#15121f]/95 shadow-2xl rounded-[2rem] max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col" onClick={e => e.stopPropagation()}>
+                    <div className="card w-full max-w-lg border border-white/5 relative z-10 p-8 bg-[#15121f]/95 shadow-2xl rounded-3xl max-h-[90vh] overflow-y-auto custom-scrollbar animate-zoom-in" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between mb-8 opacity-90">
                             <h2 className="text-2xl font-black uppercase tracking-widest text-white">
                                 {isEditing ? 'Editar Colaborador' : 'Novo Colaborador'}
@@ -331,11 +331,11 @@ export default function CollaboratorsPage() {
                             </button>
                         </div>
 
-                        <div className="space-y-6">
+                        <div className="space-y-5">
                             <div>
                                 <label className="text-[10px] font-black uppercase opacity-40 mb-2 block tracking-widest">Nome completo *</label>
                                 <input 
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-14"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-12"
                                     placeholder="Ex: Maria Antonieta"
                                     value={form.name}
                                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -346,7 +346,7 @@ export default function CollaboratorsPage() {
                                 <label className="text-[10px] font-black uppercase opacity-40 mb-2 block tracking-widest">E-mail de acesso *</label>
                                 <input 
                                     type="email"
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-14"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-12"
                                     placeholder="email@exemplo.com"
                                     value={form.email}
                                     onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -358,7 +358,7 @@ export default function CollaboratorsPage() {
                                     <label className="text-[10px] font-black uppercase opacity-40 mb-2 block tracking-widest">Senha de acesso *</label>
                                     <input 
                                         type="password"
-                                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-sm font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-14"
+                                        className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-[13px] font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-12"
                                         placeholder="Mínimo 6 caracteres"
                                         value={form.password}
                                         onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -372,7 +372,7 @@ export default function CollaboratorsPage() {
                                     value={form.role}
                                     onChange={(e) => setForm({ ...form, role: e.target.value })}
                                     disabled={isEditing}
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 text-sm font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-14 appearance-none"
+                                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 text-[13px] font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-12 appearance-none"
                                 >
                                     <option value="PROFESSIONAL">Profissional</option>
                                     <option value="MANAGER">Gerente</option>
@@ -381,10 +381,10 @@ export default function CollaboratorsPage() {
                             </div>
 
                             {form.role === 'PROFESSIONAL' && (
-                                <div className="space-y-6 pt-4 border-t border-white/5">
+                                <div className="space-y-5 pt-4 border-t border-white/5">
                                     <div>
                                         <label className="text-[10px] font-black uppercase opacity-40 mb-3 block tracking-widest">Nichos de Atuação no sistema</label>
-                                        <div className="flex flex-wrap gap-2 p-5 rounded-3xl bg-white/5 border border-white/5">
+                                        <div className="flex flex-wrap gap-2 p-4 rounded-3xl bg-white/5 border border-white/5">
                                             {niches.map(n => {
                                                 const isSelected = form.nicheIds.includes(n.id);
                                                 return (
@@ -397,7 +397,7 @@ export default function CollaboratorsPage() {
                                                             setForm({ ...form, nicheIds: newIds });
                                                         }}
                                                         className={`
-                                                            flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all
+                                                            flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all
                                                             ${isSelected 
                                                                 ? 'bg-[var(--accent-light)] text-[#111] shadow-[0_0_20px_rgba(255,255,255,0.2)]' 
                                                                 : 'bg-white/5 text-white/40 hover:bg-white/10'}
@@ -417,7 +417,7 @@ export default function CollaboratorsPage() {
                                             <select 
                                                 value={form.contractType}
                                                 onChange={(e) => setForm({ ...form, contractType: e.target.value })}
-                                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 text-sm font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-14 appearance-none"
+                                                className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 text-[13px] font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-12 appearance-none"
                                             >
                                                 <option value="COMMISSION">Comissionado</option>
                                                 <option value="RENT">Aluguel</option>
@@ -434,7 +434,7 @@ export default function CollaboratorsPage() {
                                                         onChange={(e) => setForm({ ...form, commission: Number(e.target.value) })}
                                                         min={0}
                                                         max={100}
-                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 pr-12 text-sm font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-14"
+                                                        className="w-full bg-white/5 border border-white/10 rounded-2xl px-4 pr-12 text-[13px] font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-12"
                                                     />
                                                     <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-white/40">%</span>
                                                 </div>
@@ -444,15 +444,15 @@ export default function CollaboratorsPage() {
                                 </div>
                             )}
 
-                            {error && <p className="text-sm font-bold text-red-400 p-4 bg-red-400/10 rounded-2xl">{error}</p>}
+                            {error && <p className="text-[13px] font-bold text-red-400 p-3 bg-red-400/10 rounded-2xl">{error}</p>}
 
-                            <div className="flex gap-4 pt-6 border-t border-white/5">
+                            <div className="flex gap-3 pt-5 border-t border-white/5">
                                 <button onClick={() => setShowForm(false)}
-                                    className="flex-1 px-4 py-4 rounded-2xl text-[12px] font-black uppercase tracking-widest text-white/40 hover:text-white hover:bg-white/5 transition-colors border border-transparent">
+                                    className="flex-1 px-4 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest text-white/40 hover:text-white hover:bg-white/5 transition-colors border border-transparent">
                                     Cancelar
                                 </button>
                                 <button onClick={handleSave} disabled={saving} 
-                                    className="flex-1 px-4 py-4 bg-gradient-to-r from-[var(--accent-pink)] to-[var(--accent-light)] text-white rounded-2xl text-[12px] font-black uppercase tracking-widest shadow-xl shadow-[var(--accent-pink)]/20 active:scale-95 transition-all text-center">
+                                    className="flex-1 px-4 py-3 bg-gradient-to-r from-[var(--accent-pink)] to-[var(--accent-light)] text-white rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-[var(--accent-pink)]/20 active:scale-95 transition-all text-center">
                                     {saving ? 'CRIANDO...' : (isEditing ? 'SALVAR ALTERAÇÕES' : 'CRIAR CONTA')}
                                 </button>
                             </div>

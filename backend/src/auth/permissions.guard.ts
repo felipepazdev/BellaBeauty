@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { PERMISSIONS_KEY } from './permissions.decorator';
 
@@ -7,11 +12,11 @@ export class PermissionsGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(PERMISSIONS_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    
+    const requiredPermissions = this.reflector.getAllAndOverride<string[]>(
+      PERMISSIONS_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+
     // Se a rota não exige permissões específicas, permite acesso
     if (!requiredPermissions || requiredPermissions.length === 0) {
       return true;
@@ -26,15 +31,17 @@ export class PermissionsGuard implements CanActivate {
 
     // Se o usuário não tem permissões definidas, bloqueia
     if (!user.permissions) {
-      throw new ForbiddenException('Você não possui as permissões necessárias para este recurso');
+      throw new ForbiddenException(
+        'Você não possui as permissões necessárias para este recurso',
+      );
     }
 
     const userPermissions: string[] = user.permissions.split(',');
 
     // Verifica se o usuário tem pelo menos uma das permissões exigidas (OR logic)
     // Ou se quiséssemos AND logic, mudaríamos para .every
-    const hasPermission = requiredPermissions.some((permission) => 
-      userPermissions.includes(permission)
+    const hasPermission = requiredPermissions.some((permission) =>
+      userPermissions.includes(permission),
     );
 
     if (!hasPermission) {

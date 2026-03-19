@@ -1,4 +1,4 @@
 export class CreateClientDto {
-    name: string;
-    phone?: string;
+  name: string;
+  phone?: string;
 }

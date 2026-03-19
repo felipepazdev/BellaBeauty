@@ -1,39 +1,46 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsNumber, IsOptional, Min, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsOptional,
+  Min,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class SplitPaymentDto {
-    @ApiProperty()
-    @IsString()
-    method: string;
+  @ApiProperty()
+  @IsString()
+  method: string;
 
-    @ApiProperty()
-    @IsNumber()
-    @Min(0)
-    amount: number;
+  @ApiProperty()
+  @IsNumber()
+  @Min(0)
+  amount: number;
 }
 
 export class CheckoutOrderDto {
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    method?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  method?: string;
 
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsNumber()
-    @Min(0)
-    discount?: number;
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  discount?: number;
 
-    @ApiPropertyOptional({ type: [SplitPaymentDto] })
-    @IsOptional()
-    @IsArray()
-    @ValidateNested({ each: true })
-    @Type(() => SplitPaymentDto)
-    payments?: SplitPaymentDto[];
+  @ApiPropertyOptional({ type: [SplitPaymentDto] })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SplitPaymentDto)
+  payments?: SplitPaymentDto[];
 
-    @ApiPropertyOptional()
-    @IsOptional()
-    @IsString()
-    discountType?: 'VALUE' | 'PERCENTAGE';
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  discountType?: 'VALUE' | 'PERCENTAGE';
 }

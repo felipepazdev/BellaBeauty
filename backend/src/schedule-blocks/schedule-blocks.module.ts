@@ -4,8 +4,8 @@ import { ScheduleBlocksController } from './schedule-blocks.controller';
 import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-    imports: [PrismaModule],
-    providers: [ScheduleBlocksService],
-    controllers: [ScheduleBlocksController],
+  imports: [PrismaModule],
+  providers: [ScheduleBlocksService],
+  controllers: [ScheduleBlocksController],
 })
-export class ScheduleBlocksModule { }
+export class ScheduleBlocksModule {}

@@ -1,13 +1,12 @@
 import { IsString, IsDateString } from 'class-validator';
 
 export class RescheduleAppointmentDto {
+  @IsString()
+  appointmentId: string;
 
-    @IsString()
-    appointmentId: string;
+  @IsDateString()
+  newDate: string;
 
-    @IsDateString()
-    newDate: string;
-
-    @IsString()
-    professionalId: string;
+  @IsString()
+  professionalId: string;
 }

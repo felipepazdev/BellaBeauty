@@ -10,24 +10,25 @@ import { Roles } from '../auth/roles.decorator';
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('commissions')
 export class CommissionsController {
-    constructor(private commissionsService: CommissionsService) { }
+  constructor(private commissionsService: CommissionsService) {}
 
-    @ApiOperation({ summary: 'Listar comissões com base no cargo' })
-    @Get()
-    findAll(
-        @Req() req,
-        @Query('year') year?: string,
-        @Query('month') month?: string,
-        @Query('professionalId') profIdQuery?: string
-    ) {
-        const professionalId = req.user.role === 'PROFESSIONAL' ? req.user.professionalId : profIdQuery;
-        
-        return this.commissionsService.findAll(
-            req.user.salonId, 
-            req.user.role, 
-            professionalId,
-            year ? parseInt(year) : undefined,
-            month ? parseInt(month) : undefined
-        );
-    }
+  @ApiOperation({ summary: 'Listar comissões com base no cargo' })
+  @Get()
+  findAll(
+    @Req() req,
+    @Query('year') year?: string,
+    @Query('month') month?: string,
+    @Query('professionalId') profIdQuery?: string,
+  ) {
+    const professionalId =
+      req.user.role === 'PROFESSIONAL' ? req.user.professionalId : profIdQuery;
+
+    return this.commissionsService.findAll(
+      req.user.salonId,
+      req.user.role,
+      professionalId,
+      year ? parseInt(year) : undefined,
+      month ? parseInt(month) : undefined,
+    );
+  }
 }

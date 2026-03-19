@@ -1,10 +1,10 @@
 import {
-    Controller,
-    Post,
-    Body,
-    Get,
-    UseGuards,
-    Request,
+  Controller,
+  Post,
+  Body,
+  Get,
+  UseGuards,
+  Request,
 } from '@nestjs/common';
 
 import { Throttle } from '@nestjs/throttler';
@@ -20,42 +20,42 @@ import { RolesGuard } from '../common/guards/roles.guard';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
-    // REGISTER
-    @Post('register')
-    register(@Body() dto: RegisterDto) {
-        return this.authService.register(dto);
-    }
+  // REGISTER
+  @Post('register')
+  register(@Body() dto: RegisterDto) {
+    return this.authService.register(dto);
+  }
 
-    // LOGIN (protegido contra brute force)
-    @Post('login')
-    @Throttle({ default: { limit: 5, ttl: 60000 } })
-    login(@Body() dto: LoginDto) {
-        return this.authService.login(dto);
-    }
+  // LOGIN (protegido contra brute force)
+  @Post('login')
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
+  login(@Body() dto: LoginDto) {
+    return this.authService.login(dto);
+  }
 
-    // REFRESH TOKEN
-    @Post('refresh')
-    refresh(@Body('refresh_token') refreshToken: string) {
-        return this.authService.refreshToken(refreshToken);
-    }
+  // REFRESH TOKEN
+  @Post('refresh')
+  refresh(@Body('refresh_token') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
+  }
 
-    // LOGOUT
-    @Post('logout')
-    logout(@Body('userId') userId: string) {
-        return this.authService.logout(userId);
-    }
+  // LOGOUT
+  @Post('logout')
+  logout(@Body('userId') userId: string) {
+    return this.authService.logout(userId);
+  }
 
-    // PROFILE (ROTA PROTEGIDA)
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles('ADMIN')
-    @Get('profile')
-    getProfile(@Request() req) {
-        return {
-            userId: req.user.sub,
-            email: req.user.email,
-            role: req.user.role,
-        };
-    }
+  // PROFILE (ROTA PROTEGIDA)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('ADMIN')
+  @Get('profile')
+  getProfile(@Request() req) {
+    return {
+      userId: req.user.sub,
+      email: req.user.email,
+      role: req.user.role,
+    };
+  }
 }

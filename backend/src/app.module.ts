@@ -61,4 +61,4 @@ import { ExpensesModule } from './expenses/expenses.module';
     ExpensesModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

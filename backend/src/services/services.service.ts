@@ -3,48 +3,70 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ServicesService {
-    constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) {}
 
-    async findAll(salonId: string) {
-        return this.prisma.service.findMany({
-            where: { salonId },
-            include: { 
-                category: {
-                    include: { niche: true }
-                } 
-            },
-            orderBy: { name: 'asc' },
-        });
-    }
+  async findAll(salonId: string) {
+    return this.prisma.service.findMany({
+      where: { salonId },
+      include: {
+        category: {
+          include: { niche: true },
+        },
+      },
+      orderBy: { name: 'asc' },
+    });
+  }
 
-    async create(salonId: string, data: { name: string; price: number; duration: number; bufferTime?: number; categoryId: string }) {
-        return this.prisma.service.create({
-            data: {
-                name: data.name,
-                price: Number(data.price),
-                duration: Number(data.duration),
-                bufferTime: Number(data.bufferTime || 0),
-                salonId,
-                categoryId: data.categoryId,
-            },
-        });
-    }
+  async create(
+    salonId: string,
+    data: {
+      name: string;
+      price: number;
+      duration: number;
+      bufferTime?: number;
+      categoryId: string;
+    },
+  ) {
+    return this.prisma.service.create({
+      data: {
+        name: data.name,
+        price: Number(data.price),
+        duration: Number(data.duration),
+        bufferTime: Number(data.bufferTime || 0),
+        salonId,
+        categoryId: data.categoryId,
+      },
+    });
+  }
 
-    async update(id: string, salonId: string, data: { name?: string; price?: number; duration?: number; bufferTime?: number; categoryId?: string }) {
-        const updateData: any = { ...data };
-        if (updateData.price !== undefined) updateData.price = Number(updateData.price);
-        if (updateData.duration !== undefined) updateData.duration = Number(updateData.duration);
-        if (updateData.bufferTime !== undefined) updateData.bufferTime = Number(updateData.bufferTime);
-        
-        return this.prisma.service.updateMany({
-            where: { id, salonId },
-            data: updateData,
-        });
-    }
+  async update(
+    id: string,
+    salonId: string,
+    data: {
+      name?: string;
+      price?: number;
+      duration?: number;
+      bufferTime?: number;
+      categoryId?: string;
+    },
+  ) {
+    const updateData: any = { ...data };
+    if (updateData.price !== undefined)
+      updateData.price = Number(updateData.price);
+    if (updateData.duration !== undefined)
+      updateData.duration = Number(updateData.duration);
+    if (updateData.bufferTime !== undefined)
+      updateData.bufferTime = Number(updateData.bufferTime);
 
-    async remove(id: string, salonId: string) {
-        return this.prisma.service.deleteMany({
-            where: { id, salonId },
-        });
-    }
+    return this.prisma.service.updateMany({
+      where: { id, salonId },
+      data: updateData,
+    });
+  }
+
+  async remove(id: string, salonId: string) {
+    return this.prisma.service.deleteMany({
+      where: { id, salonId },
+    });
+  }
 }

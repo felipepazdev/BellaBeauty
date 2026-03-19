@@ -6,9 +6,9 @@ import { CashFlowRepository } from './cash-flow.repository';
 import { CashFlowService } from './cash-flow.service';
 
 @Module({
-    imports: [PrismaModule],
-    controllers: [FinanceController],
-    providers: [FinanceService, CashFlowRepository, CashFlowService],
-    exports: [CashFlowService],
+  imports: [PrismaModule],
+  controllers: [FinanceController],
+  providers: [FinanceService, CashFlowRepository, CashFlowService],
+  exports: [CashFlowService],
 })
-export class FinanceModule { }
+export class FinanceModule {}

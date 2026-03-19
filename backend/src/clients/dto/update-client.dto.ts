@@ -1,4 +1,4 @@
 export class UpdateClientDto {
-    name?: string;
-    phone?: string;
+  name?: string;
+  phone?: string;
 }

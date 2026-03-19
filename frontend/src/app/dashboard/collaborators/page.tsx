@@ -176,11 +176,11 @@ export default function CollaboratorsPage() {
                 />
             ) : (
                 <>
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-6">
                     <div>
-                        <h1 className="text-2xl font-bold leading-tight">Colaboradores</h1>
-                        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{collaborators.length} colaboradores cadastrados</p>
+                        <h1 className="text-[28px] leading-tight font-semibold tracking-tight text-white mb-1">Colaboradores</h1>
+                        <p className="text-[14px] text-white/50">{collaborators.length} colaboradores cadastrados na equipe.</p>
                     </div>
 
                     {/* Status Toggle Dropdown */}
@@ -211,7 +211,7 @@ export default function CollaboratorsPage() {
                         )}
                     </div>
                 </div>
-                <button className="btn-primary flex items-center gap-2" onClick={openNew}>
+                <button className="flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-[14px] rounded-lg hover:bg-white/90 transition-colors shadow-sm whitespace-nowrap" onClick={openNew}>
                     <Plus size={16} /> Novo Colaborador
                 </button>
             </div>
@@ -234,35 +234,36 @@ export default function CollaboratorsPage() {
                                 if (roleType === 'PROFESSIONAL') {
                                     return (
                                         <div key={roleType} className="flex flex-col gap-4">
-                                            <h2 className="text-lg font-bold" style={{ color: 'var(--accent-light)' }}>Profissionais</h2>
-                                            <div className="flex flex-col gap-2">
+                                            <h2 className="text-[14px] font-bold uppercase tracking-widest text-white/40 mb-2 mt-4">Profissionais</h2>
+                                            <div className="flex flex-col gap-3">
                                                 {usersOfRole.map((c) => (
                                                     <div key={c.id} onClick={() => { setSelectedCollaborator(c); setActiveTab('PROFILE'); }}
-                                                        className="card flex items-center gap-4 py-3 px-4 hover:border-[var(--accent-light)] transition-all cursor-pointer group">
-                                                        <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0"
-                                                            style={{ background: 'rgba(34,197,94,0.15)', color: '#22c55e' }}>
+                                                        className="bg-[#111116] border border-white/5 rounded-2xl flex items-center gap-5 p-5 hover:border-[var(--accent-light)] hover:bg-[#15151e] transition-all cursor-pointer group">
+                                                        <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-white/5 text-white shadow-inner">
                                                             {c.name.charAt(0).toUpperCase()}
                                                         </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <p className="font-semibold text-sm">{c.name}</p>
-                                                            <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{c.email}</p>
+                                                        <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                                            <p className="font-semibold text-[16px] text-white tracking-tight leading-none mb-1.5">{c.name}</p>
+                                                            <p className="text-[13px] text-white/40 leading-none">{c.email}</p>
                                                         </div>
                                                         <div className="flex items-center gap-3">
-                                                            <span className={`badge ${ROLE_CLS[c.role] ?? 'badge-gray'}`}>
+                                                            <span className={`badge ${ROLE_CLS[c.role] ?? 'badge-gray'} !px-3 !py-1 !text-[11px]`}>
                                                                 {ROLE_LABELS[c.role] ?? c.role}
                                                             </span>
-                                                            <button 
-                                                                onClick={(e) => { e.stopPropagation(); handleEdit(c); }} 
-                                                                className="p-2 rounded-lg hover:bg-white/5 text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
-                                                            >
-                                                                <Edit2 size={16} />
-                                                            </button>
-                                                            <button 
-                                                                onClick={(e) => { e.stopPropagation(); handleDelete(c.id, c.name); }} 
-                                                                className="p-2 rounded-lg hover:bg-red-500/10 text-[var(--text-secondary)] transition-colors hover:text-red-400"
-                                                            >
-                                                                <Trash2 size={16} />
-                                                            </button>
+                                                            <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                <button 
+                                                                    onClick={(e) => { e.stopPropagation(); handleEdit(c); }} 
+                                                                    className="p-2 rounded-lg hover:bg-white/10 text-white/40 transition-colors hover:text-white"
+                                                                >
+                                                                    <Edit2 size={16} />
+                                                                </button>
+                                                                <button 
+                                                                    onClick={(e) => { e.stopPropagation(); handleDelete(c.id, c.name); }} 
+                                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-white/40 transition-colors hover:text-red-400"
+                                                                >
+                                                                    <Trash2 size={16} />
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -274,35 +275,36 @@ export default function CollaboratorsPage() {
                                 // Admins or Managers
                                 return (
                                     <div key={roleType} className="flex flex-col gap-4">
-                                        <h2 className="text-lg font-bold" style={{ color: 'var(--text-primary)' }}>{ROLE_LABELS[roleType]}s</h2>
-                                        <div className="flex flex-col gap-2">
+                                        <h2 className="text-[14px] font-bold uppercase tracking-widest text-white/40 mb-2 mt-4">{ROLE_LABELS[roleType]}s</h2>
+                                        <div className="flex flex-col gap-3">
                                             {usersOfRole.map((c) => (
                                                 <div key={c.id} onClick={() => { setSelectedCollaborator(c); setActiveTab('PROFILE'); }}
-                                                    className="card flex items-center gap-4 py-3 px-4 hover:border-[var(--accent-light)] transition-all cursor-pointer group">
-                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0"
-                                                        style={{ background: 'rgba(124,58,237,0.15)', color: 'var(--accent-light)' }}>
+                                                    className="bg-[#111116] border border-white/5 rounded-2xl flex items-center gap-5 p-5 hover:border-[var(--accent-light)] hover:bg-[#15151e] transition-all cursor-pointer group">
+                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-[var(--accent-light)]/10 text-[var(--accent-light)] shadow-inner border border-[var(--accent-light)]/20">
                                                         {c.name.charAt(0).toUpperCase()}
                                                     </div>
-                                                    <div className="flex-1 min-w-0">
-                                                        <p className="font-semibold text-sm">{c.name}</p>
-                                                        <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{c.email}</p>
+                                                    <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                                        <p className="font-semibold text-[16px] text-white tracking-tight leading-none mb-1.5">{c.name}</p>
+                                                        <p className="text-[13px] text-white/40 leading-none">{c.email}</p>
                                                     </div>
                                                     <div className="flex items-center gap-3">
-                                                        <span className={`badge ${ROLE_CLS[c.role] ?? 'badge-gray'}`}>
+                                                        <span className={`badge ${ROLE_CLS[c.role] ?? 'badge-gray'} !px-3 !py-1 !text-[11px]`}>
                                                             {ROLE_LABELS[c.role] ?? c.role}
                                                         </span>
-                                                        <button 
-                                                            onClick={(e) => { e.stopPropagation(); handleEdit(c); }} 
-                                                            className="p-2 rounded-lg hover:bg-white/5 text-[var(--text-secondary)] transition-colors hover:text-[var(--text-primary)]"
-                                                        >
-                                                            <Edit2 size={16} />
-                                                        </button>
-                                                        <button 
-                                                            onClick={(e) => { e.stopPropagation(); handleDelete(c.id, c.name); }} 
-                                                            className="p-2 rounded-lg hover:bg-red-500/10 text-[var(--text-secondary)] transition-colors hover:text-red-400"
-                                                        >
-                                                            <Trash2 size={16} />
-                                                        </button>
+                                                        <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button 
+                                                                onClick={(e) => { e.stopPropagation(); handleEdit(c); }} 
+                                                                className="p-2 rounded-lg hover:bg-white/10 text-white/40 transition-colors hover:text-white"
+                                                            >
+                                                                <Edit2 size={16} />
+                                                            </button>
+                                                            <button 
+                                                                onClick={(e) => { e.stopPropagation(); handleDelete(c.id, c.name); }} 
+                                                                className="p-2 rounded-lg hover:bg-red-500/10 text-white/40 transition-colors hover:text-red-400"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             ))}
@@ -318,37 +320,37 @@ export default function CollaboratorsPage() {
             {/* Modal */}
             {showForm && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center lg:pl-[230px] p-4" onClick={() => setShowForm(false)}>
-                    <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }} />
-                    <div className="card w-full max-w-[440px] max-h-[90vh] overflow-y-auto custom-scrollbar animate-fade-in z-10 shadow-2xl" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-between mb-5">
-                            <h2 className="font-bold">{isEditing ? 'Editar Colaborador' : 'Novo Colaborador'}</h2>
+                    <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(8px)' }} />
+                    <div className="bg-[#111116] border border-white/10 w-full max-w-[480px] max-h-[90vh] overflow-y-auto custom-scrollbar animate-fade-in z-10 shadow-2xl rounded-2xl p-6 md:p-8" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-[20px] font-semibold text-white tracking-tight">{isEditing ? 'Editar Colaborador' : 'Novo Colaborador'}</h2>
                             <button onClick={() => setShowForm(false)}
-                                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                                <X size={18} />
+                                className="p-2 hover:bg-white/5 rounded-lg text-white/40 hover:text-white transition-colors">
+                                <X size={20} />
                             </button>
                         </div>
-                        <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-5">
                             <div>
-                                <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Nome *</label>
+                                <label className="text-[13px] font-medium text-white/60 mb-2 block">Nome completo *</label>
                                 <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    placeholder="Nome completo" className="input-field" />
+                                    placeholder="Ex: Maria Antonieta" className="w-full h-11 bg-white/5 border border-white/10 rounded-lg px-4 text-[14px] text-white placeholder-white/20 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all" />
                             </div>
                             <div>
-                                <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>E-mail *</label>
+                                <label className="text-[13px] font-medium text-white/60 mb-2 block">E-mail de acesso *</label>
                                 <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                    placeholder="email@exemplo.com" className="input-field" />
+                                    placeholder="email@exemplo.com" className="w-full h-11 bg-white/5 border border-white/10 rounded-lg px-4 text-[14px] text-white placeholder-white/20 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all" />
                             </div>
                             {!isEditing && (
                                 <div>
-                                    <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Senha *</label>
+                                    <label className="text-[13px] font-medium text-white/60 mb-2 block">Crie uma senha *</label>
                                     <input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                        placeholder="Mínimo 6 caracteres" className="input-field" />
+                                        placeholder="Mínimo 6 caracteres" className="w-full h-11 bg-white/5 border border-white/10 rounded-lg px-4 text-[14px] text-white placeholder-white/20 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all" />
                                 </div>
                             )}
                             <div>
-                                <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Função / Perfil</label>
+                                <label className="text-[13px] font-medium text-white/60 mb-2 block">Função do colaborador</label>
                                 <select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}
-                                    className="input-field" disabled={isEditing}>
+                                    className="w-full h-11 bg-white/5 border border-white/10 rounded-lg px-4 text-[14px] text-white focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all" disabled={isEditing}>
                                     <option value="PROFESSIONAL">Profissional</option>
                                     <option value="MANAGER">Gerente</option>
                                     <option value="ADMIN">Administrador</option>
@@ -358,8 +360,8 @@ export default function CollaboratorsPage() {
                             {form.role === 'PROFESSIONAL' && (
                                 <>
                                 <div>
-                                    <label className="text-sm mb-2 block" style={{ color: 'var(--text-secondary)' }}>Nichos de Atuação</label>
-                                    <div className="grid grid-cols-2 gap-2 p-3 rounded-2xl bg-white/5 border border-white/5">
+                                    <label className="text-[13px] font-medium text-white/60 mb-3 block">Nichos de Atuação no sistema</label>
+                                    <div className="flex flex-wrap gap-2 p-4 rounded-xl bg-white/5 border border-white/5">
                                         {niches.map(n => {
                                             const isSelected = form.nicheIds.includes(n.id);
                                             return (
@@ -372,46 +374,47 @@ export default function CollaboratorsPage() {
                                                         setForm({ ...form, nicheIds: newIds });
                                                     }}
                                                     className={`
-                                                        flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-bold transition-all border
+                                                        flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-medium transition-all border
                                                         ${isSelected 
-                                                            ? 'bg-[var(--accent-light)] border-[var(--accent-light)] text-white' 
-                                                            : 'bg-white/5 border-white/5 text-white/40 hover:bg-white/10 hover:text-white/60'}
+                                                            ? 'bg-white text-black border-white' 
+                                                            : 'bg-transparent border-white/10 text-white/50 hover:border-white/30 hover:text-white/80'}
                                                     `}
                                                 >
-                                                    {isSelected ? <CheckCircle2 size={14} /> : <Plus size={14} />}
+                                                    {isSelected && <CheckCircle2 size={14} className="text-black" />}
                                                     {n.name}
                                                 </button>
                                             );
                                         })}
                                     </div>
                                 </div>
-                                <div>
-                                    <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Tipo de Contrato</label>
-                                    <select value={form.contractType} onChange={(e) => setForm({ ...form, contractType: e.target.value })}
-                                        className="input-field">
-                                        <option value="COMMISSION">Comissionado</option>
-                                        <option value="RENT">Aluguel de Espaço (100% Repasse)</option>
-                                    </select>
-                                </div>
-                                {form.contractType === 'COMMISSION' && (
+                                <div className="grid grid-cols-2 gap-4">
                                     <div>
-                                        <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Comissão do Profissional (%)</label>
-                                        <input type="number" min="0" max="100" value={form.commission} onChange={(e) => setForm({ ...form, commission: Number(e.target.value) })}
-                                            className="input-field" />
+                                        <label className="text-[13px] font-medium text-white/60 mb-2 block">Tipo de Contrato</label>
+                                        <select value={form.contractType} onChange={(e) => setForm({ ...form, contractType: e.target.value })}
+                                            className="w-full h-11 bg-white/5 border border-white/10 rounded-lg px-4 text-[14px] text-white focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all">
+                                            <option value="COMMISSION">Comissionado</option>
+                                            <option value="RENT">Aluguel de Espaço</option>
+                                        </select>
                                     </div>
-                                )}
+                                    {form.contractType === 'COMMISSION' && (
+                                        <div>
+                                            <label className="text-[13px] font-medium text-white/60 mb-2 block">Comissão Geral (%)</label>
+                                            <input type="number" min="0" max="100" value={form.commission} onChange={(e) => setForm({ ...form, commission: Number(e.target.value) })}
+                                                className="w-full h-11 bg-white/5 border border-white/10 rounded-lg px-4 text-[14px] text-white focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all" />
+                                        </div>
+                                    )}
+                                </div>
                                 </>
                             )}
 
-                            {error && <p className="text-xs" style={{ color: 'var(--danger)' }}>{error}</p>}
-                            <div className="flex gap-3 mt-1">
+                            {error && <p className="text-[13px] text-red-400 p-3 bg-red-400/10 rounded-lg">{error}</p>}
+                            <div className="flex gap-3 mt-6 pt-6 border-t border-white/5">
                                 <button onClick={() => setShowForm(false)}
-                                    className="flex-1 px-4 py-2 rounded-xl text-sm font-medium"
-                                    style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                                    className="flex-1 px-4 py-2.5 rounded-lg text-[14px] font-semibold text-white/60 hover:text-white hover:bg-white/5 transition-colors border border-transparent">
                                     Cancelar
                                 </button>
-                                <button onClick={handleSave} disabled={saving} className="btn-primary flex-1 flex items-center justify-center gap-2">
-                                    {saving ? <span className="spinner" /> : null}
+                                <button onClick={handleSave} disabled={saving} className="flex-1 px-4 py-2.5 bg-white text-black rounded-lg text-[14px] font-semibold hover:bg-white/90 transition-colors shadow-sm flex items-center justify-center gap-2">
+                                    {saving ? <span className="spinner opacity-50 border-black/20 border-t-black !w-4 !h-4" /> : null}
                                     {saving ? (isEditing ? 'Salvando...' : 'Criando...') : (isEditing ? 'Salvar Alterações' : 'Criar Conta')}
                                 </button>
                             </div>
@@ -454,21 +457,21 @@ function CollaboratorProfile({ collaborator, onBack, onEdit, niches }: {
                 {/* 2. Identity Row */}
                 <div className="flex flex-col md:flex-row items-center gap-8" style={{ marginBottom: '48px' }}>
                     <div className="relative">
-                        <div className="w-32 h-32 rounded-full border-2 border-white/10 overflow-hidden shadow-2xl bg-[#1a1825]">
-                             <div className="w-full h-full flex items-center justify-center text-5xl font-semibold bg-gradient-to-br from-[#2a243d] to-[#1a1628] text-white">
+                        <div className="w-28 h-28 rounded-full border-4 border-[#111019] overflow-hidden shadow-2xl bg-white/5 flex items-center justify-center">
+                             <div className="text-4xl font-semibold text-white">
                                 {collaborator.name.charAt(0).toUpperCase()}
                              </div>
                         </div>
-                        <div className={`absolute bottom-1 right-1 w-7 h-7 rounded-full border-2 border-[#111019] ${collaborator.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
+                        <div className={`absolute bottom-1 right-1 w-6 h-6 rounded-full border-4 border-[#111019] ${collaborator.isActive ? 'bg-green-500' : 'bg-red-500'}`} />
                     </div>
                     <div className="text-center md:text-left">
-                        <h2 className="font-semibold text-white tracking-tight leading-tight mb-1" style={{ fontSize: '32px' }}>{collaborator.name}</h2>
-                        <p className="text-base font-medium text-white/40">{collaborator.email}</p>
+                        <h2 className="font-semibold text-white tracking-tight leading-tight mb-2 text-[28px]">{collaborator.name}</h2>
+                        <p className="text-[15px] text-white/50">{collaborator.email}</p>
                     </div>
                 </div>
 
                 {/* 3. Underlined Navigation Tabs */}
-                <div className="flex items-center gap-10 border-b border-white/5 overflow-x-auto no-scrollbar" style={{ marginBottom: '40px' }}>
+                <div className="flex items-center gap-8 border-b border-white/5 overflow-x-auto no-scrollbar" style={{ marginBottom: '40px' }}>
                     {[
                         { id: 'PROFILE', label: 'PERFIL' },
                         { id: 'SETTINGS', label: 'CONFIGURAÇÕES' },
@@ -480,15 +483,15 @@ function CollaboratorProfile({ collaborator, onBack, onEdit, niches }: {
                             key={tab.id}
                             onClick={() => setActiveTab(tab.id as any)}
                             className={`
-                                pb-5 text-[11px] font-bold tracking-[0.15em] uppercase transition-all relative whitespace-nowrap
+                                pb-4 text-[13px] font-semibold tracking-wide transition-all relative whitespace-nowrap
                                 ${activeTab === tab.id 
                                     ? 'text-white' 
-                                    : 'text-white/30 hover:text-white'}
+                                    : 'text-white/40 hover:text-white/80'}
                             `}
                         >
                             {tab.label}
                             {activeTab === tab.id && (
-                                <div className="absolute bottom-0 left-0 w-2/3 h-0.5 bg-green-500 rounded-full mx-auto" />
+                                <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white rounded-t-full" />
                             )}
                         </button>
                     ))}
@@ -512,21 +515,21 @@ function ProfileTab({ collaborator }: { collaborator: Collaborator }) {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             {/* Identity Card */}
-            <div className="lg:col-span-7 flex flex-col gap-8">
-                <div className="card border-white/5 bg-[#15121f]/30" style={{ padding: '32px' }}>
-                    <h3 className="font-bold tracking-widest text-white/90" style={{ fontSize: '15px', marginBottom: '40px' }}>
-                        INFORMAÇÕES DE ATUAÇÃO
+            <div className="lg:col-span-7 flex flex-col gap-6">
+                <div className="bg-[#15151e] border border-white/5 rounded-2xl p-8">
+                    <h3 className="text-[14px] font-bold uppercase tracking-widest text-white/40 mb-8">
+                        Informações de Atuação
                     </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-10 gap-x-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-8 gap-x-8">
                         {[
-                            { label: 'E-MAIL', value: collaborator.email },
-                            { label: 'CARGO PRINCIPAL', value: ROLE_LABELS[collaborator.role] || 'N/A' },
-                            { label: 'TELEFONE', value: 'Não informado' },
-                            { label: 'NÍCHOS DE ATUAÇÃO', value: isProf && collaborator.professional?.niches?.length ? collaborator.professional.niches.map(n => n.name).join(', ') : 'Geral' },
+                            { label: 'E-mail', value: collaborator.email },
+                            { label: 'Cargo Principal', value: ROLE_LABELS[collaborator.role] || 'N/A' },
+                            { label: 'Telefone', value: 'Não informado' },
+                            { label: 'Nichos de Atuação', value: isProf && collaborator.professional?.niches?.length ? collaborator.professional.niches.map(n => n.name).join(', ') : 'Geral' },
                         ].map((item, i) => (
-                            <div key={i} className="flex flex-col border-b border-white/5 pb-4">
-                                <p className="text-[10px] font-bold text-white/30 uppercase tracking-[0.2em] mb-2">{item.label}</p>
-                                <p className="text-[15px] font-medium text-white/90 tracking-tight">{item.value}</p>
+                            <div key={i} className="flex flex-col border-white/5 pb-2">
+                                <p className="text-[12px] font-medium text-white/40 mb-1">{item.label}</p>
+                                <p className="text-[15px] font-semibold text-white">{item.value}</p>
                             </div>
                         ))}
                     </div>
@@ -537,29 +540,29 @@ function ProfileTab({ collaborator }: { collaborator: Collaborator }) {
 
             {/* Quick Actions / Side Card */}
             <div className="lg:col-span-5">
-                <div className="card border-white/5 bg-[#15121f]/30" style={{ padding: '32px' }}>
-                     <h3 className="font-bold tracking-widest text-white/90 mb-8 uppercase flex items-center gap-3" style={{ fontSize: '15px' }}>
-                        RESUMO DO PERFIL
+                <div className="bg-[#15151e] border border-white/5 rounded-2xl p-8">
+                     <h3 className="text-[14px] font-bold uppercase tracking-widest text-white/40 mb-6">
+                        Resumo do Perfil
                      </h3>
-                     <p className="text-[14px] leading-relaxed text-white/60 mb-10 font-medium">
+                     <p className="text-[14px] leading-relaxed text-white/50 mb-8">
                         Colaborador estratégico registrado na unidade Bella Beauty. Este perfil centraliza as configurações de comissão, agenda de serviços e histórico financeiro.
                      </p>
                      
-                     <div className="space-y-4 pt-6 border-t border-white/5">
+                     <div className="space-y-4 pt-6 mt-6 border-t border-white/5">
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">MEMBRO DESDE</span>
-                            <span className="text-[14px] font-bold text-white/80">Março, 2026</span>
+                            <span className="text-[13px] text-white/50">Membro desde</span>
+                            <span className="text-[14px] font-semibold text-white">Março, 2026</span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">NÍVEL DE ACESSO</span>
-                            <span className="text-[14px] font-bold text-[var(--accent-light)]">{ROLE_LABELS[collaborator.role]}</span>
+                            <span className="text-[13px] text-white/50">Nível de Acesso</span>
+                            <span className="badge badge-gray !px-2 !py-0.5 !text-[11px]">{ROLE_LABELS[collaborator.role]}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest">DESEMPENHO</span>
+                            <span className="text-[13px] text-white/50">Desempenho</span>
                             {collaborator.isActive ? (
-                                <span className="text-[12px] font-black text-green-500 bg-green-500/10 px-2 py-0.5 rounded uppercase">ATIVO</span>
+                                <span className="text-[11px] font-bold text-green-400 bg-green-400/10 px-2 py-0.5 rounded uppercase tracking-wide">Ativo</span>
                             ) : (
-                                <span className="text-[12px] font-black text-red-500 bg-red-500/10 px-2 py-0.5 rounded uppercase">INATIVO</span>
+                                <span className="text-[11px] font-bold text-red-400 bg-red-400/10 px-2 py-0.5 rounded uppercase tracking-wide">Inativo</span>
                             )}
                         </div>
                      </div>
@@ -605,15 +608,15 @@ function SettingsTab({ collaborator }: { collaborator: Collaborator }) {
                             if (item.id === 'PERMISSIONS') setView('PERMISSIONS');
                             if (item.id === 'HOURS') setView('HOURS');
                         }}
-                        className="flex items-center gap-10 p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 hover:border-[var(--accent-light)]/30 hover:bg-white/[0.05] cursor-pointer transition-all duration-300 group shadow-2xl">
-                        <div className="w-16 h-16 rounded-2xl flex items-center justify-center bg-white/5 group-hover:bg-[var(--accent-light)] group-hover:scale-110 group-hover:text-white transition-all shadow-inner">
-                            <item.icon size={28} className="opacity-60 group-hover:opacity-100" />
+                        className="flex items-center gap-6 p-6 md:p-8 rounded-3xl bg-[#15151e] border border-white/5 hover:border-[var(--accent-light)]/30 hover:bg-[#1a1a24] cursor-pointer transition-all duration-300 group shadow-lg">
+                        <div className="w-14 h-14 rounded-2xl flex items-center justify-center bg-white/5 group-hover:bg-[var(--accent-light)] group-hover:text-white transition-all">
+                            <item.icon size={24} className="opacity-60 group-hover:opacity-100" />
                         </div>
                         <div className="flex-1">
-                            <h4 className="font-semibold text-xl text-white/90 group-hover:text-white transition-colors">{item.label}</h4>
-                            <p className="text-base opacity-40 font-medium group-hover:opacity-60 transition-opacity">{item.desc}</p>
+                            <h4 className="font-semibold text-[16px] text-white/90 group-hover:text-white transition-colors mb-1">{item.label}</h4>
+                            <p className="text-[13px] text-white/40 group-hover:text-white/60 transition-colors">{item.desc}</p>
                         </div>
-                        <ChevronLeft size={24} className="rotate-180 opacity-20 group-hover:opacity-60 transition-all" />
+                        <ChevronLeft size={20} className="rotate-180 opacity-20 group-hover:opacity-60 transition-all group-hover:translate-x-1" />
                     </div>
                 );
             })}
@@ -655,17 +658,18 @@ function PermissionsTab({ collaborator, onBack }: { collaborator: Collaborator; 
                     <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     <span className="font-bold tracking-tight text-[15px]">Voltar</span>
                 </button>
-                <button onClick={handleSave} disabled={saving} className="btn-primary px-8 py-3">
+                <button onClick={handleSave} disabled={saving} className="px-6 py-2.5 bg-white text-black font-semibold text-[14px] rounded-lg hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2">
+                    {saving ? <span className="spinner opacity-50 border-black/20 border-t-black !w-4 !h-4" /> : null}
                     {saving ? 'SALVANDO...' : 'SALVAR PERMISSÕES'}
                 </button>
             </div>
 
             <div className="mb-14">
-                <h3 className="text-3xl font-black tracking-tight text-white mb-3 uppercase">Controle de Acesso</h3>
-                <p className="text-base text-white/40 font-medium">
-                    Defina o que <span className="text-white">{collaborator.name}</span> pode visualizar e gerenciar no sistema.
+                <h3 className="text-[28px] font-semibold tracking-tight text-white mb-2">Controle de Acesso</h3>
+                <p className="text-[15px] text-white/50">
+                    Defina o que <span className="text-white font-medium">{collaborator.name}</span> pode visualizar e gerenciar no sistema.
                     <br />
-                    <span className="text-xs mt-2 block opacity-50 uppercase tracking-widest font-bold">Role Atual: {ROLE_LABELS[collaborator.role]}</span>
+                    <span className="text-[12px] mt-2 block text-[var(--accent-light)] uppercase tracking-wide font-bold">Role: {ROLE_LABELS[collaborator.role]}</span>
                 </p>
             </div>
 
@@ -675,19 +679,19 @@ function PermissionsTab({ collaborator, onBack }: { collaborator: Collaborator; 
                     return (
                         <div key={perm.key} 
                             onClick={() => togglePermission(perm.key)}
-                            className={`flex items-center justify-between p-6 rounded-[2rem] border cursor-pointer transition-all duration-300 group ${
+                            className={`flex items-center justify-between p-5 rounded-2xl border cursor-pointer transition-all duration-300 group ${
                                 active 
-                                ? 'bg-[var(--accent-light)]/10 border-[var(--accent-light)]/40 shadow-xl shadow-[var(--accent-light)]/5' 
-                                : 'bg-white/5 border-white/5 hover:border-white/10'
+                                ? 'bg-[var(--accent-light)]/10 border-[var(--accent-light)]/40 shadow-sm' 
+                                : 'bg-[#15151e] border-white/5 hover:border-white/10 hover:bg-[#1a1a24]'
                             }`}>
                             <div className="flex flex-col">
-                                <p className={`text-[15px] font-bold transition-colors ${active ? 'text-white' : 'text-white/60'}`}>{perm.label}</p>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mt-1">{perm.key}</p>
+                                <p className={`text-[14px] font-semibold transition-colors ${active ? 'text-white' : 'text-white/60 group-hover:text-white/80'}`}>{perm.label}</p>
+                                <p className="text-[11px] font-bold uppercase tracking-widest text-white/30 mt-1">{perm.key}</p>
                             </div>
                             
                             {/* Toggle UI */}
-                            <div className={`w-12 h-6 rounded-full p-1 transition-all duration-300 ${active ? 'bg-[var(--accent-light)]' : 'bg-white/10'}`}>
-                                <div className={`w-4 h-4 rounded-full bg-white transition-all duration-300 transform ${active ? 'translate-x-6' : 'translate-x-0'}`} />
+                            <div className={`w-11 h-6 rounded-full p-1 transition-all duration-300 ${active ? 'bg-[var(--accent-light)]' : 'bg-white/10'}`}>
+                                <div className={`w-4 h-4 rounded-full bg-white transition-all duration-300 transform ${active ? 'translate-x-5' : 'translate-x-0'}`} />
                             </div>
                         </div>
                     );
@@ -755,66 +759,67 @@ function ProfessionalServicesSelection({ collaborator, onBack }: { collaborator:
                     <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
                     <span className="font-bold tracking-tight text-[15px]">Voltar</span>
                 </button>
-                <button onClick={handleSave} disabled={saving} className="btn-primary px-8 py-3">
+                <button onClick={handleSave} disabled={saving} className="px-6 py-2.5 bg-white text-black font-semibold text-[14px] rounded-lg hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2">
+                    {saving ? <span className="spinner opacity-50 border-black/20 border-t-black !w-4 !h-4" /> : null}
                     {saving ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES'}
                 </button>
             </div>
 
             <div className="mb-14">
-                <h3 className="text-3xl font-black tracking-tight text-white mb-3 uppercase">Serviços Habilitados</h3>
-                <p className="text-base text-white/40 font-medium whitespace-pre-wrap">
-                    Defina quais procedimentos <span className="text-white">{collaborator.name}</span> está apto(a) a realizar no salão para os nichos: 
-                    <span className="text-[var(--accent-light)] ml-2 italic">
+                <h3 className="text-[28px] font-semibold tracking-tight text-white mb-2">Serviços Habilitados</h3>
+                <p className="text-[15px] text-white/50 whitespace-pre-wrap">
+                    Defina quais procedimentos <span className="text-white font-medium">{collaborator.name}</span> está apto(a) a realizar. 
+                    <br />Nichos vinculados: <span className="text-[var(--accent-light)] font-medium">
                         {collaborator.professional?.niches?.map(n => n.name).join(', ') || 'Nenhum nicho vinculado'}
                     </span>
                 </p>
             </div>
 
-            <div className="space-y-20">
+            <div className="space-y-16">
                 {niches.length === 0 ? (
-                    <div className="py-20 text-center bg-white/5 rounded-[3rem] border border-dashed border-white/10">
-                        <p className="text-white/40 font-bold uppercase tracking-widest text-sm">Nenhum serviço disponível para os nichos vinculados.</p>
+                    <div className="py-20 text-center bg-[#15151e] rounded-3xl border border-white/5">
+                        <p className="text-white/40 font-bold uppercase tracking-widest text-sm">Nenhum serviço disponível.</p>
                         <p className="text-xs text-white/20 mt-2">Vincule nichos ao perfil do colaborador para habilitar serviços.</p>
                     </div>
                 ) : (
                     niches.map(niche => (
-                        <div key={niche.id} className="animate-slide-up">
-                            <div className="flex items-center gap-6 mb-12">
-                                <h4 className="text-2xl font-black tracking-tighter text-white uppercase italic bg-gradient-to-r from-[var(--accent-light)] to-transparent bg-clip-text text-transparent">
+                        <div key={niche.id} className="animate-slide-up bg-[#15151e] border border-white/5 rounded-3xl p-8">
+                            <div className="flex items-center gap-4 mb-8">
+                                <h4 className="text-[18px] font-semibold text-white tracking-tight">
                                     {niche.name}
                                 </h4>
-                                <div className="h-[2px] flex-1 bg-gradient-to-r from-[var(--accent-light)]/30 to-transparent" />
+                                <div className="h-[1px] flex-1 bg-white/5" />
                             </div>
 
-                            <div className="space-y-16 pl-4 border-l-2 border-[var(--accent-light)]/10">
+                            <div className="space-y-10 pl-2">
                                 {niche.categories?.map((cat: any) => (
                                     <div key={cat.id}>
-                                        <div className="flex items-center gap-4 mb-8">
-                                            <div className="w-2 h-2 rounded-full bg-[var(--accent-light)]" />
-                                            <h5 className="text-lg font-black tracking-tight text-white/80 uppercase">{cat.name}</h5>
+                                        <div className="flex items-center gap-3 mb-5 pl-2">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-light)]" />
+                                            <h5 className="text-[14px] font-semibold uppercase tracking-widest text-[#a1a1aa]">{cat.name}</h5>
                                         </div>
 
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pl-2">
                                             {cat.services?.map((s: any) => {
                                                 const selected = selectedIds.includes(s.id);
                                                 return (
                                                     <div key={s.id} 
                                                          onClick={() => toggleService(s.id)}
-                                                         className={`flex items-center gap-4 p-5 rounded-[2rem] border cursor-pointer transition-all duration-300 group ${
+                                                         className={`flex items-center gap-4 p-4 rounded-2xl border cursor-pointer transition-all duration-300 group ${
                                                             selected 
-                                                            ? 'bg-[var(--accent-light)]/10 border-[var(--accent-light)]/40 shadow-xl shadow-[var(--accent-light)]/5' 
-                                                            : 'bg-white/5 border-white/5 hover:border-white/10'
+                                                            ? 'bg-[var(--accent-light)]/10 border-[var(--accent-light)]/40 shadow-sm' 
+                                                            : 'bg-white/5 border-white/5 hover:border-white/10 hover:bg-[#1a1a24]'
                                                          }`}>
-                                                        <div className={`w-7 h-7 rounded-xl border-2 flex items-center justify-center transition-all ${
-                                                            selected ? 'bg-[var(--accent-light)] border-[var(--accent-light)] scale-110' : 'border-white/10 group-hover:border-white/20'
+                                                        <div className={`w-6 h-6 rounded-md border flex items-center justify-center transition-all ${
+                                                            selected ? 'bg-[var(--accent-light)] border-[var(--accent-light)]' : 'border-white/20 group-hover:border-white/30'
                                                         }`}>
-                                                            {selected && <Check size={16} className="text-white" strokeWidth={4} />}
+                                                            {selected && <Check size={14} className="text-white" strokeWidth={3} />}
                                                         </div>
                                                         <div className="flex-1">
-                                                            <p className={`text-[15px] font-bold transition-colors ${selected ? 'text-white' : 'text-white/60'}`}>{s.name}</p>
-                                                            <div className="flex items-center gap-3 mt-1">
-                                                                <span className="text-[10px] font-black uppercase tracking-widest text-white/20">{s.duration} MIN</span>
-                                                                <span className="text-[10px] font-black uppercase tracking-widest text-green-400/40">
+                                                            <p className={`text-[14px] font-semibold transition-colors ${selected ? 'text-white' : 'text-white/60 group-hover:text-white/80'}`}>{s.name}</p>
+                                                            <div className="flex items-center gap-3 mt-1.5">
+                                                                <span className="text-[11px] font-bold uppercase tracking-widest text-white/30">{s.duration} MIN</span>
+                                                                <span className="text-[11px] font-bold uppercase tracking-widest text-green-400">
                                                                     {s.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                                                 </span>
                                                             </div>
@@ -853,15 +858,15 @@ function ActivitiesTab({ collaborator }: { collaborator: Collaborator }) {
     );
 
     return (
-        <div className="w-full card bg-[#15121f]/50 border-white/5 shadow-2xl" style={{ padding: '48px' }}>
-            <div className="flex items-center justify-between" style={{ marginBottom: '40px' }}>
-                <h3 className="text-xl font-semibold tracking-wider text-white/80 uppercase">Últimos Atendimentos</h3>
-                <div className="flex items-center gap-3">
-                   <button className="p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
-                        <Search size={16} className="opacity-60" />
+        <div className="w-full bg-[#15151e] rounded-3xl border border-white/5 shadow-lg p-6 md:p-8">
+            <div className="flex items-center justify-between mb-8">
+                <h3 className="text-[16px] font-semibold text-white tracking-tight">Últimos Atendimentos</h3>
+                <div className="flex items-center gap-2">
+                   <button className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/50 hover:text-white">
+                        <Search size={18} />
                    </button>
-                   <button className="p-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all">
-                        <Download size={16} className="opacity-60" />
+                   <button className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/50 hover:text-white">
+                        <Download size={18} />
                    </button>
                 </div>
             </div>
@@ -870,48 +875,48 @@ function ActivitiesTab({ collaborator }: { collaborator: Collaborator }) {
                 <table className="w-full text-left">
                     <thead>
                         <tr className="border-b border-white/5">
-                            <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Data e Hora</th>
-                            <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Cliente</th>
-                            <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Serviço Realizado</th>
-                            <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Valor</th>
-                            <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase text-right">Situação</th>
+                            <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Data e Hora</th>
+                            <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Cliente</th>
+                            <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Serviço Realizado</th>
+                            <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Valor</th>
+                            <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest text-right">Situação</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/[0.02]">
+                    <tbody className="divide-y divide-white/5">
                         {activities.length === 0 ? (
                             <tr>
-                                <td colSpan={5} className="py-20 text-center opacity-40 font-bold tracking-widest text-xs uppercase">Nenhum atendimento encontrado</td>
+                                <td colSpan={5} className="py-16 text-center text-white/40 font-medium text-[13px]">Nenhum atendimento encontrado.</td>
                             </tr>
                         ) : (
                             activities.map((a: any) => (
                                 <tr key={a.id} className="hover:bg-white/[0.02] transition-colors group">
-                                    <td className="px-6 py-4">
-                                        <div className="font-bold text-xs">{format(new Date(a.date), "dd/MMM/yy", { locale: ptBR })}</div>
-                                        <div className="text-[10px] font-medium opacity-40 mt-1 uppercase tracking-wider">{format(new Date(a.date), "HH:mm 'hs'")}</div>
+                                    <td className="px-5 py-4">
+                                        <div className="font-semibold text-[14px] text-white/90">{format(new Date(a.date), "dd/MMM/yy", { locale: ptBR })}</div>
+                                        <div className="text-[12px] text-white/40 mt-0.5">{format(new Date(a.date), "HH:mm 'hs'")}</div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-5 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-[10px] font-black">
+                                            <div className="w-8 h-8 rounded-full bg-[#111116] border border-white/10 flex items-center justify-center text-[12px] font-bold text-white/80">
                                                 {a.client?.name.charAt(0)}
                                             </div>
-                                            <span className="text-xs font-bold">{a.client?.name}</span>
+                                            <span className="text-[14px] font-semibold text-white/90">{a.client?.name}</span>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5 text-[11px] font-bold">
-                                            <Calendar size={12} className="text-[var(--accent-pink)]" />
+                                    <td className="px-5 py-4">
+                                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#111116] border border-white/5 text-[12px] font-semibold text-white/80">
+                                            <Calendar size={14} className="text-white/40" />
                                             {a.service?.name}
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <span className="text-xs font-black text-[var(--accent-light)]">R$ {a.service?.price.toFixed(2)}</span>
+                                    <td className="px-5 py-4">
+                                        <span className="text-[14px] font-bold text-[var(--accent-light)]">R$ {a.service?.price.toFixed(2)}</span>
                                     </td>
-                                    <td className="px-6 py-4 text-right">
+                                    <td className="px-5 py-4 text-right">
                                         <span className={`
-                                            inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase
-                                            ${a.status === 'COMPLETED' ? 'bg-green-500/10 text-green-400' : 'bg-white/10 text-white/40'}
+                                            inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-widest
+                                            ${a.status === 'COMPLETED' ? 'bg-green-500/10 text-green-400' : 'bg-white/5 text-white/50'}
                                         `}>
-                                            <div className={`w-1.5 h-1.5 rounded-full ${a.status === 'COMPLETED' ? 'bg-green-400' : 'bg-white/40'}`} />
+                                            <div className={`w-1.5 h-1.5 rounded-full ${a.status === 'COMPLETED' ? 'bg-green-400' : 'bg-white/30'}`} />
                                             {a.status === 'COMPLETED' ? 'Finalizado' : a.status}
                                         </span>
                                     </td>
@@ -922,8 +927,8 @@ function ActivitiesTab({ collaborator }: { collaborator: Collaborator }) {
                 </table>
             </div>
             {activities.length > 0 && (
-                <div className="p-4 border-t border-white/5 text-center">
-                    <button className="text-[10px] font-black tracking-widest text-white/40 hover:text-white transition-colors uppercase">Carregar mais atendimentos</button>
+                <div className="p-4 border-t border-white/5 text-center mt-4">
+                    <button className="text-[13px] font-semibold text-white/40 hover:text-white transition-colors">Ver mais atendimentos</button>
                 </div>
             )}
         </div>
@@ -953,64 +958,71 @@ function SalariesTab({ collaborator }: { collaborator: Collaborator }) {
     );
 
     return (
-        <div className="w-full" style={{ gap: '48px', display: 'flex', flexDirection: 'column' }}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                <div className="card border-white/5 bg-gradient-to-br from-[#15121f] to-[#1a1628] shadow-2xl" style={{ padding: '40px' }}>
-                    <p className="text-[12px] font-semibold tracking-wider opacity-40 uppercase mb-4">Total Acumulado</p>
-                    <h4 className="text-4xl font-bold text-white leading-none">R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h4>
+        <div className="w-full flex flex-col gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="bg-[#15151e] border border-white/5 rounded-3xl p-8">
+                    <p className="text-[13px] font-medium text-white/40 uppercase tracking-widest mb-4">Total Acumulado</p>
+                    <h4 className="text-[32px] font-semibold text-white leading-none">R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h4>
                 </div>
-                <div className="card border-white/5 bg-[#15121f]/50 shadow-2xl" style={{ padding: '40px' }}>
-                    <p className="text-[12px] font-semibold tracking-wider opacity-40 uppercase mb-4">Já Recebido</p>
+                <div className="bg-[#15151e] border border-white/5 rounded-3xl p-8">
+                    <p className="text-[13px] font-medium text-white/40 uppercase tracking-widest mb-4">Já Recebido</p>
                     <div className="flex items-center gap-4">
-                        <h4 className="text-2xl font-bold text-green-400">R$ {paid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h4>
-                        <span className="px-3 py-1 rounded-lg bg-green-500/10 text-green-400 text-[10px] font-bold tracking-tight uppercase">PAGO</span>
+                        <h4 className="text-[28px] font-semibold text-green-400">R$ {paid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h4>
+                        <span className="px-2.5 py-1 rounded-md bg-green-500/10 text-green-400 text-[11px] font-bold tracking-widest uppercase">PAGO</span>
                     </div>
                 </div>
-                <div className="card border-white/5 bg-[#15121f]/50 shadow-2xl" style={{ padding: '40px' }}>
-                    <p className="text-[12px] font-semibold tracking-wider opacity-40 uppercase mb-4">Pendente</p>
+                <div className="bg-[#15151e] border border-white/5 rounded-3xl p-8">
+                    <p className="text-[13px] font-medium text-white/40 uppercase tracking-widest mb-4">Pendente</p>
                     <div className="flex items-center gap-4">
-                        <h4 className="text-2xl font-bold text-[var(--accent-pink)]">R$ {pending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h4>
-                        <span className="px-3 py-1 rounded-lg bg-[var(--accent-pink)]/10 text-[var(--accent-pink)] text-[10px] font-bold tracking-tight uppercase">ABERTO</span>
+                        <h4 className="text-[28px] font-semibold text-[var(--accent-light)]">R$ {pending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h4>
+                        <span className="px-2.5 py-1 rounded-md bg-[var(--accent-light)]/10 text-[var(--accent-light)] text-[11px] font-bold tracking-widest uppercase">ABERTO</span>
                     </div>
                 </div>
             </div>
             
-            <div className="card border-white/5 bg-[#15121f]/50 shadow-2xl overflow-hidden">
-                <div className="p-10 border-b border-white/5 flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold tracking-wide text-white/80 uppercase">Extrato de Comissões</h3>
-                    <Download size={18} className="opacity-40 hover:opacity-100 cursor-pointer transition-all" />
+            <div className="bg-[#15151e] border border-white/5 rounded-3xl p-6 md:p-8 overflow-hidden">
+                <div className="border-b border-white/5 pb-6 flex items-center justify-between mb-2">
+                    <h3 className="text-[16px] font-semibold text-white tracking-tight">Extrato de Comissões</h3>
+                    <button className="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/50 hover:text-white">
+                        <Download size={18} />
+                    </button>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-white/5">
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Data</th>
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Serviço</th>
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Valor Total</th>
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Repasse (%)</th>
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase text-right">Seu Repasse (R$)</th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Data</th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Serviço</th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Valor do Serviço</th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest text-center">Repasse (%)</th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest text-right">Seu Repasse</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/[0.02]">
-                            {commissions.map((c: any) => {
+                        <tbody className="divide-y divide-white/5">
+                            {commissions.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="py-16 text-center text-white/40 font-medium text-[13px]">Nenhuma comissão encontrada.</td>
+                                </tr>
+                            ) : (
+                            commissions.map((c: any) => {
                                 const svcPrice = c.appointment?.service?.price || 0;
                                 const perc = svcPrice > 0 ? (c.amount / svcPrice) * 100 : 0;
                                 return (
                                     <tr key={c.id} className="hover:bg-white/[0.02] transition-colors">
-                                        <td className="px-6 py-4 text-[11px] font-bold opacity-60">
+                                        <td className="px-5 py-4 text-[13px] text-white/60">
                                             {format(new Date(c.appointment.date), "dd/MM/yyyy")}
                                         </td>
-                                        <td className="px-6 py-4 text-xs font-bold">{c.appointment?.service?.name}</td>
-                                        <td className="px-6 py-4 text-xs opacity-60 italic">R$ {svcPrice.toFixed(2)}</td>
-                                        <td className="px-6 py-4">
-                                            <span className="px-2 py-1 rounded bg-[var(--accent-light)]/10 text-[var(--accent-light)] text-[10px] font-black">{perc.toFixed(0)}%</span>
+                                        <td className="px-5 py-4 text-[14px] font-semibold text-white/90">{c.appointment?.service?.name}</td>
+                                        <td className="px-5 py-4 text-[14px] text-white/60">R$ {svcPrice.toFixed(2)}</td>
+                                        <td className="px-5 py-4 text-center">
+                                            <span className="px-2.5 py-1 rounded-md bg-[var(--accent-light)]/10 text-[var(--accent-light)] text-[11px] font-bold">{perc.toFixed(0)}%</span>
                                         </td>
-                                        <td className="px-6 py-4 text-right font-black text-white">
+                                        <td className="px-5 py-4 text-right font-bold text-[14px] text-white">
                                             R$ {c.amount.toFixed(2)}
                                         </td>
                                     </tr>
                                 );
-                            })}
+                            }))}
                         </tbody>
                     </table>
                 </div>
@@ -1068,20 +1080,20 @@ function AdvancesTab({ collaborator }: { collaborator: Collaborator }) {
     );
 
     return (
-        <div className="w-full" style={{ gap: '48px', display: 'flex', flexDirection: 'column' }}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                 <div className="card border-white/5 bg-[#15121f]/50 shadow-2xl" style={{ padding: '40px' }}>
-                    <p className="text-[12px] font-semibold tracking-wider opacity-40 uppercase mb-4">Dívida Total em Aberto</p>
-                    <h4 className="text-4xl font-bold text-[var(--accent-pink)] leading-none">R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h4>
+        <div className="w-full flex flex-col gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                 <div className="bg-[#15151e] border border-white/5 rounded-3xl p-8">
+                    <p className="text-[13px] font-medium text-white/40 uppercase tracking-widest mb-4">Dívida Total em Aberto</p>
+                    <h4 className="text-[32px] font-semibold text-red-400 leading-none">R$ {balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</h4>
                 </div>
             </div>
 
-            <div className="card border-white/5 bg-[#15121f]/50 shadow-2xl overflow-hidden">
-                <div className="flex items-center justify-between" style={{ padding: '40px' }}>
-                    <h3 className="text-lg font-semibold tracking-wide text-white/80 uppercase">Histórico de Adiantamentos</h3>
+            <div className="bg-[#15151e] border border-white/5 rounded-3xl p-6 md:p-8 overflow-hidden">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-white/5 mb-2 gap-4">
+                    <h3 className="text-[16px] font-semibold text-white tracking-tight">Histórico de Adiantamentos</h3>
                     <button onClick={() => setShowAdd(true)} 
-                        className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-[var(--accent-pink)] to-[var(--accent-light)] text-white text-[13px] font-bold tracking-tight shadow-xl shadow-[var(--accent-pink)]/30 hover:scale-[1.02] transition-all">
-                        <Plus size={22} /> ADICIONAR VALE
+                        className="flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-[14px] rounded-lg hover:bg-white/90 transition-colors shadow-sm whitespace-nowrap">
+                        <Plus size={16} /> Novo Adiantamento
                     </button>
                 </div>
 
@@ -1089,26 +1101,26 @@ function AdvancesTab({ collaborator }: { collaborator: Collaborator }) {
                     <table className="w-full text-left">
                         <thead>
                             <tr className="border-b border-white/5">
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Lançamento</th>
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase">Descrição do Adiantamento</th>
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase text-right">Valor Total (R$)</th>
-                                <th className="px-6 py-4 text-[10px] font-black tracking-[0.2em] opacity-40 uppercase text-right">Abatido (R$)</th>
-                                <th className="px-6 py-4 w-20"></th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Lançamento</th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest">Descrição</th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest text-right">Valor Inicial</th>
+                                <th className="px-5 py-4 text-[12px] font-semibold text-white/40 uppercase tracking-widest text-right">Abatido</th>
+                                <th className="px-5 py-4 w-16"></th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-white/[0.02]">
+                        <tbody className="divide-y divide-white/5">
                             {advances.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="py-20 text-center opacity-40 font-bold tracking-widest text-xs uppercase">Nenhum vale registrado</td>
+                                    <td colSpan={5} className="py-16 text-center text-white/40 font-medium text-[13px]">Nenhum adiantamento registrado.</td>
                                 </tr>
                             ) : (
                                 advances.map((v: any) => (
                                     <tr key={v.id} className="hover:bg-white/[0.02] transition-colors group">
-                                        <td className="px-6 py-4 text-[11px] font-bold opacity-60 italic">{format(new Date(v.date), "dd/MMM/yy", { locale: ptBR })}</td>
-                                        <td className="px-6 py-4 text-xs font-bold">{v.description}</td>
-                                        <td className="px-6 py-4 text-right font-black text-white">R$ {v.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-                                        <td className="px-6 py-4 text-right text-xs font-bold text-green-400">R$ {v.deductedAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
-                                        <td className="px-6 py-4 text-right">
+                                        <td className="px-5 py-4 text-[13px] text-white/60">{format(new Date(v.date), "dd/MMM/yy", { locale: ptBR })}</td>
+                                        <td className="px-5 py-4 text-[14px] font-semibold text-white/90">{v.description}</td>
+                                        <td className="px-5 py-4 text-right font-medium text-[14px] text-white">R$ {v.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                                        <td className="px-5 py-4 text-right text-[14px] font-medium text-green-400">R$ {v.deductedAmount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</td>
+                                        <td className="px-5 py-4 text-right">
                                             <button onClick={() => handleDelete(v.id)} 
                                                 className="p-2 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-400 transition-all">
                                                 <Trash2 size={16} />
@@ -1123,31 +1135,34 @@ function AdvancesTab({ collaborator }: { collaborator: Collaborator }) {
             </div>
 
             {showAdd && (
-                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
-                    <div className="card w-full max-w-sm animate-zoom-in shadow-2xl p-8 border-white/5 bg-[#1a1628]">
+                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowAdd(false)} />
+                    <div className="bg-[#111116] border border-white/10 w-full max-w-sm z-10 animate-zoom-in shadow-2xl rounded-2xl p-6 md:p-8">
                         <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-lg font-black tracking-tight">Novo Adiantamento</h2>
-                            <button onClick={() => setShowAdd(false)} className="p-2 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-                                <X size={20} className="opacity-40" />
+                            <h2 className="text-[20px] font-semibold text-white tracking-tight">Novo Adiantamento</h2>
+                            <button onClick={() => setShowAdd(false)} className="p-2 hover:bg-white/5 rounded-lg text-white/40 hover:text-white transition-colors">
+                                <X size={20} />
                             </button>
                         </div>
-                        <div className="space-y-6">
+                        <div className="flex flex-col gap-5">
                             <div>
-                                <label className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-2 block">Motivo/Descrição</label>
-                                <input className="w-full bg-white/5 border border-white/5 rounded-2xl px-4 py-4 text-sm font-bold focus:border-[var(--accent-light)] transition-colors outline-none h-14" 
+                                <label className="text-[13px] font-medium text-white/60 mb-2 block">Motivo/Descrição</label>
+                                <input className="w-full h-11 bg-white/5 border border-white/10 rounded-lg px-4 text-[14px] text-white placeholder-white/20 focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all" 
                                     placeholder="Ex: Passagem, Almoço..." value={form.description} onChange={e => setForm({...form, description: e.target.value})} />
                             </div>
                             <div>
-                                <label className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-2 block">Valor em Reais</label>
+                                <label className="text-[13px] font-medium text-white/60 mb-2 block">Valor em Reais</label>
                                 <div className="relative">
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-[var(--accent-light)]">R$</span>
-                                    <input type="number" className="w-full bg-white/5 border border-white/5 rounded-2xl pl-12 pr-4 py-4 text-xl font-black focus:border-[var(--accent-light)] transition-colors outline-none h-14" 
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-semibold text-[14px] text-white/40">R$</span>
+                                    <input type="number" className="w-full h-11 pl-10 bg-white/5 border border-white/10 rounded-lg pr-4 text-[14px] text-white focus:outline-none focus:border-white/30 focus:bg-white/10 transition-all" 
                                         value={form.amount} onChange={e => setForm({...form, amount: Number(e.target.value)})} />
                                 </div>
                             </div>
-                            <button onClick={handleAdd} className="w-full h-14 rounded-2xl bg-gradient-to-r from-[var(--accent-pink)] to-[var(--accent-light)] text-white font-black tracking-widest shadow-xl shadow-[var(--accent-pink)]/20 active:scale-95 transition-all">
-                                CONFIRMAR VALE
-                            </button>
+                            <div className="mt-6 pt-6 border-t border-white/5 flex flex-col">
+                                <button onClick={handleAdd} className="w-full py-2.5 bg-white text-black rounded-lg text-[14px] font-semibold hover:bg-white/90 transition-colors shadow-sm">
+                                    Confirmar Vale
+                                </button>
+                            </div>
                         </div>
                     </div>
                  </div>
@@ -1208,26 +1223,32 @@ function WorkingHoursTab({ collaborator, onBack }: { collaborator: Collaborator;
         }
     };
 
-    if (loading) return <div className="p-20 text-center opacity-40 font-bold uppercase tracking-widest animate-pulse">Carregando horários...</div>;
+    if (loading) return (
+        <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-10 h-10 border-4 border-[var(--accent-light)]/20 border-t-[var(--accent-light)] rounded-full animate-spin" />
+            <p className="text-[13px] font-semibold text-white/40 uppercase tracking-widest">Carregando horários...</p>
+        </div>
+    );
 
     return (
         <div className="w-full max-w-4xl mx-auto py-6 animate-fade-in">
-            <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center justify-between mb-8">
                 <button onClick={onBack} className="flex items-center gap-2 text-white/40 hover:text-white transition-colors group">
                     <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-                    <span className="font-bold tracking-tight text-[15px]">Voltar</span>
+                    <span className="font-semibold text-[15px]">Voltar</span>
                 </button>
-                <button onClick={handleSave} disabled={saving} className="btn-primary px-8 py-3">
+                <button onClick={handleSave} disabled={saving} className="px-6 py-2.5 bg-white text-black font-semibold text-[14px] rounded-lg hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2">
+                    {saving && <span className="spinner opacity-50 border-black/20 border-t-black !w-4 !h-4" />}
                     {saving ? 'SALVANDO...' : 'SALVAR HORÁRIOS'}
                 </button>
             </div>
 
-            <div className="mb-14">
-                <h3 className="text-3xl font-black tracking-tight text-white mb-3 uppercase">Agenda Semanal</h3>
-                <p className="text-base text-white/40 font-medium">
-                    Configure os turnos de trabalho de <span className="text-white">{collaborator.name}</span>. 
+            <div className="mb-10">
+                <h3 className="text-[28px] font-semibold tracking-tight text-white mb-2">Agenda Semanal</h3>
+                <p className="text-[15px] text-white/50">
+                    Configure os turnos de trabalho de <span className="text-white font-medium">{collaborator.name}</span>. 
                     <br />
-                    <span className="text-[10px] mt-2 block opacity-30 uppercase tracking-[0.2em] font-black">Horários fora destes intervalos estarão bloqueados para agendamento.</span>
+                    <span className="text-[13px] text-amber-400/60 font-medium mt-1 block">Horários fora destes intervalos estarão bloqueados para agendamento.</span>
                 </p>
             </div>
 
@@ -1238,51 +1259,52 @@ function WorkingHoursTab({ collaborator, onBack }: { collaborator: Collaborator;
                         .filter(s => s.dayOfWeek === dayIndex);
 
                     return (
-                        <div key={dayName} className="p-8 rounded-[2.5rem] bg-white/[0.03] border border-white/5 shadow-2xl">
-                            <div className="flex items-center justify-between mb-6">
-                                <h4 className="text-xl font-black text-white/90 uppercase tracking-tight">{dayName}</h4>
+                        <div key={dayName} className="p-6 md:p-8 rounded-3xl bg-[#15151e] border border-white/5 shadow-lg relative overflow-hidden group">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 relative z-10">
+                                <h4 className="text-[18px] font-semibold text-white/90 tracking-tight">{dayName}</h4>
                                 <button 
                                     onClick={() => addSlot(dayIndex)}
-                                    className="flex items-center gap-2 text-[11px] font-black uppercase tracking-widest text-[var(--accent-light)] hover:opacity-70 transition-opacity"
+                                    className="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-widest text-[var(--accent-light)] hover:text-white transition-colors"
                                 >
-                                    <Plus size={14} />
+                                    <Plus size={16} />
                                     Adicionar Turno
                                 </button>
                             </div>
 
-                            <div className="flex flex-col gap-3">
+                            <div className="flex flex-col gap-3 relative z-10">
                                 {daySlots.length === 0 ? (
-                                    <div className="py-4 text-center border-2 border-dashed border-white/5 rounded-3xl">
-                                        <p className="text-sm text-white/20 font-bold uppercase tracking-widest">Folga / Não trabalha</p>
+                                    <div className="py-6 text-center border border-dashed border-white/5 bg-white/[0.01] rounded-2xl">
+                                        <p className="text-[13px] text-white/40 font-medium">Folga / Não trabalha</p>
                                     </div>
                                 ) : (
                                     daySlots.map((slot) => (
-                                        <div key={slot.originalIndex} className="flex items-center gap-4 bg-white/5 p-4 rounded-3xl border border-white/5 hover:border-white/10 transition-colors group">
+                                        <div key={slot.originalIndex} className="flex flex-col sm:flex-row sm:items-center gap-4 bg-[#111116] p-4 rounded-xl border border-white/5 hover:border-white/10 transition-colors group/slot">
                                             <div className="flex-1 grid grid-cols-2 gap-4">
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest ml-4">Início</span>
+                                                <div className="flex flex-col gap-1.5 border-r border-white/5 pr-4">
+                                                    <span className="text-[11px] font-medium text-white/40 uppercase tracking-widest px-2">Início</span>
                                                     <input 
                                                         type="time" 
                                                         value={slot.startTime}
                                                         onChange={(e) => updateSlot(slot.originalIndex, 'startTime', e.target.value)}
-                                                        className="bg-transparent border-none text-white font-bold text-lg focus:ring-0 p-0 ml-4 cursor-pointer"
+                                                        className="h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white font-medium text-[14px] focus:outline-none focus:border-white/30 transition-all cursor-pointer"
                                                     />
                                                 </div>
-                                                <div className="flex flex-col gap-1">
-                                                    <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">Término</span>
+                                                <div className="flex flex-col gap-1.5 pl-4 sm:pl-0 sm:border-r-0 border-white/5">
+                                                    <span className="text-[11px] font-medium text-white/40 uppercase tracking-widest px-2">Término</span>
                                                     <input 
                                                         type="time" 
                                                         value={slot.endTime}
                                                         onChange={(e) => updateSlot(slot.originalIndex, 'endTime', e.target.value)}
-                                                        className="bg-transparent border-none text-white font-bold text-lg focus:ring-0 p-0 cursor-pointer"
+                                                        className="h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white font-medium text-[14px] focus:outline-none focus:border-white/30 transition-all cursor-pointer"
                                                     />
                                                 </div>
                                             </div>
                                             <button 
                                                 onClick={() => removeSlot(slot.originalIndex)}
-                                                className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 text-white/20 hover:bg-red-500/10 hover:text-red-500 transition-all group-hover:bg-white/10"
+                                                className="self-end sm:self-center h-10 w-10 flex items-center justify-center rounded-md bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white transition-all"
+                                                title="Remover turno"
                                             >
-                                                <Trash2 size={18} />
+                                                <Trash2 size={16} />
                                             </button>
                                         </div>
                                     ))

@@ -73,43 +73,39 @@ export default function CommissionsPage() {
 
     return (
         <div className="animate-fade-in w-full pb-16">
-            <div className="mb-4">
-                <h1 className="text-3xl font-black tracking-tight mb-2">Remunerações</h1>
-                <p className="text-sm mt-1 font-medium opacity-60 text-white/60">
-                    {user?.role === 'PROFESSIONAL' ? 'Suas comissões detalhadas no mês' : 'Repasses pendentes e pagos por colaborador'}
+            <div className="mb-6">
+                <h1 className="text-[28px] leading-tight font-semibold tracking-tight text-white mb-1">Remunerações</h1>
+                <p className="text-[14px] text-white/50 mb-4">
+                    {user?.role === 'PROFESSIONAL' ? 'Suas comissões detalhadas no mês.' : 'Gestão de repasses financeiros para a equipe.'}
                 </p>
             </div>
 
             {/* Seletor de Mês */}
-            <div className="flex items-center justify-between mb-8 bg-zinc-900 border border-zinc-800 rounded-xl p-3">
-                <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/5 rounded-lg border border-zinc-800 transition-colors">
-                    <ChevronLeft size={20} className="text-zinc-400" />
+            <div className="flex items-center justify-between mb-8 bg-[#111116] border border-white/5 rounded-2xl p-4">
+                <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-white/5 rounded-lg border border-white/5 transition-colors">
+                    <ChevronLeft size={20} className="text-white/60" />
                 </button>
-                <span className="font-semibold">{MONTHS[month - 1]} {year}</span>
-                <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/5 rounded-lg border border-zinc-800 transition-colors">
-                    <ChevronRight size={20} className="text-zinc-400" />
+                <span className="font-semibold text-white tracking-wide">{MONTHS[month - 1]} {year}</span>
+                <button onClick={() => changeMonth(1)} className="p-2 hover:bg-white/5 rounded-lg border border-white/5 transition-colors">
+                    <ChevronRight size={20} className="text-white/60" />
                 </button>
             </div>
 
             {/* KPIs Gerais */}
             {user?.role !== 'PROFESSIONAL' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                    <div className="card flex items-center gap-5 p-5 border-l-4 border-l-[#f59e0b]">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.12)' }}>
-                            <Clock size={24} style={{ color: '#f59e0b' }} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-[#f59e0b]/80 mb-1">Total a Pagar</p>
-                            <p className="text-2xl font-black" style={{ color: '#f59e0b' }}>R$ {totalPending.toFixed(2)}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+                    <div className="flex flex-col p-6 bg-[#111116] border border-white/5 rounded-2xl relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-[#f59e0b]" />
+                        <span className="text-[12px] font-semibold tracking-wider uppercase text-white/40 mb-1">Pendente a Pagar</span>
+                        <div className="flex items-center gap-3">
+                            <span className="text-[32px] font-bold tracking-tight text-white">R$ {totalPending.toFixed(2)}</span>
                         </div>
                     </div>
-                    <div className="card flex items-center gap-5 p-5 border-l-4 border-l-[#22c55e]">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.12)' }}>
-                            <DollarSign size={24} style={{ color: '#22c55e' }} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold uppercase tracking-widest text-[#22c55e]/80 mb-1">Total Já Pago</p>
-                            <p className="text-2xl font-black" style={{ color: '#22c55e' }}>R$ {totalPaid.toFixed(2)}</p>
+                    <div className="flex flex-col p-6 bg-[#111116] border border-white/5 rounded-2xl relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-1 h-full bg-[#22c55e]" />
+                        <span className="text-[12px] font-semibold tracking-wider uppercase text-white/40 mb-1">Total Já Pago</span>
+                        <div className="flex items-center gap-3">
+                            <span className="text-[32px] font-bold tracking-tight text-white">R$ {totalPaid.toFixed(2)}</span>
                         </div>
                     </div>
                 </div>
@@ -117,50 +113,46 @@ export default function CommissionsPage() {
 
             {/* Lista */}
             {loading ? (
-                <div className="flex justify-center py-16"><span className="spinner" style={{ width: 36, height: 36 }} /></div>
+                <div className="flex justify-center py-16"><span className="spinner" style={{ width: 32, height: 32, opacity: 0.5 }} /></div>
             ) : commissions.length === 0 ? (
-                <div className="card flex flex-col items-center py-16 gap-3">
-                    <Star size={40} style={{ color: 'var(--text-muted)' }} />
-                    <p style={{ color: 'var(--text-muted)' }}>Nenhuma remuneração encontrada</p>
+                <div className="flex flex-col items-center py-20 gap-3 bg-white/[0.01] border border-white/5 rounded-2xl">
+                    <Star size={32} className="text-white/20" />
+                    <p className="text-[14px] text-white/40">Nenhuma remuneração registrada</p>
                 </div>
             ) : (
-                <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-4">
                     {groupedCommissions.map((group) => (
-                        <div key={group.professional.id} className="card p-0 overflow-hidden border" style={{ borderColor: 'var(--border)' }}>
+                        <div key={group.professional.id} className="bg-[#111116] p-6 border border-white/5 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-white/10 transition-colors">
                             
-                            {/* Cabeçalho do Profissional */}
-                            <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ background: 'var(--bg-document)', borderBottom: '1px solid var(--border)' }}>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-lg shrink-0"
-                                        style={{ background: 'rgba(34,197,94,0.15)', color: '#22c55e' }}>
-                                        {group.professional.name?.charAt(0).toUpperCase()}
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-white/5 text-white shadow-inner">
+                                    {group.professional.name?.charAt(0).toUpperCase()}
+                                </div>
+                                <div className="flex flex-col">
+                                    <h2 className="font-semibold text-[16px] text-white tracking-tight">{group.professional.name}</h2>
+                                    <p className="text-[13px] text-white/40">
+                                        {group.items.length} comissões no período
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex flex-col md:flex-row md:items-center gap-6">
+                                <div className="flex items-center gap-8">
+                                    <div className="flex flex-col">
+                                        <span className="text-[11px] font-semibold uppercase tracking-wider text-white/40 mb-1">Pendente</span>
+                                        <span className="font-semibold text-[15px] text-[#f59e0b]">R$ {group.totalPending.toFixed(2)}</span>
                                     </div>
                                     <div className="flex flex-col">
-                                        <h2 className="font-black text-lg">{group.professional.name}</h2>
-                                        <p className="text-sm font-medium opacity-60 mt-0.5">
-                                            {group.items.length} comissões registradas
-                                        </p>
+                                        <span className="text-[11px] font-semibold uppercase tracking-wider text-white/40 mb-1">Pago</span>
+                                        <span className="font-semibold text-[15px] text-[#22c55e]">R$ {group.totalPaid.toFixed(2)}</span>
                                     </div>
                                 </div>
-                                <div className="flex flex-col md:items-end gap-3">
-                                    <div className="flex items-center gap-4 border p-2 px-3 rounded-lg border-white/5 bg-white/5">
-                                        <div className="flex flex-col items-center border-r border-white/5 pr-4">
-                                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#f59e0b]/50 mb-0.5">A pagar</span>
-                                            <span className="font-black text-sm text-[#f59e0b]">R$ {group.totalPending.toFixed(2)}</span>
-                                        </div>
-                                        <div className="flex flex-col items-center">
-                                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#22c55e]/50 mb-0.5">Já pago</span>
-                                            <span className="font-black text-sm text-[#22c55e]">R$ {group.totalPaid.toFixed(2)}</span>
-                                        </div>
-                                    </div>
-                                    <button 
-                                        onClick={() => setSelectedProf({ name: group.professional.name, items: group.items })}
-                                        className="text-xs font-bold px-5 py-2 rounded-xl transition-colors hover:bg-white/10"
-                                        style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
-                                    >
-                                        VER DETALHAMENTO
-                                    </button>
-                                </div>
+                                <button 
+                                    onClick={() => setSelectedProf({ name: group.professional.name, items: group.items })}
+                                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-[13px] font-medium rounded-lg transition-colors border border-white/5 shadow-sm whitespace-nowrap"
+                                >
+                                    Ver Detalhes
+                                </button>
                             </div>
                         </div>
                     ))}

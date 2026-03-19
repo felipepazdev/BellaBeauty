@@ -79,10 +79,13 @@ export default function ExpensesPage() {
         <div className="animate-fade-in w-full">
             <div className="flex items-center justify-between mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold">Despesas</h1>
-                    <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-                        Total: <strong style={{ color: '#ef4444' }}>R$ {(data?.totalExpense ?? 0).toFixed(2)}</strong>
-                    </p>
+                    <h1 className="text-3xl font-black tracking-tight mb-2">Despesas Administrativas</h1>
+                    <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold tracking-widest uppercase opacity-40">TOTAL REGISTRADO:</span>
+                        <span className="text-xl font-black text-red-500 bg-red-500/10 px-3 py-1 rounded-lg">
+                            R$ {(data?.totalExpense ?? 0).toFixed(2)}
+                        </span>
+                    </div>
                 </div>
                 <button className="btn-primary flex items-center gap-2" onClick={() => { setShowForm(true); setError(''); }}>
                     <Plus size={16} /> Nova Despesa
@@ -91,17 +94,17 @@ export default function ExpensesPage() {
 
             {/* Categorias */}
             {data && Object.keys(data.groupedByCategory).length > 0 && (
-                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 mb-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mb-8">
                     {Object.entries(data.groupedByCategory).map(([cat, val]) => (
-                        <div key={cat} className="card py-3 px-4">
-                            <div className="flex items-center gap-2 mb-1">
-                                <div className="w-2.5 h-2.5 rounded-full shrink-0"
+                        <div key={cat} className="card py-4 px-5">
+                            <div className="flex items-center gap-2 mb-2">
+                                <div className="w-3 h-3 rounded-full shrink-0 shadow-sm"
                                     style={{ background: CATEGORY_COLORS[cat] ?? '#9ca3af' }} />
-                                <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                <span className="text-xs font-bold uppercase tracking-wider" style={{ color: 'var(--text-secondary)' }}>
                                     {CATEGORY_LABELS[cat] ?? cat}
                                 </span>
                             </div>
-                            <p className="font-bold" style={{ color: CATEGORY_COLORS[cat] ?? '#9ca3af' }}>
+                            <p className="font-black text-xl tracking-tight" style={{ color: CATEGORY_COLORS[cat] ?? '#9ca3af' }}>
                                 R$ {val.toFixed(2)}
                             </p>
                         </div>
@@ -111,9 +114,9 @@ export default function ExpensesPage() {
 
             {/* Modal */}
             {showForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
-                    style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}>
-                    <div className="card w-full max-w-[440px] animate-fade-in">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center lg:pl-[230px] p-4" onClick={() => setShowForm(false)}>
+                    <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }} />
+                    <div className="card w-full max-w-[440px] max-h-[90vh] overflow-y-auto custom-scrollbar animate-fade-in z-10 shadow-2xl" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between mb-5">
                             <h2 className="font-bold">Registrar Despesa</h2>
                             <button onClick={() => setShowForm(false)}
@@ -173,18 +176,20 @@ export default function ExpensesPage() {
                             <div className="w-3 h-8 rounded-full shrink-0"
                                 style={{ background: CATEGORY_COLORS[exp.category] ?? '#9ca3af' }} />
                             <div className="flex-1">
-                                <p className="text-sm font-semibold">
+                                <p className="text-base font-bold">
                                     {CATEGORY_LABELS[exp.category] ?? exp.category}
                                 </p>
-                                {exp.description && (
-                                    <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>{exp.description}</p>
+                                {exp.description ? (
+                                    <p className="text-sm font-medium mt-1 opacity-60 text-white/50">{exp.description}</p>
+                                ) : (
+                                    <p className="text-sm font-medium mt-1 opacity-40 text-white/30 italic">Sem descrição adicional</p>
                                 )}
                             </div>
-                            <div className="text-right">
-                                <p className="font-bold" style={{ color: '#ef4444' }}>R$ {exp.amount.toFixed(2)}</p>
-                                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                            <div className="text-right flex flex-col items-end gap-1">
+                                <p className="font-black text-lg text-red-400">R$ {exp.amount.toFixed(2)}</p>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-white/30 bg-white/5 px-2 py-0.5 rounded-md">
                                     {new Date(exp.createdAt).toLocaleDateString('pt-BR')}
-                                </p>
+                                </span>
                             </div>
                         </div>
                     ))}

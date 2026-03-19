@@ -319,7 +319,7 @@ export default function CollaboratorsPage() {
             {showForm && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center lg:pl-[230px] p-4" onClick={() => setShowForm(false)}>
                     <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }} />
-                    <div className="card w-full max-w-[440px] animate-fade-in z-10 shadow-2xl" onClick={e => e.stopPropagation()}>
+                    <div className="card w-full max-w-[440px] max-h-[90vh] overflow-y-auto custom-scrollbar animate-fade-in z-10 shadow-2xl" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between mb-5">
                             <h2 className="font-bold">{isEditing ? 'Editar Colaborador' : 'Novo Colaborador'}</h2>
                             <button onClick={() => setShowForm(false)}

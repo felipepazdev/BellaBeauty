@@ -74,8 +74,8 @@ export default function CommissionsPage() {
     return (
         <div className="animate-fade-in w-full pb-16">
             <div className="mb-4">
-                <h1 className="text-2xl font-bold">Remunerações</h1>
-                <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
+                <h1 className="text-3xl font-black tracking-tight mb-2">Remunerações</h1>
+                <p className="text-sm mt-1 font-medium opacity-60 text-white/60">
                     {user?.role === 'PROFESSIONAL' ? 'Suas comissões detalhadas no mês' : 'Repasses pendentes e pagos por colaborador'}
                 </p>
             </div>
@@ -93,23 +93,23 @@ export default function CommissionsPage() {
 
             {/* KPIs Gerais */}
             {user?.role !== 'PROFESSIONAL' && (
-                <div className="grid grid-cols-2 gap-4 mb-8">
-                    <div className="card flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.12)' }}>
-                            <Clock size={20} style={{ color: '#f59e0b' }} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                    <div className="card flex items-center gap-5 p-5 border-l-4 border-l-[#f59e0b]">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(245,158,11,0.12)' }}>
+                            <Clock size={24} style={{ color: '#f59e0b' }} />
                         </div>
                         <div>
-                            <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Total Geral a Pagar</p>
-                            <p className="text-xl font-bold" style={{ color: '#f59e0b' }}>R$ {totalPending.toFixed(2)}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-[#f59e0b]/80 mb-1">Total a Pagar</p>
+                            <p className="text-2xl font-black" style={{ color: '#f59e0b' }}>R$ {totalPending.toFixed(2)}</p>
                         </div>
                     </div>
-                    <div className="card flex items-center gap-4">
-                        <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.12)' }}>
-                            <DollarSign size={20} style={{ color: '#22c55e' }} />
+                    <div className="card flex items-center gap-5 p-5 border-l-4 border-l-[#22c55e]">
+                        <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: 'rgba(34,197,94,0.12)' }}>
+                            <DollarSign size={24} style={{ color: '#22c55e' }} />
                         </div>
                         <div>
-                            <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Total Geral Já Pago</p>
-                            <p className="text-xl font-bold" style={{ color: '#22c55e' }}>R$ {totalPaid.toFixed(2)}</p>
+                            <p className="text-[10px] font-bold uppercase tracking-widest text-[#22c55e]/80 mb-1">Total Já Pago</p>
+                            <p className="text-2xl font-black" style={{ color: '#22c55e' }}>R$ {totalPaid.toFixed(2)}</p>
                         </div>
                     </div>
                 </div>
@@ -129,34 +129,36 @@ export default function CommissionsPage() {
                         <div key={group.professional.id} className="card p-0 overflow-hidden border" style={{ borderColor: 'var(--border)' }}>
                             
                             {/* Cabeçalho do Profissional */}
-                            <div className="p-4 flex items-center justify-between" style={{ background: 'var(--bg-document)', borderBottom: '1px solid var(--border)' }}>
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0"
+                            <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-6" style={{ background: 'var(--bg-document)', borderBottom: '1px solid var(--border)' }}>
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-full flex items-center justify-center font-black text-lg shrink-0"
                                         style={{ background: 'rgba(34,197,94,0.15)', color: '#22c55e' }}>
                                         {group.professional.name?.charAt(0).toUpperCase()}
                                     </div>
-                                    <div>
-                                        <h2 className="font-bold text-base">{group.professional.name}</h2>
-                                        <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+                                    <div className="flex flex-col">
+                                        <h2 className="font-black text-lg">{group.professional.name}</h2>
+                                        <p className="text-sm font-medium opacity-60 mt-0.5">
                                             {group.items.length} comissões registradas
                                         </p>
                                     </div>
                                 </div>
-                                <div className="flex flex-col items-end">
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>A pagar:</span>
-                                        <span className="font-bold text-sm" style={{ color: '#f59e0b' }}>R$ {group.totalPending.toFixed(2)}</span>
-                                    </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>Já pago:</span>
-                                        <span className="font-bold text-sm" style={{ color: '#22c55e' }}>R$ {group.totalPaid.toFixed(2)}</span>
+                                <div className="flex flex-col md:items-end gap-3">
+                                    <div className="flex items-center gap-4 border p-2 px-3 rounded-lg border-white/5 bg-white/5">
+                                        <div className="flex flex-col items-center border-r border-white/5 pr-4">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#f59e0b]/50 mb-0.5">A pagar</span>
+                                            <span className="font-black text-sm text-[#f59e0b]">R$ {group.totalPending.toFixed(2)}</span>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-[10px] font-bold uppercase tracking-widest text-[#22c55e]/50 mb-0.5">Já pago</span>
+                                            <span className="font-black text-sm text-[#22c55e]">R$ {group.totalPaid.toFixed(2)}</span>
+                                        </div>
                                     </div>
                                     <button 
                                         onClick={() => setSelectedProf({ name: group.professional.name, items: group.items })}
-                                        className="mt-3 text-xs font-semibold px-4 py-1.5 rounded-full"
-                                        style={{ background: 'var(--bg-document)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}
+                                        className="text-xs font-bold px-5 py-2 rounded-xl transition-colors hover:bg-white/10"
+                                        style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)' }}
                                     >
-                                        Ver Detalhamento
+                                        VER DETALHAMENTO
                                     </button>
                                 </div>
                             </div>

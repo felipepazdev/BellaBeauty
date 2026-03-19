@@ -319,9 +319,9 @@ export default function CollaboratorsPage() {
 
             {/* Modal */}
             {showForm && (
-                <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center lg:pl-[230px] p-4 overflow-y-auto" onClick={() => setShowForm(false)}>
-                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
-                    <div className="card w-full max-w-lg animate-zoom-in border border-white/5 relative z-10 p-8 bg-[#15121f]/95 my-8 sm:my-0 shadow-2xl rounded-3xl" onClick={e => e.stopPropagation()}>
+                <div className="fixed inset-0 z-[100] flex items-center justify-center lg:pl-[230px] p-4">
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowForm(false)} />
+                    <div className="card w-full max-w-lg animate-zoom-in border border-white/5 relative z-10 p-8 bg-[#15121f]/95 shadow-2xl rounded-[2rem] max-h-[90vh] overflow-y-auto custom-scrollbar flex flex-col" onClick={e => e.stopPropagation()}>
                         <div className="flex items-center justify-between mb-8 opacity-90">
                             <h2 className="text-2xl font-black uppercase tracking-widest text-white">
                                 {isEditing ? 'Editar Colaborador' : 'Novo Colaborador'}

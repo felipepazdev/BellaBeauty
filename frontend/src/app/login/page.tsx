@@ -78,8 +78,9 @@ export default function LoginPage() {
                                     {...register('email')}
                                     type="email"
                                     placeholder="seu@email.com"
-                                    className="input-field pl-9"
+                                    className="input-field"
                                     autoComplete="email"
+                                    style={{ paddingLeft: '40px' }}
                                 />
                             </div>
                             {errors.email && (
@@ -99,8 +100,9 @@ export default function LoginPage() {
                                     {...register('password')}
                                     type={showPass ? 'text' : 'password'}
                                     placeholder="••••••••"
-                                    className="input-field pl-9 pr-10"
+                                    className="input-field"
                                     autoComplete="current-password"
+                                    style={{ paddingLeft: '40px', paddingRight: '40px' }}
                                 />
                                 <button type="button" onClick={() => setShowPass(!showPass)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"

@@ -151,9 +151,9 @@ export default function LoginPage() {
                             <button 
                                 type="submit" 
                                 disabled={loading} 
-                                className="group relative w-full h-14 mt-4 overflow-hidden rounded-2xl bg-gradient-to-r from-[#d4af37] to-[#f3d06b] p-[1px] transition-all focus:ring-4 focus:ring-[#d4af37]/20 disabled:grayscale disabled:opacity-50"
+                                className="group relative w-full h-14 mt-4 overflow-hidden rounded-2xl bg-gradient-to-r from-[var(--accent-gold-deep)] to-[var(--accent-gold)] p-[1px] transition-all focus:ring-4 focus:ring-[var(--accent-gold)]/20 disabled:grayscale disabled:opacity-50"
                             >
-                                <div className="absolute inset-0 bg-gradient-to-r from-[#d4af37] to-[#f3d06b] transition-all group-hover:scale-105 group-active:scale-95" />
+                                <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent-gold-deep)] to-[var(--accent-gold)] transition-all group-hover:scale-105 group-active:scale-95" />
                                 <div className="relative flex items-center justify-center h-full w-full bg-[#14141e]/10 group-hover:bg-transparent transition-all rounded-[15px]">
                                     {loading ? (
                                         <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />

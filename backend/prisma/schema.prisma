@@ -23,6 +23,8 @@ model Salon {
   plan                  String                 @default("STANDARD")
   /// MONTHLY | QUARTERLY | YEARLY
   billingCycle          String                 @default("MONTHLY")
+  planStartedAt         DateTime?              @default(now())
+  planActiveUntil       DateTime?
   appointments          Appointment[]
   appointmentSlots      AppointmentSlot[]
   clients               Client[]

@@ -18,6 +18,8 @@ export class SettingsService {
     return {
       plan: salon.plan,
       billingCycle: salon.billingCycle,
+      planStartedAt: salon.planStartedAt,
+      planActiveUntil: salon.planActiveUntil,
       whatsappProvider: salon.whatsappProvider,
       whatsappToken: salon.whatsappToken,
       whatsappPhoneId: salon.whatsappPhoneId,
@@ -37,6 +39,8 @@ export class SettingsService {
       settings: {
         plan: salon.plan,
         billingCycle: salon.billingCycle,
+        planStartedAt: salon.planStartedAt,
+        planActiveUntil: salon.planActiveUntil,
         whatsappProvider: salon.whatsappProvider,
         whatsappToken: salon.whatsappToken,
         whatsappPhoneId: salon.whatsappPhoneId,
@@ -47,14 +51,28 @@ export class SettingsService {
   }
 
   async updatePlan(salonId: string, plan: string, billingCycle: string) {
+    const now = new Date();
+    let expiry = new Date();
+
+    if (billingCycle === 'MONTHLY') expiry.setMonth(now.getMonth() + 1);
+    else if (billingCycle === 'QUARTERLY') expiry.setMonth(now.getMonth() + 3);
+    else if (billingCycle === 'YEARLY') expiry.setFullYear(now.getFullYear() + 1);
+
     const salon = await this.prisma.salon.update({
       where: { id: salonId },
-      data: { plan, billingCycle },
+      data: { 
+        plan, 
+        billingCycle,
+        planStartedAt: now,
+        planActiveUntil: expiry
+      },
     });
     return {
       message: 'Plan updated successfully',
       plan: salon.plan,
       billingCycle: salon.billingCycle,
+      planStartedAt: salon.planStartedAt,
+      planActiveUntil: salon.planActiveUntil,
     };
   }
 }

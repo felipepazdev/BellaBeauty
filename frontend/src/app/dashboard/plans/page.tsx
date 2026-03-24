@@ -7,13 +7,14 @@ import { CreditCard, Check, Sparkles, Building2, MessageSquare, X } from 'lucide
 interface SettingsData {
     plan: string;
     billingCycle: string;
+    planStartedAt?: string;
+    planActiveUntil?: string;
 }
 
 export default function PlansPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
-    const [currentPlan, setCurrentPlan] = useState('');
-    const [currentCycle, setCurrentCycle] = useState('');
+    const [data, setData] = useState<SettingsData | null>(null);
     const [selectedCycle, setSelectedCycle] = useState('MONTHLY');
     const [success, setSuccess] = useState('');
 
@@ -21,8 +22,7 @@ export default function PlansPage() {
         setLoading(true);
         api.get('/settings')
             .then((r) => {
-                setCurrentPlan(r.data.plan || 'STANDARD');
-                setCurrentCycle(r.data.billingCycle || 'MONTHLY');
+                setData(r.data);
                 setSelectedCycle(r.data.billingCycle || 'MONTHLY');
             })
             .catch(console.error)
@@ -35,9 +35,8 @@ export default function PlansPage() {
         try {
             setSaving(true);
             setSuccess('');
-            await api.patch('/settings/plan', { plan, billingCycle: selectedCycle });
-            setCurrentPlan(plan);
-            setCurrentCycle(selectedCycle);
+            const res = await api.patch('/settings/plan', { plan, billingCycle: selectedCycle });
+            setData(prev => prev ? { ...prev, plan, billingCycle: selectedCycle, planStartedAt: res.data.planStartedAt, planActiveUntil: res.data.planActiveUntil } : null);
             setSuccess(`Plano ${plan === 'PREMIUM' ? 'Premium' : 'Standard'} ativado com sucesso!`);
             setTimeout(() => setSuccess(''), 4000);
         } catch (e) {
@@ -50,8 +49,12 @@ export default function PlansPage() {
 
     if (loading) {
         return (
-            <div className="flex justify-center py-16">
-                <span className="spinner" style={{ width: 32, height: 32, opacity: 0.5 }} />
+            <div className="flex flex-col items-center justify-center py-40 gap-6 text-center">
+                <div className="relative">
+                    <div className="w-16 h-16 border-2 border-purple-500/20 rounded-full animate-ping absolute inset-0" />
+                    <div className="w-16 h-16 border-2 border-t-purple-500 border-r-transparent border-b-purple-500 border-l-transparent rounded-full animate-spin relative z-10" />
+                </div>
+                <p className="text-sm font-serif italic text-slate-500 tracking-wide">Sincronizando seus dados de acesso...</p>
             </div>
         );
     }
@@ -64,152 +67,197 @@ export default function PlansPage() {
 
     const periodLabels = { MONTHLY: 'mês', QUARTERLY: 'trimestre', YEARLY: 'ano' };
 
+    const calculateRemainingDays = (expiry?: string) => {
+        if (!expiry) return 0;
+        const diff = new Date(expiry).getTime() - new Date().getTime();
+        return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
+    };
+
+    const remainingDays = calculateRemainingDays(data?.planActiveUntil);
+
     return (
-        <div className="animate-fade-in w-full max-w-5xl mx-auto">
-            <div className="flex flex-col items-center text-center mb-10">
-                <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center mb-4">
-                    <CreditCard className="text-white" size={24} />
-                </div>
-                <h1 className="text-[32px] leading-tight font-bold tracking-tight text-white mb-2">
-                    Escolha o plano ideal para o seu salão
-                </h1>
-                <p className="text-[15px] text-white/50 max-w-xl">
-                    Tenha o controle completo da sua barbearia ou salão com ferramentas profissionais e automatizações.
-                </p>
-            </div>
-
-            {success && (
-                <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-xl text-center mb-8 font-medium">
-                    {success}
-                </div>
-            )}
-
-            {/* Ciclo de Pagamento */}
-            <div className="flex justify-center mb-10">
-                <div className="bg-[#111116] border border-white/5 p-1 rounded-xl inline-flex relative">
-                    {['MONTHLY', 'QUARTERLY', 'YEARLY'].map((cycle) => (
-                        <button
-                            key={cycle}
-                            onClick={() => setSelectedCycle(cycle)}
-                            className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
-                                selectedCycle === cycle 
-                                    ? 'bg-white/10 text-white shadow-sm' 
-                                    : 'text-white/40 hover:text-white/80'
-                            }`}
-                        >
-                            {cycle === 'MONTHLY' && 'Mensal'}
-                            {cycle === 'QUARTERLY' && 'Trimestral (-10%)'}
-                            {cycle === 'YEARLY' && 'Anual (-15%)'}
-                        </button>
-                    ))}
-                </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start max-w-4xl mx-auto">
-                {/* Plano Standard */}
-                <div className="bg-[#111116] border border-white/5 rounded-3xl p-8 relative flex flex-col h-full hover:border-white/10 transition-colors">
-                    {currentPlan === 'STANDARD' && currentCycle === selectedCycle && (
-                        <div className="absolute top-0 right-8 transform -translate-y-1/2 bg-white/10 border border-white/20 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider backdrop-blur-md">
-                            Seu Plano Atual
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] w-full py-10 animate-fade-in">
+            <div className="w-full max-w-6xl space-y-12">
+                {/* ── Header ────────────────────────────────────────── */}
+                <div className="flex flex-col items-center text-center space-y-6">
+                    <div className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-purple-600 to-purple-500 p-[1px] shadow-2xl shadow-purple-600/20">
+                        <div className="w-full h-full rounded-[2.5rem] bg-[#0c0c10] flex items-center justify-center">
+                            <CreditCard className="text-purple-400" size={32} strokeWidth={1.5} />
                         </div>
-                    )}
-                    <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                        <Building2 size={24} className="text-white/50" />
-                        Standard
-                    </h2>
-                    <p className="text-sm text-white/50 mb-6 h-10">
-                        Essencial para o controle da sua agenda, finanças e profissionais.
-                    </p>
-                    <div className="mb-6">
-                        <span className="text-4xl font-extrabold text-white tracking-tight">
-                            R$ {prices[selectedCycle as keyof typeof prices].standard.toFixed(2).replace('.', ',')}
-                        </span>
-                        <span className="text-white/40 text-sm ml-1">/{periodLabels[selectedCycle as keyof typeof periodLabels]}</span>
+                    </div>
+                    
+                    <div className="space-y-4">
+                        <h1 className="text-5xl font-serif font-bold text-white tracking-tight">
+                            Escolha o plano ideal
+                        </h1>
+                        <p className="text-base text-slate-500 max-w-lg mx-auto font-medium">
+                            Tenha o controle completo da sua barbearia ou salão com ferramentas profissionais e automatizações de ponta.
+                        </p>
                     </div>
 
-                    <button
-                        onClick={() => handleSubscribe('STANDARD')}
-                        disabled={saving || (currentPlan === 'STANDARD' && currentCycle === selectedCycle)}
-                        className={`w-full py-3 rounded-xl font-semibold mb-8 transition-all ${
-                            currentPlan === 'STANDARD' && currentCycle === selectedCycle
-                                ? 'bg-white/5 text-white/40 cursor-not-allowed border border-white/5'
-                                : 'bg-white text-black hover:bg-white/90 shadow-lg hover:shadow-xl'
-                        }`}
-                    >
-                        {currentPlan === 'STANDARD' && currentCycle === selectedCycle ? 'Ativo' : 'Assinar Standard'}
-                    </button>
-
-                    <ul className="flex flex-col gap-4 text-sm text-white/70">
-                        <li className="flex items-start gap-3">
-                            <Check className="text-green-500 shrink-0" size={18} /> Gestão de Agenda e Agendamentos
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <Check className="text-green-500 shrink-0" size={18} /> Gestão de Profissionais e Comissões
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <Check className="text-green-500 shrink-0" size={18} /> Fluxo de Caixa e Despesas
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <Check className="text-green-500 shrink-0" size={18} /> Controle de Estoque de Produtos
-                        </li>
-                        <li className="flex items-start gap-3 opacity-30">
-                            <X className="shrink-0" size={18} /> Lembretes via WhatsApp 
-                        </li>
-                    </ul>
-                </div>
-
-                {/* Plano Premium */}
-                <div className="bg-gradient-to-b from-[#1c1c28] to-[#111116] border border-[#a78bfa]/30 rounded-3xl p-8 relative flex flex-col h-full shadow-[0_0_40px_rgba(124,58,237,0.1)] hover:shadow-[0_0_60px_rgba(124,58,237,0.15)] transition-shadow">
-                    {currentPlan === 'PREMIUM' && currentCycle === selectedCycle ? (
-                        <div className="absolute top-0 right-8 transform -translate-y-1/2 bg-[#7c3aed] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
-                            Seu Plano Atual
-                        </div>
-                    ) : (
-                        <div className="absolute top-0 right-8 transform -translate-y-1/2 bg-[#7c3aed] text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-lg">
-                            Recomendado
+                    {/* Infobar Subscription Status */}
+                    {data?.planActiveUntil && (
+                        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 animate-scale-in">
+                            <div className="px-6 py-4 rounded-[1.5rem] bg-white/[0.03] border border-white/5 backdrop-blur-md flex flex-col items-start gap-1">
+                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Assinado em</span>
+                                <span className="text-sm font-bold text-white">{new Date(data.planStartedAt!).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <div className="px-6 py-4 rounded-[1.5rem] bg-white/[0.03] border border-white/5 backdrop-blur-md flex flex-col items-start gap-1">
+                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Expira em</span>
+                                <span className="text-sm font-bold text-white">{new Date(data.planActiveUntil).toLocaleDateString('pt-BR')}</span>
+                            </div>
+                            <div className="px-6 py-4 rounded-[1.5rem] bg-purple-500/10 border border-purple-500/20 backdrop-blur-md flex flex-col items-start gap-1">
+                                <span className="text-[9px] font-black text-purple-400 uppercase tracking-widest">Tempo Restante</span>
+                                <span className="text-sm font-black text-white">{remainingDays} {remainingDays === 1 ? 'dia' : 'dias'}</span>
+                            </div>
                         </div>
                     )}
-                    <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                        <Sparkles size={24} className="text-[#a78bfa]" />
-                        Premium
-                    </h2>
-                    <p className="text-sm text-white/60 mb-6 h-10">
-                        Para negócios que querem reduzir as faltas usando notificações automáticas.
-                    </p>
-                    <div className="mb-6">
-                        <span className="text-4xl font-extrabold text-white tracking-tight">
-                            R$ {prices[selectedCycle as keyof typeof prices].premium.toFixed(2).replace('.', ',')}
-                        </span>
-                        <span className="text-white/40 text-sm ml-1">/{periodLabels[selectedCycle as keyof typeof periodLabels]}</span>
+                </div>
+
+                {success && (
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 p-5 rounded-2xl text-center font-bold text-xs uppercase tracking-widest animate-fade-in mx-auto max-w-2xl">
+                        {success}
+                    </div>
+                )}
+
+                {/* ── Toggle Ciclo ───────────────────────────────────── */}
+                <div className="flex justify-center">
+                    <div className="bg-[#0c0c10] border border-white/10 p-1.5 rounded-[1.8rem] flex relative shadow-2xl">
+                        {['MONTHLY', 'QUARTERLY', 'YEARLY'].map((cycle) => (
+                            <button
+                                key={cycle}
+                                onClick={() => setSelectedCycle(cycle)}
+                                className={`px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-500 ${
+                                    selectedCycle === cycle 
+                                        ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg shadow-purple-600/30' 
+                                        : 'text-slate-500 hover:text-white'
+                                }`}
+                            >
+                                {cycle === 'MONTHLY' && 'Mensal'}
+                                {cycle === 'QUARTERLY' && 'Trimestral (-10%)'}
+                                {cycle === 'YEARLY' && 'Anual (-15%)'}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* ── Plan Cards ────────────────────────────────────── */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
+                    {/* Plano Standard */}
+                    <div className={`relative group p-[1px] rounded-[3rem] transition-all duration-500 ${data?.plan === 'STANDARD' ? 'bg-gradient-to-b from-slate-400/20 to-transparent' : 'bg-white/5 hover:bg-white/10'}`}>
+                        <div className="bg-[#0c0c10] rounded-[3rem] p-10 h-full flex flex-col relative overflow-hidden">
+                            {data?.plan === 'STANDARD' && (
+                                <div className="absolute top-8 right-8 px-4 py-1.5 bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-full backdrop-blur-md">
+                                    Plano Ativo
+                                </div>
+                            )}
+                            
+                            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-8 border border-white/5">
+                                <Building2 size={24} className="text-slate-500" />
+                            </div>
+
+                            <h2 className="text-3xl font-serif font-bold text-white mb-2">Standard</h2>
+                            <p className="text-sm text-slate-500 mb-8 min-h-[40px] font-medium leading-relaxed">
+                                Essencial para o controle total da sua agenda, finanças e profissionais.
+                            </p>
+
+                            <div className="mb-10">
+                                <span className="text-5xl font-black text-white tracking-tighter font-mono">
+                                    R$ {prices[selectedCycle as keyof typeof prices].standard.toFixed(2).replace('.', ',')}
+                                </span>
+                                <span className="text-slate-600 text-[11px] font-black uppercase tracking-widest ml-3">/ {periodLabels[selectedCycle as keyof typeof periodLabels]}</span>
+                            </div>
+
+                            <button
+                                onClick={() => handleSubscribe('STANDARD')}
+                                disabled={saving || data?.plan === 'STANDARD'}
+                                className={`w-full py-5 rounded-[1.8rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl ${
+                                    data?.plan === 'STANDARD'
+                                        ? 'bg-white/5 text-slate-600 cursor-not-allowed border border-white/5'
+                                        : 'bg-white text-black hover:scale-[1.02] active:scale-95 shadow-white/5'
+                                }`}
+                            >
+                                {data?.plan === 'STANDARD' ? 'Plano Atual' : 'Assinar Agora'}
+                            </button>
+
+                            <div className="mt-12 space-y-5">
+                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 mb-2">O que está incluso:</p>
+                                <ul className="space-y-4">
+                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                        <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center"><Check size={12} className="text-emerald-500" /></div>
+                                        Agenda e Agendamentos
+                                    </li>
+                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                        <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center"><Check size={12} className="text-emerald-500" /></div>
+                                        Gestão de Profissionais e Comissões
+                                    </li>
+                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                        <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center"><Check size={12} className="text-emerald-500" /></div>
+                                        Fluxo de Caixa e Despesas
+                                    </li>
+                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400 opacity-30 grayscale">
+                                        <div className="w-5 h-5 rounded-full bg-slate-500/10 flex items-center justify-center"><X size={12} className="text-slate-500" /></div>
+                                        Lembretes de WhatsApp
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
-                    <button
-                        onClick={() => handleSubscribe('PREMIUM')}
-                        disabled={saving || (currentPlan === 'PREMIUM' && currentCycle === selectedCycle)}
-                        className={`w-full py-3 rounded-xl font-semibold mb-8 transition-all ${
-                            currentPlan === 'PREMIUM' && currentCycle === selectedCycle
-                                ? 'bg-white/5 text-white/40 cursor-not-allowed border border-[#7c3aed]/30'
-                                : 'bg-[#7c3aed] hover:bg-[#6d28d9] text-white shadow-[0_0_20px_rgba(124,58,237,0.4)] hover:shadow-[0_0_30px_rgba(124,58,237,0.6)] border border-[#a78bfa]/50'
-                        }`}
-                    >
-                        {currentPlan === 'PREMIUM' && currentCycle === selectedCycle ? 'Ativo' : 'Assinar Premium'}
-                    </button>
+                    {/* Plano Premium */}
+                    <div className={`relative group p-[1.5px] rounded-[3rem] transition-all duration-500 ${data?.plan === 'PREMIUM' ? 'bg-gradient-to-b from-purple-500 to-transparent shadow-[0_30px_100px_rgba(124,58,237,0.1)]' : 'bg-white/5 hover:bg-white/10'}`}>
+                        <div className="bg-[#0c0c10] rounded-[3rem] p-10 h-full flex flex-col relative overflow-hidden">
+                            <div className="absolute top-8 right-8 px-4 py-1.5 bg-purple-600 text-[10px] font-black text-white uppercase tracking-widest rounded-full shadow-lg shadow-purple-600/30">
+                                {data?.plan === 'PREMIUM' ? 'Plano Ativo' : 'Recomendado'}
+                            </div>
 
-                    <ul className="flex flex-col gap-4 text-sm text-white/80 border-t border-white/10 pt-6 mt-auto">
-                        <li className="flex items-start gap-3 font-medium text-white">
-                            <Check className="text-[#a78bfa] shrink-0" size={18} /> <span className="flex-1">Tudo do plano Standard, <span className="font-bold underline decoration-[#a78bfa]/50 underline-offset-4">mais:</span></span>
-                        </li>
-                        <li className="flex items-start gap-3 text-white">
-                            <span className="bg-[#a78bfa]/20 p-1 rounded-full shrink-0"><MessageSquare size={14} className="text-[#a78bfa]" /></span>
-                            <span className="font-medium">Lembretes Automáticos de WhatsApp (24h e 2h antes)</span>
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <Check className="text-[#a78bfa] shrink-0" size={18} /> Uso de Evolution API ou API Oficial
-                        </li>
-                        <li className="flex items-start gap-3">
-                            <Check className="text-[#a78bfa] shrink-0" size={18} /> Mensagens 100% personalizáveis
-                        </li>
-                    </ul>
+                            <div className="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-8 border border-purple-500/10">
+                                <Sparkles size={24} className="text-purple-400" />
+                            </div>
+
+                            <h2 className="text-3xl font-serif font-bold text-white mb-2">Premium</h2>
+                            <p className="text-sm text-slate-500 mb-8 min-h-[40px] font-medium leading-relaxed">
+                                Para negócios que buscam excelência e zero faltas com notificações inteligentes.
+                            </p>
+
+                            <div className="mb-10">
+                                <span className="text-5xl font-black text-white tracking-tighter font-mono">
+                                    R$ {prices[selectedCycle as keyof typeof prices].premium.toFixed(2).replace('.', ',')}
+                                </span>
+                                <span className="text-slate-600 text-[11px] font-black uppercase tracking-widest ml-3">/ {periodLabels[selectedCycle as keyof typeof periodLabels]}</span>
+                            </div>
+
+                            <button
+                                onClick={() => handleSubscribe('PREMIUM')}
+                                disabled={saving || data?.plan === 'PREMIUM'}
+                                className={`w-full py-5 rounded-[1.8rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl ${
+                                    data?.plan === 'PREMIUM'
+                                        ? 'bg-purple-500/5 text-purple-400/50 cursor-not-allowed border border-purple-500/10'
+                                        : 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:scale-[1.02] active:scale-95 shadow-purple-600/30'
+                                }`}
+                            >
+                                {data?.plan === 'PREMIUM' ? 'Plano Atual' : 'Upgrade para Premium'}
+                            </button>
+
+                            <div className="mt-12 space-y-6 pt-10 border-t border-white/5">
+                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 mb-2">Inclui Standard e MAIS:</p>
+                                <ul className="space-y-4">
+                                    <li className="flex items-center gap-4">
+                                        <div className="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center"><MessageSquare size={16} className="text-purple-400" /></div>
+                                        <span className="text-sm font-bold text-white tracking-tight">Lembretes WhatsApp (24h e 2h)</span>
+                                    </li>
+                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                        <div className="w-5 h-5 rounded-full bg-purple-500/10 flex items-center justify-center"><Check size={12} className="text-purple-400" /></div>
+                                        WhatsApp via Evolution ou API Oficial
+                                    </li>
+                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                        <div className="w-5 h-5 rounded-full bg-purple-500/10 flex items-center justify-center"><Check size={12} className="text-purple-400" /></div>
+                                        Mensagens 100% Personalizáveis
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

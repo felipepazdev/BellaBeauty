@@ -7,39 +7,57 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 :root {
-    /* Cores Premium */
-    --bg-base: #060608;
-    --bg-surface: #0e0e14;
-    --bg-card: rgba(20, 20, 30, 0.45);
-    --bg-card-hover: rgba(28, 28, 42, 0.65);
+    /* Cores Light (Padrão) */
+    --bg-base: #f8fafc;
+    --bg-surface: #ffffff;
+    --bg-card: rgba(255, 255, 255, 0.8);
+    --bg-card-hover: rgba(255, 255, 255, 1);
     
     /* Bordas e Acentos */
-    --border: rgba(255, 255, 255, 0.06);
-    --border-hover: rgba(139, 92, 246, 0.25);
+    --border: rgba(0, 0, 0, 0.08);
+    --border-hover: rgba(139, 92, 246, 0.2);
     --border-accent: #8b5cf6;
     
     /* Cores de Marca */
     --accent: #8b5cf6;
     --accent-deep: #6d28d9;
     --accent-gold: #d4af37;
-    --accent-glow: rgba(139, 92, 246, 0.15);
+    --accent-glow: rgba(139, 92, 246, 0.1);
     
     /* Tipografia */
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --text-muted: #475569;
-    --text-gold: #e2b84a;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --text-gold: #b45309;
 
-    /* Status (Pastel desaturado) */
+    /* Status */
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
     --info: #0ea5e9;
 
-    /* Spacing Units */
+    /* Spacing & Radius */
     --p-card: 1.5rem;
     --radius-card: 20px;
     --radius-input: 12px;
+}
+
+.dark {
+    /* Cores Dark Premium (Originais) */
+    --bg-base: #060608;
+    --bg-surface: #0e0e14;
+    --bg-card: rgba(20, 20, 30, 0.45);
+    --bg-card-hover: rgba(28, 28, 42, 0.65);
+    
+    --border: rgba(255, 255, 255, 0.06);
+    --border-hover: rgba(139, 92, 246, 0.25);
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+    --text-muted: #475569;
+    --text-gold: #e2b84a;
+
+    --accent-glow: rgba(139, 92, 246, 0.15);
 }
 
 * {

@@ -33,20 +33,20 @@ function StatCard({ icon: Icon, label, value, color, sub }: {
     sub?: string;
 }) {
     return (
-        <div className="card flex items-center gap-5 group">
+        <div className="card flex items-center gap-5 group bg-[var(--bg-surface)] border border-[var(--border)] p-6 rounded-[2rem]">
             <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
                 style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
                 <Icon size={24} style={{ color }} />
             </div>
             <div className="min-w-0">
-                <p className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-1">
+                <p className="text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase mb-1">
                     {label}
                 </p>
-                <p className="text-2xl font-serif font-bold tracking-tight text-white leading-none">
+                <p className="text-2xl font-serif font-bold tracking-tight text-[var(--text-primary)] leading-none">
                     {value}
                 </p>
                 {sub && (
-                    <p className="text-[11px] text-slate-500 mt-2 font-medium">{sub}</p>
+                    <p className="text-[11px] text-[var(--text-muted)] mt-2 font-medium">{sub}</p>
                 )}
             </div>
         </div>
@@ -100,28 +100,28 @@ export default function DashboardPage() {
             {/* ── Header ──────────────────────────────────────────── */}
             <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
                 <div>
-                    <h1 className="text-3xl font-serif font-bold tracking-tight text-white mb-2">
+                    <h1 className="text-3xl font-serif font-bold tracking-tight text-[var(--text-primary)] mb-2">
                         {greeting()}, {user?.name?.split(' ')[0]} 👋
                     </h1>
-                    <p className="text-sm font-medium text-slate-400">
+                    <p className="text-sm font-medium text-[var(--text-secondary)]">
                         {user?.role === 'ADMIN' ? 'Visão geral da sua operação premium' : 'Seu resumo de atividades e performance'}
                     </p>
                 </div>
 
                 {/* Seletor de mês */}
-                <div className="flex items-center gap-2 p-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                    <button onClick={() => changeMonth(-1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                <div className="flex items-center gap-2 p-2 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] backdrop-blur-md">
+                    <button onClick={() => changeMonth(-1)} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] rounded-xl transition-all">
                         <ChevronLeft size={18} />
                     </button>
                     
                     <div className="flex items-center gap-3 px-4 min-w-[160px] justify-center">
                         <CalendarDays size={16} className="text-[#8b5cf6]" />
-                        <span className="text-sm font-bold tracking-wide text-white">
+                        <span className="text-sm font-bold tracking-wide text-[var(--text-primary)]">
                             {MONTHS[month - 1].toUpperCase()} {year}
                         </span>
                     </div>
 
-                    <button onClick={() => changeMonth(1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                    <button onClick={() => changeMonth(1)} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-card-hover)] rounded-xl transition-all">
                         <ChevronRight size={18} />
                     </button>
                 </div>
@@ -157,17 +157,17 @@ export default function DashboardPage() {
                     <div className="charts-grid mt-4">
 
                         {/* Top Serviços */}
-                        <div className="card !p-8">
+                        <div className="card !p-8 bg-[var(--bg-surface)] border border-[var(--border)] rounded-[2rem]">
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-[#8b5cf6]">
                                         <Scissors size={18} strokeWidth={2} />
                                     </div>
-                                    <h2 className="text-base font-serif font-bold tracking-wide text-white/90">
+                                    <h2 className="text-base font-serif font-bold tracking-wide text-[var(--text-primary)]">
                                         {isProfessional ? 'Serviços Prestados' : 'Top Performance de Serviços'}
                                     </h2>
                                 </div>
-                                <BarChart2 size={16} className="text-slate-600" />
+                                <BarChart2 size={16} className="text-[var(--text-muted)]" />
                             </div>
                             
                             {!data?.topServices.length ? (
@@ -178,12 +178,18 @@ export default function DashboardPage() {
                             ) : (
                                 <ResponsiveContainer width="100%" height={220}>
                                     <BarChart data={data.topServices} layout="vertical" margin={{ top: 0, right: 30, bottom: 0, left: 10 }}>
-                                        <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.03)" horizontal={false} />
+                                        <CartesianGrid strokeDasharray="4 4" stroke="var(--border)" horizontal={false} />
                                         <XAxis type="number" hide />
-                                        <YAxis dataKey="service" type="category" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} width={100} axisLine={false} tickLine={false} />
+                                        <YAxis dataKey="service" type="category" tick={{ fill: 'var(--text-muted)', fontSize: 11, fontWeight: 500 }} width={100} axisLine={false} tickLine={false} />
                                         <Tooltip 
-                                            cursor={{ fill: 'rgba(255,255,255,0.03)' }}
-                                            contentStyle={{ background: '#0e0e14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
+                                            cursor={{ fill: 'var(--bg-card)' }}
+                                            contentStyle={{ 
+                                                background: 'var(--bg-surface)', 
+                                                border: '1px solid var(--border)', 
+                                                borderRadius: '12px', 
+                                                color: 'var(--text-primary)' 
+                                            }}
+                                            itemStyle={{ color: 'var(--text-primary)' }}
                                         />
                                         <Bar dataKey="count" fill="url(#barGradient)" radius={[0, 4, 4, 0]} barSize={20}>
                                             <defs>
@@ -199,17 +205,17 @@ export default function DashboardPage() {
                         </div>
 
                         {/* Top Clientes */}
-                        <div className="card !p-8">
+                        <div className="card !p-8 bg-[var(--bg-surface)] border border-[var(--border)] rounded-[2rem]">
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-[#0ea5e9]">
                                         <Users size={18} strokeWidth={2} />
                                     </div>
-                                    <h2 className="text-base font-serif font-bold tracking-wide text-white/90">
+                                    <h2 className="text-base font-serif font-bold tracking-wide text-[var(--text-primary)]">
                                         {isProfessional ? 'Fidelidade de Clientes' : 'Top Clientes do Mês'}
                                     </h2>
                                 </div>
-                                <Star size={16} className="text-slate-600" />
+                                <Star size={16} className="text-[var(--text-muted)]" />
                             </div>
 
                             {!data?.topClients.length ? (
@@ -220,13 +226,13 @@ export default function DashboardPage() {
                             ) : (
                                 <div className="space-y-4">
                                     {data.topClients.map((c, i) => (
-                                        <div key={c.name} className="group/item flex items-center gap-4 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] transition-all duration-300">
-                                            <div className="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-[11px] font-bold text-slate-400 group-hover/item:text-white transition-colors"
+                                        <div key={c.name} className="group/item flex items-center gap-4 p-3 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--bg-card-hover)] transition-all duration-300">
+                                            <div className="w-8 h-8 rounded-full border border-[var(--border)] flex items-center justify-center text-[11px] font-bold text-[var(--text-muted)] group-hover/item:text-[var(--text-primary)] transition-colors"
                                                  style={{ backgroundColor: `${COLORS[i]}15` }}>
                                                 0{i + 1}
                                             </div>
                                             <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-semibold text-white/80 truncate group-hover/item:text-white transition-colors capitalize">
+                                                <p className="text-sm font-semibold text-[var(--text-secondary)] truncate group-hover/item:text-[var(--text-primary)] transition-colors capitalize">
                                                     {c.name.toLowerCase()}
                                                 </p>
                                             </div>
@@ -244,17 +250,17 @@ export default function DashboardPage() {
 
                     {/* ── Ranking ───────────────────────────────────── */}
                     {!isProfessional && data?.topProfessionals && data.topProfessionals.length > 0 && (
-                        <div className="card !p-8 mt-4">
+                        <div className="card !p-8 mt-4 bg-[var(--bg-surface)] border border-[var(--border)] rounded-[2rem]">
                             <div className="flex items-center justify-between mb-10">
                                 <div className="flex items-center gap-3">
                                     <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-[#f59e0b]">
                                         <Award size={18} strokeWidth={2} />
                                     </div>
-                                    <h2 className="text-base font-serif font-bold tracking-wide text-white/90">
+                                    <h2 className="text-base font-serif font-bold tracking-wide text-[var(--text-primary)]">
                                         🏆 Performance por Colaborador
                                     </h2>
                                 </div>
-                                <span className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                                <span className="text-[10px] font-bold tracking-widest text-[var(--text-muted)] uppercase">
                                     {isAdmin ? 'Métricas de Venda / Serviço' : 'Volume de Atendimentos'}
                                 </span>
                             </div>
@@ -264,28 +270,28 @@ export default function DashboardPage() {
                                     <div key={p.professional} 
                                         className={`
                                             flex flex-col items-center text-center p-6 rounded-[24px] border transition-all duration-300 group
-                                            ${i === 0 ? 'bg-amber-500/[0.03] border-amber-500/20 shadow-lg shadow-amber-500/5' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}
+                                            ${i === 0 ? 'bg-amber-500/[0.03] border-amber-500/20 shadow-lg shadow-amber-500/5' : 'bg-[var(--bg-card)] border-[var(--border)] hover:border-[var(--accent)]/30'}
                                         `}
                                     >
                                         <div className={`
                                             w-14 h-14 rounded-full flex items-center justify-center text-xl mb-4 shadow-inner
-                                            ${i === 0 ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' : 'bg-slate-800/50 text-slate-400 border border-white/10'}
+                                            ${i === 0 ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' : 'bg-[var(--bg-base)] text-[var(--text-muted)] border border-[var(--border)]'}
                                         `}>
                                             {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
                                         </div>
-                                        <p className="text-sm font-bold text-white mb-1 capitalize leading-tight group-hover:text-[#8b5cf6] transition-colors">
+                                        <p className="text-sm font-bold text-[var(--text-primary)] mb-1 capitalize leading-tight group-hover:text-[#8b5cf6] transition-colors">
                                             {p.professional.toLowerCase()}
                                         </p>
                                         <div className="flex items-center gap-2 mb-3">
                                             <div className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
-                                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">
+                                            <p className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-tighter">
                                                 {p.count} Atendimentos
                                             </p>
                                         </div>
                                         {isAdmin && p.revenue !== undefined && (
-                                            <div className="mt-auto pt-4 border-t border-white/5 w-full">
-                                                <p className="text-xs text-slate-500 mb-1">Faturamento</p>
-                                                <p className="text-sm font-bold text-white">
+                                            <div className="mt-auto pt-4 border-t border-[var(--border)] w-full">
+                                                <p className="text-xs text-[var(--text-muted)] mb-1">Faturamento</p>
+                                                <p className="text-sm font-bold text-[var(--text-primary)]">
                                                     R$ {p.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                 </p>
                                             </div>

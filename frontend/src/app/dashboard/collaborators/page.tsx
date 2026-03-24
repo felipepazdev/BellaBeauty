@@ -179,31 +179,31 @@ export default function CollaboratorsPage() {
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
                 <div className="flex items-center gap-6">
                     <div>
-                        <h1 className="text-[28px] leading-tight font-semibold tracking-tight text-white mb-1">Colaboradores</h1>
-                        <p className="text-[14px] text-white/50">{collaborators.length} colaboradores cadastrados na equipe.</p>
+                        <h1 className="text-[28px] leading-tight font-semibold tracking-tight text-[var(--text-primary)] mb-1">Colaboradores</h1>
+                        <p className="text-[14px] text-[var(--text-secondary)]">{collaborators.length} colaboradores cadastrados na equipe.</p>
                     </div>
 
                     {/* Status Toggle Dropdown */}
                     <div className="relative ml-4">
                         <button 
                             onClick={(e) => { e.stopPropagation(); setDropdownOpen(!dropdownOpen); }}
-                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-sm font-semibold"
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--bg-card)] border border-[var(--border)] hover:bg-[var(--bg-card-hover)] transition-all text-sm font-semibold text-[var(--text-primary)]"
                         >
                             {statusFilter === 'active' ? 'Ativos' : 'Excluídos'}
                             <MoreHorizontal size={14} className="opacity-40" />
                         </button>
 
                         {dropdownOpen && (
-                            <div className="absolute top-full left-0 mt-2 w-40 bg-[#1a1628] border border-white/10 rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                            <div className="absolute top-full left-0 mt-2 w-40 bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl shadow-2xl z-50 overflow-hidden animate-in fade-in slide-in-from-top-2">
                                 <button 
                                     onClick={() => toggleStatus('active')}
-                                    className={`w-full text-left px-4 py-3 text-sm hover:bg-white/5 transition-colors ${statusFilter === 'active' ? 'text-white font-bold bg-white/5' : 'text-white/40'}`}
+                                    className={`w-full text-left px-4 py-3 text-sm hover:bg-[var(--accent)]/5 transition-colors ${statusFilter === 'active' ? 'text-[var(--text-primary)] font-bold bg-[var(--accent)]/5' : 'text-[var(--text-secondary)]'}`}
                                 >
                                     Ativos
                                 </button>
                                 <button 
                                     onClick={() => toggleStatus('inactive')}
-                                    className={`w-full text-left px-4 py-3 text-sm hover:bg-white/5 transition-colors ${statusFilter === 'inactive' ? 'text-white font-bold bg-white/5' : 'text-white/40'}`}
+                                    className={`w-full text-left px-4 py-3 text-sm hover:bg-[var(--accent)]/5 transition-colors ${statusFilter === 'inactive' ? 'text-[var(--text-primary)] font-bold bg-[var(--accent)]/5' : 'text-[var(--text-secondary)]'}`}
                                 >
                                     Excluídos
                                 </button>
@@ -211,7 +211,7 @@ export default function CollaboratorsPage() {
                         )}
                     </div>
                 </div>
-                <button className="flex items-center gap-2 px-5 py-2.5 bg-white text-black font-semibold text-[14px] rounded-lg hover:bg-white/90 transition-colors shadow-sm whitespace-nowrap" onClick={openNew}>
+                <button className="flex items-center gap-2 px-5 py-2.5 bg-[var(--text-primary)] text-[var(--bg-base)] font-semibold text-[14px] rounded-lg hover:opacity-90 transition-all shadow-sm whitespace-nowrap" onClick={openNew}>
                     <Plus size={16} /> Novo Colaborador
                 </button>
             </div>
@@ -234,17 +234,17 @@ export default function CollaboratorsPage() {
                                 if (roleType === 'PROFESSIONAL') {
                                     return (
                                         <div key={roleType} className="flex flex-col gap-4">
-                                            <h2 className="text-[14px] font-bold uppercase tracking-widest text-white/40 mb-2 mt-4">Profissionais</h2>
+                                            <h2 className="text-[14px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-2 mt-4">Profissionais</h2>
                                             <div className="flex flex-col gap-3">
                                                 {usersOfRole.map((c) => (
                                                     <div key={c.id} onClick={() => { setSelectedCollaborator(c); setActiveTab('PROFILE'); }}
-                                                        className="bg-[#111116] border border-white/5 rounded-2xl flex items-center gap-5 p-5 hover:border-[var(--accent-light)] hover:bg-[#15151e] transition-all cursor-pointer group">
-                                                        <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-white/5 text-white shadow-inner">
+                                                        className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl flex items-center gap-5 p-5 hover:border-[var(--accent)]/30 hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer group">
+                                                        <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-[var(--bg-card)] text-[var(--text-primary)] shadow-inner">
                                                             {c.name.charAt(0).toUpperCase()}
                                                         </div>
                                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                                            <p className="font-semibold text-[16px] text-white tracking-tight leading-none mb-1.5">{c.name}</p>
-                                                            <p className="text-[13px] text-white/40 leading-none">{c.email}</p>
+                                                            <p className="font-semibold text-[16px] text-[var(--text-primary)] tracking-tight leading-none mb-1.5">{c.name}</p>
+                                                            <p className="text-[13px] text-[var(--text-secondary)] leading-none">{c.email}</p>
                                                         </div>
                                                         <div className="flex items-center gap-3">
                                                             <span className={`badge ${ROLE_CLS[c.role] ?? 'badge-gray'} !px-3 !py-1 !text-[11px]`}>
@@ -253,13 +253,13 @@ export default function CollaboratorsPage() {
                                                             <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                                                                 <button 
                                                                     onClick={(e) => { e.stopPropagation(); handleEdit(c); }} 
-                                                                    className="p-2 rounded-lg hover:bg-white/10 text-white/40 transition-colors hover:text-white"
+                                                                    className="p-2 rounded-lg hover:bg-[var(--bg-card-hover)] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
                                                                 >
                                                                     <Edit2 size={16} />
                                                                 </button>
                                                                 <button 
                                                                     onClick={(e) => { e.stopPropagation(); handleDelete(c.id, c.name); }} 
-                                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-white/40 transition-colors hover:text-red-400"
+                                                                    className="p-2 rounded-lg hover:bg-red-500/10 text-[var(--text-muted)] transition-colors hover:text-[var(--danger)]"
                                                                 >
                                                                     <Trash2 size={16} />
                                                                 </button>
@@ -275,17 +275,17 @@ export default function CollaboratorsPage() {
                                 // Admins or Managers
                                 return (
                                     <div key={roleType} className="flex flex-col gap-4">
-                                        <h2 className="text-[14px] font-bold uppercase tracking-widest text-white/40 mb-2 mt-4">{ROLE_LABELS[roleType]}s</h2>
+                                        <h2 className="text-[14px] font-bold uppercase tracking-widest text-[var(--text-muted)] mb-2 mt-4">{ROLE_LABELS[roleType]}s</h2>
                                         <div className="flex flex-col gap-3">
                                             {usersOfRole.map((c) => (
                                                 <div key={c.id} onClick={() => { setSelectedCollaborator(c); setActiveTab('PROFILE'); }}
-                                                    className="bg-[#111116] border border-white/5 rounded-2xl flex items-center gap-5 p-5 hover:border-[var(--accent-light)] hover:bg-[#15151e] transition-all cursor-pointer group">
-                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-[var(--accent-light)]/10 text-[var(--accent-light)] shadow-inner border border-[var(--accent-light)]/20">
+                                                    className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl flex items-center gap-5 p-5 hover:border-[var(--accent)]/30 hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer group">
+                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-[var(--accent)]/10 text-[var(--accent)] shadow-inner border border-[var(--accent)]/20">
                                                         {c.name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                                        <p className="font-semibold text-[16px] text-white tracking-tight leading-none mb-1.5">{c.name}</p>
-                                                        <p className="text-[13px] text-white/40 leading-none">{c.email}</p>
+                                                        <p className="font-semibold text-[16px] text-[var(--text-primary)] tracking-tight leading-none mb-1.5">{c.name}</p>
+                                                        <p className="text-[13px] text-[var(--text-secondary)] leading-none">{c.email}</p>
                                                     </div>
                                                     <div className="flex items-center gap-3">
                                                         <span className={`badge ${ROLE_CLS[c.role] ?? 'badge-gray'} !px-3 !py-1 !text-[11px]`}>
@@ -294,13 +294,13 @@ export default function CollaboratorsPage() {
                                                         <div className="flex items-center gap-1 opacity-100 md:opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <button 
                                                                 onClick={(e) => { e.stopPropagation(); handleEdit(c); }} 
-                                                                className="p-2 rounded-lg hover:bg-white/10 text-white/40 transition-colors hover:text-white"
+                                                                className="p-2 rounded-lg hover:bg-[var(--bg-card-hover)] text-[var(--text-muted)] transition-colors hover:text-[var(--text-primary)]"
                                                             >
                                                                 <Edit2 size={16} />
                                                             </button>
                                                             <button 
                                                                 onClick={(e) => { e.stopPropagation(); handleDelete(c.id, c.name); }} 
-                                                                className="p-2 rounded-lg hover:bg-red-500/10 text-white/40 transition-colors hover:text-red-400"
+                                                                className="p-2 rounded-lg hover:bg-red-500/10 text-[var(--text-muted)] transition-colors hover:text-[var(--danger)]"
                                                             >
                                                                 <Trash2 size={16} />
                                                             </button>
@@ -321,23 +321,23 @@ export default function CollaboratorsPage() {
             {showForm && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setShowForm(false)}>
                     <div 
-                        className="w-full max-w-lg lg:ml-[230px] bg-[#15151e] border border-white/5 p-8 rounded-[2rem] shadow-2xl animate-scale-in relative max-h-[90vh] overflow-y-auto custom-scrollbar"
+                        className="w-full max-w-lg lg:ml-[230px] bg-[var(--bg-surface)] border border-[var(--border)] p-8 rounded-[2rem] shadow-2xl animate-scale-in relative max-h-[90vh] overflow-y-auto custom-scrollbar"
                         onClick={e => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-2xl font-black uppercase tracking-widest text-white">
+                            <h2 className="text-2xl font-black uppercase tracking-widest text-[var(--text-primary)]">
                                 {isEditing ? 'Editar Colaborador' : 'Novo Colaborador'}
                             </h2>
-                            <button onClick={() => setShowForm(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white/40 hover:text-white transition-colors">
+                            <button onClick={() => setShowForm(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-[var(--bg-card)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
                                 <X size={20} />
                             </button>
                         </div>
 
                         <div className="space-y-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Nome completo *</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] ml-1">Nome completo *</label>
                                 <input 
-                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                    className="w-full h-14 bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl px-5 text-[14px] font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-all"
                                     placeholder="Ex: Maria Antonieta"
                                     value={form.name}
                                     onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -345,10 +345,10 @@ export default function CollaboratorsPage() {
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">E-mail de acesso *</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] ml-1">E-mail de acesso *</label>
                                 <input 
                                     type="email"
-                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                    className="w-full h-14 bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl px-5 text-[14px] font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-all"
                                     placeholder="email@exemplo.com"
                                     value={form.email}
                                     onChange={(e) => setForm({ ...form, email: e.target.value })}
@@ -357,10 +357,10 @@ export default function CollaboratorsPage() {
 
                             {!isEditing && (
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Senha de acesso *</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] ml-1">Senha de acesso *</label>
                                     <input 
                                         type="password"
-                                        className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                        className="w-full h-14 bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl px-5 text-[14px] font-bold text-[var(--text-primary)] focus:outline-none focus:border-[var(--accent)] transition-all"
                                         placeholder="Mínimo 6 caracteres"
                                         value={form.password}
                                         onChange={(e) => setForm({ ...form, password: e.target.value })}
@@ -369,16 +369,16 @@ export default function CollaboratorsPage() {
                             )}
 
                             <div className="space-y-2">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Função do colaborador</label>
+                                <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] ml-1">Função do colaborador</label>
                                 <select 
                                     value={form.role}
                                     onChange={(e) => setForm({ ...form, role: e.target.value })}
                                     disabled={isEditing}
-                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white appearance-none focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                    className="w-full h-14 bg-[var(--bg-card)] border border-[var(--border)] rounded-2xl px-5 text-[14px] font-bold text-[var(--text-primary)] appearance-none focus:outline-none focus:border-[var(--accent)] transition-all"
                                 >
-                                    <option value="PROFESSIONAL" className="bg-[#1a1628]">Profissional</option>
-                                    <option value="MANAGER" className="bg-[#1a1628]">Gerente</option>
-                                    <option value="ADMIN" className="bg-[#1a1628]">Administrador</option>
+                                    <option value="PROFESSIONAL" className="bg-[var(--bg-surface)]">Profissional</option>
+                                    <option value="MANAGER" className="bg-[var(--bg-surface)]">Gerente</option>
+                                    <option value="ADMIN" className="bg-[var(--bg-surface)]">Administrador</option>
                                 </select>
                             </div>
 

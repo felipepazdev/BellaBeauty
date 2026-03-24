@@ -9,10 +9,14 @@ export const metadata: Metadata = {
     description: 'Sistema de gestão profissional para salões de beleza',
 };
 
+import { Providers } from './providers';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="pt-BR" className={inter.variable}>
-            <body className="bg-[#0f0f13] text-white antialiased">{children}</body>
+        <html lang="pt-BR" className={inter.variable} suppressHydrationWarning>
+            <body className="antialiased font-sans">
+                <Providers>{children}</Providers>
+            </body>
         </html>
     );
 }

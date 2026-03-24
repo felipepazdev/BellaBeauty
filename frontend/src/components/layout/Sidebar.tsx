@@ -62,6 +62,8 @@ const roleColor: Record<string, string> = {
     PROFESSIONAL: '#22c55e',
 };
 
+import { ThemeToggle } from './ThemeToggle';
+
 function NavContent({ onClose }: { onClose?: () => void }) {
     const pathname = usePathname();
     const router = useRouter();
@@ -88,21 +90,24 @@ function NavContent({ onClose }: { onClose?: () => void }) {
         <div className="flex flex-col h-full">
 
             {/* ── Logo ─────────────────────────────────────── */}
-            <div className="flex items-center justify-between px-8 py-10 border-b border-white/5">
+            <div className="flex items-center justify-between px-8 py-10 border-b border-[var(--border)]">
                 <div className="flex items-center gap-5">
                     <div className="w-11 h-11 rounded-[1.25rem] bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
                         <Scissors size={22} color="#fff" strokeWidth={2} />
                     </div>
                     <div>
-                        <p className="text-xl font-serif font-bold tracking-tight text-white leading-tight">Bella Beauty</p>
-                        <p className="text-[10px] font-bold tracking-[0.2em] text-[#8b5cf6] uppercase mt-1">Premium Spa</p>
+                        <p className="text-xl font-serif font-bold tracking-tight text-[var(--text-primary)] leading-tight">Bella Beauty</p>
+                        <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--accent)] uppercase mt-1">Premium Spa</p>
                     </div>
                 </div>
-                {onClose && (
-                    <button onClick={onClose} className="p-2 text-slate-500 hover:text-white transition-colors lg:hidden">
-                        <X size={20} />
-                    </button>
-                )}
+                <div className="flex items-center gap-2">
+                    <ThemeToggle />
+                    {onClose && (
+                        <button onClick={onClose} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors lg:hidden">
+                            <X size={20} />
+                        </button>
+                    )}
+                </div>
             </div>
 
             {/* ── Nav com grupos ───────────────────────────── */}
@@ -113,7 +118,7 @@ function NavContent({ onClose }: { onClose?: () => void }) {
                     return (
                         <div key={group.label} className="mb-12 last:mb-0">
                             {/* Label do grupo */}
-                            <p className="px-4 mb-6 text-[10px] font-bold tracking-[0.25em] text-slate-600 uppercase">
+                            <p className="px-4 mb-6 text-[10px] font-bold tracking-[0.25em] text-[var(--text-muted)] uppercase">
                                 {group.label}
                             </p>
                             <div className="space-y-2">
@@ -125,15 +130,15 @@ function NavContent({ onClose }: { onClose?: () => void }) {
                                             className={`
                                                 flex items-center gap-4 px-4 py-3.5 rounded-2xl text-[13px] transition-all duration-300 group
                                                 ${active 
-                                                    ? 'bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent text-white font-bold shadow-sm' 
-                                                    : 'text-slate-400 hover:text-white hover:bg-white/[0.03]'
+                                                    ? 'bg-gradient-to-r from-[var(--accent)]/10 via-[var(--accent)]/5 to-transparent text-[var(--text-primary)] font-bold shadow-sm' 
+                                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--accent)]/5'
                                                 }
                                             `}
                                         >
-                                            <Icon size={18} className={`flex-shrink-0 transition-colors duration-300 ${active ? 'text-[#8b5cf6]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                                            <Icon size={18} className={`flex-shrink-0 transition-colors duration-300 ${active ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]'}`} />
                                             <span className="flex-1 tracking-wide">{item.label}</span>
                                             {active && (
-                                                <div className="w-1.5 h-1.5 rounded-full bg-[#8b5cf6] shadow-[0_0_10px_rgba(139,92,246,0.6)]" />
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(139,92,246,0.6)]" />
                                             )}
                                         </Link>
                                     );
@@ -145,8 +150,8 @@ function NavContent({ onClose }: { onClose?: () => void }) {
             </nav>
 
             {/* ── Usuário Profile Card ──────────────────────── */}
-            <div className="p-4 mt-auto border-t border-white/5 bg-black/20">
-                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-3 shadow-sm">
+            <div className="p-4 mt-auto border-t border-[var(--border)] bg-[var(--bg-base)]/50">
+                <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] flex items-center gap-3 shadow-sm">
                     {/* Avatar */}
                     <div className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0"
                          style={{ 
@@ -157,15 +162,15 @@ function NavContent({ onClose }: { onClose?: () => void }) {
                         {user?.name?.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-white/90 truncate capitalize">
+                        <p className="text-sm font-semibold text-[var(--text-primary)] truncate capitalize">
                             {user?.name?.toLowerCase()}
                         </p>
-                        <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">
+                        <p className="text-[10px] text-[var(--text-secondary)] font-medium uppercase tracking-wider">
                             {user?.role ? roleLabel[user.role] : ''}
                         </p>
                     </div>
                     <button onClick={handleLogout} title="Sair do sistema"
-                        className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
+                        className="p-2 text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger)]/10 rounded-lg transition-all">
                         <LogOut size={16} />
                     </button>
                 </div>
@@ -190,19 +195,22 @@ export default function Sidebar() {
             </aside>
 
             {/* ── Mobile top bar ───────────────────────────── */}
-            <div className="lg:hidden flex items-center justify-between fixed top-0 left-0 right-0 z-40 px-6 py-4 bg-[#060608]/80 border-b border-white/5 backdrop-blur-xl">
+            <div className="lg:hidden flex items-center justify-between fixed top-0 left-0 right-0 z-40 px-6 py-4 bg-[var(--bg-surface)]/80 border-b border-[var(--border)] backdrop-blur-xl">
                 <div className="flex items-center gap-3">
                     <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center shadow-lg shadow-purple-500/20">
                         <Scissors size={18} color="#fff" strokeWidth={2} />
                     </div>
                     <div>
-                        <span className="text-sm font-serif font-bold text-white block leading-none">Bella Beauty</span>
-                        <span className="text-[9px] font-bold text-[#8b5cf6] uppercase tracking-wider">Premium Spa</span>
+                        <span className="text-sm font-serif font-bold text-[var(--text-primary)] block leading-none">Bella Beauty</span>
+                        <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-wider">Premium Spa</span>
                     </div>
                 </div>
-                <button onClick={() => setMobileOpen(true)} className="p-2 text-slate-400 hover:text-white transition-colors">
-                    <Menu size={24} />
-                </button>
+                <div className="flex items-center gap-2">
+                    <ThemeToggle />
+                    <button onClick={() => setMobileOpen(true)} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
+                        <Menu size={24} />
+                    </button>
+                </div>
             </div>
 
             {/* ── Mobile drawer ────────────────────────────── */}
@@ -210,7 +218,7 @@ export default function Sidebar() {
                 <div className="lg:hidden fixed inset-0 z-50 flex animate-fade-in">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                         onClick={() => setMobileOpen(false)} />
-                    <aside className="relative w-[300px] h-full flex flex-col bg-[#060608] border-r border-white/10 shadow-2xl animate-scale-in">
+                    <aside className="relative w-[300px] h-full flex flex-col bg-[var(--bg-base)] border-r border-[var(--border)] shadow-2xl animate-scale-in">
                         <NavContent onClose={() => setMobileOpen(false)} />
                     </aside>
                 </div>

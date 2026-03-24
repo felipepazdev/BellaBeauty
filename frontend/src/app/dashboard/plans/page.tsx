@@ -76,21 +76,21 @@ export default function PlansPage() {
     const remainingDays = calculateRemainingDays(data?.planActiveUntil);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] w-full py-10 animate-fade-in">
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-140px)] w-full py-10 animate-fade-in text-[var(--text-primary)]">
             <div className="w-full max-w-6xl space-y-12">
                 {/* ── Header ────────────────────────────────────────── */}
                 <div className="flex flex-col items-center text-center space-y-6">
                     <div className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-purple-600 to-purple-500 p-[1px] shadow-2xl shadow-purple-600/20">
-                        <div className="w-full h-full rounded-[2.5rem] bg-[#0c0c10] flex items-center justify-center">
+                        <div className="w-full h-full rounded-[2.5rem] bg-[var(--bg-surface)] flex items-center justify-center">
                             <CreditCard className="text-purple-400" size={32} strokeWidth={1.5} />
                         </div>
                     </div>
                     
                     <div className="space-y-4">
-                        <h1 className="text-5xl font-serif font-bold text-white tracking-tight">
+                        <h1 className="text-5xl font-serif font-bold text-[var(--text-primary)] tracking-tight">
                             Escolha o plano ideal
                         </h1>
-                        <p className="text-base text-slate-500 max-w-lg mx-auto font-medium">
+                        <p className="text-base text-[var(--text-secondary)] max-w-lg mx-auto font-medium">
                             Tenha o controle completo da sua barbearia ou salão com ferramentas profissionais e automatizações de ponta.
                         </p>
                     </div>
@@ -98,17 +98,17 @@ export default function PlansPage() {
                     {/* Infobar Subscription Status */}
                     {data?.planActiveUntil && (
                         <div className="mt-8 flex flex-wrap items-center justify-center gap-4 animate-scale-in">
-                            <div className="px-6 py-4 rounded-[1.5rem] bg-white/[0.03] border border-white/5 backdrop-blur-md flex flex-col items-start gap-1">
-                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Assinado em</span>
-                                <span className="text-sm font-bold text-white">{new Date(data.planStartedAt!).toLocaleDateString('pt-BR')}</span>
+                            <div className="px-6 py-4 rounded-[1.5rem] bg-[var(--bg-card)] border border-[var(--border)] backdrop-blur-md flex flex-col items-start gap-1">
+                                <span className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest">Assinado em</span>
+                                <span className="text-sm font-bold text-[var(--text-primary)]">{new Date(data.planStartedAt!).toLocaleDateString('pt-BR')}</span>
                             </div>
-                            <div className="px-6 py-4 rounded-[1.5rem] bg-white/[0.03] border border-white/5 backdrop-blur-md flex flex-col items-start gap-1">
-                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Expira em</span>
-                                <span className="text-sm font-bold text-white">{new Date(data.planActiveUntil).toLocaleDateString('pt-BR')}</span>
+                            <div className="px-6 py-4 rounded-[1.5rem] bg-[var(--bg-card)] border border-[var(--border)] backdrop-blur-md flex flex-col items-start gap-1">
+                                <span className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest">Expira em</span>
+                                <span className="text-sm font-bold text-[var(--text-primary)]">{new Date(data.planActiveUntil).toLocaleDateString('pt-BR')}</span>
                             </div>
                             <div className="px-6 py-4 rounded-[1.5rem] bg-purple-500/10 border border-purple-500/20 backdrop-blur-md flex flex-col items-start gap-1">
                                 <span className="text-[9px] font-black text-purple-400 uppercase tracking-widest">Tempo Restante</span>
-                                <span className="text-sm font-black text-white">{remainingDays} {remainingDays === 1 ? 'dia' : 'dias'}</span>
+                                <span className="text-sm font-black text-[var(--text-primary)]">{remainingDays} {remainingDays === 1 ? 'dia' : 'dias'}</span>
                             </div>
                         </div>
                     )}
@@ -122,7 +122,7 @@ export default function PlansPage() {
 
                 {/* ── Toggle Ciclo ───────────────────────────────────── */}
                 <div className="flex justify-center">
-                    <div className="bg-[#0c0c10] border border-white/10 p-2 rounded-2xl grid grid-cols-3 gap-1 shadow-2xl w-full max-w-lg">
+                    <div className="bg-[var(--bg-surface)] border border-[var(--border)] p-2 rounded-2xl grid grid-cols-3 gap-1 shadow-2xl w-full max-w-lg">
                         {['MONTHLY', 'QUARTERLY', 'YEARLY'].map((cycle) => (
                             <button
                                 key={cycle}
@@ -130,7 +130,7 @@ export default function PlansPage() {
                                 className={`px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
                                     selectedCycle === cycle 
                                         ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg shadow-purple-600/30' 
-                                        : 'text-slate-500 hover:text-white hover:bg-white/5'
+                                        : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--accent)]/5'
                                 }`}
                             >
                                 {cycle === 'MONTHLY' && 'Mensal'}
@@ -144,28 +144,28 @@ export default function PlansPage() {
                 {/* ── Plan Cards ────────────────────────────────────── */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
                     {/* Plano Standard */}
-                    <div className={`relative group p-[1px] rounded-[1.5rem] transition-all duration-500 ${data?.plan === 'STANDARD' ? 'bg-gradient-to-b from-slate-400/20 to-transparent' : 'bg-white/5 hover:bg-white/10'}`}>
-                        <div className="bg-[#0c0c10] rounded-[1.5rem] p-12 h-full flex flex-col relative">
+                    <div className={`relative group p-[1px] rounded-[1.5rem] transition-all duration-500 ${data?.plan === 'STANDARD' ? 'bg-gradient-to-b from-slate-400/20 to-transparent' : 'bg-[var(--border)] hover:bg-[var(--border-hover)]'}`}>
+                        <div className="bg-[var(--bg-surface)] rounded-[1.5rem] p-12 h-full flex flex-col relative">
                             {data?.plan === 'STANDARD' && (
-                                <div className="absolute top-8 right-8 px-4 py-1.5 bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-full backdrop-blur-md">
+                                <div className="absolute top-8 right-8 px-4 py-1.5 bg-[var(--bg-card)] border border-[var(--border)] text-[10px] font-black text-[var(--text-secondary)] uppercase tracking-widest rounded-full backdrop-blur-md">
                                     Plano Ativo
                                 </div>
                             )}
                             
-                            <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-8 border border-white/5">
-                                <Building2 size={24} className="text-slate-500" />
+                            <div className="w-14 h-14 bg-[var(--bg-card)] rounded-2xl flex items-center justify-center mb-8 border border-[var(--border)]">
+                                <Building2 size={24} className="text-[var(--text-secondary)]" />
                             </div>
 
-                            <h2 className="text-3xl font-serif font-bold text-white mb-2">Standard</h2>
-                            <p className="text-sm text-slate-500 mb-8 min-h-[40px] font-medium leading-relaxed">
+                            <h2 className="text-3xl font-serif font-bold text-[var(--text-primary)] mb-2">Standard</h2>
+                            <p className="text-sm text-[var(--text-secondary)] mb-8 min-h-[40px] font-medium leading-relaxed">
                                 Essencial para o controle total da sua agenda, finanças e profissionais.
                             </p>
 
                             <div className="mb-10">
-                                <span className="text-5xl font-black text-white tracking-tighter font-mono">
+                                <span className="text-5xl font-black text-[var(--text-primary)] tracking-tighter font-mono">
                                     R$ {prices[selectedCycle as keyof typeof prices].standard.toFixed(2).replace('.', ',')}
                                 </span>
-                                <span className="text-slate-600 text-[11px] font-black uppercase tracking-widest ml-3">/ {periodLabels[selectedCycle as keyof typeof periodLabels]}</span>
+                                <span className="text-[var(--text-muted)] text-[11px] font-black uppercase tracking-widest ml-3">/ {periodLabels[selectedCycle as keyof typeof periodLabels]}</span>
                             </div>
 
                             <button
@@ -173,29 +173,29 @@ export default function PlansPage() {
                                 disabled={saving || data?.plan === 'STANDARD'}
                                 className={`w-full py-5 rounded-[1.8rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl ${
                                     data?.plan === 'STANDARD'
-                                        ? 'bg-white/5 text-slate-600 cursor-not-allowed border border-white/5'
-                                        : 'bg-white text-black hover:scale-[1.02] active:scale-95 shadow-white/5'
+                                        ? 'bg-[var(--bg-card)] text-[var(--text-muted)] cursor-not-allowed border border-[var(--border)]'
+                                        : 'bg-[var(--text-primary)] text-[var(--bg-base)] hover:scale-[1.02] active:scale-95 shadow-black/5'
                                 }`}
                             >
                                 {data?.plan === 'STANDARD' ? 'Plano Atual' : 'Assinar Agora'}
                             </button>
 
                             <div className="mt-12 space-y-5">
-                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 mb-2">O que está incluso:</p>
+                                <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest ml-1 mb-2">O que está incluso:</p>
                                 <ul className="space-y-4">
-                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                    <li className="flex items-center gap-4 text-sm font-medium text-[var(--text-secondary)]">
                                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center"><Check size={12} className="text-emerald-500" /></div>
                                         Agenda e Agendamentos
                                     </li>
-                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                    <li className="flex items-center gap-4 text-sm font-medium text-[var(--text-secondary)]">
                                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center"><Check size={12} className="text-emerald-500" /></div>
                                         Gestão de Profissionais e Comissões
                                     </li>
-                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                    <li className="flex items-center gap-4 text-sm font-medium text-[var(--text-secondary)]">
                                         <div className="w-5 h-5 rounded-full bg-emerald-500/10 flex items-center justify-center"><Check size={12} className="text-emerald-500" /></div>
                                         Fluxo de Caixa e Despesas
                                     </li>
-                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400 opacity-30 grayscale">
+                                    <li className="flex items-center gap-4 text-sm font-medium text-[var(--text-secondary)] opacity-30 grayscale">
                                         <div className="w-5 h-5 rounded-full bg-slate-500/10 flex items-center justify-center"><X size={12} className="text-slate-500" /></div>
                                         Lembretes de WhatsApp
                                     </li>
@@ -205,8 +205,8 @@ export default function PlansPage() {
                     </div>
 
                     {/* Plano Premium */}
-                    <div className={`relative group p-[1.5px] rounded-[1.5rem] transition-all duration-500 ${data?.plan === 'PREMIUM' ? 'bg-gradient-to-b from-purple-500 to-transparent shadow-[0_30px_100px_rgba(124,58,237,0.1)]' : 'bg-white/5 hover:bg-white/10'}`}>
-                        <div className="bg-[#0c0c10] rounded-[1.5rem] p-12 h-full flex flex-col relative">
+                    <div className={`relative group p-[1.5px] rounded-[1.5rem] transition-all duration-500 ${data?.plan === 'PREMIUM' ? 'bg-gradient-to-b from-purple-500 to-transparent shadow-[0_30px_100px_rgba(124,58,237,0.1)]' : 'bg-[var(--border)] hover:bg-[var(--border-hover)]'}`}>
+                        <div className="bg-[var(--bg-surface)] rounded-[1.5rem] p-12 h-full flex flex-col relative">
                             <div className="absolute top-8 right-8 px-4 py-1.5 bg-purple-600 text-[10px] font-black text-white uppercase tracking-widest rounded-full shadow-lg shadow-purple-600/30">
                                 {data?.plan === 'PREMIUM' ? 'Plano Ativo' : 'Recomendado'}
                             </div>
@@ -215,16 +215,16 @@ export default function PlansPage() {
                                 <Sparkles size={24} className="text-purple-400" />
                             </div>
 
-                            <h2 className="text-3xl font-serif font-bold text-white mb-2">Premium</h2>
-                            <p className="text-sm text-slate-500 mb-8 min-h-[40px] font-medium leading-relaxed">
+                            <h2 className="text-3xl font-serif font-bold text-[var(--text-primary)] mb-2">Premium</h2>
+                            <p className="text-sm text-[var(--text-secondary)] mb-8 min-h-[40px] font-medium leading-relaxed">
                                 Para negócios que buscam excelência e zero faltas com notificações inteligentes.
                             </p>
 
                             <div className="mb-10">
-                                <span className="text-5xl font-black text-white tracking-tighter font-mono">
+                                <span className="text-5xl font-black text-[var(--text-primary)] tracking-tighter font-mono">
                                     R$ {prices[selectedCycle as keyof typeof prices].premium.toFixed(2).replace('.', ',')}
                                 </span>
-                                <span className="text-slate-600 text-[11px] font-black uppercase tracking-widest ml-3">/ {periodLabels[selectedCycle as keyof typeof periodLabels]}</span>
+                                <span className="text-[var(--text-muted)] text-[11px] font-black uppercase tracking-widest ml-3">/ {periodLabels[selectedCycle as keyof typeof periodLabels]}</span>
                             </div>
 
                             <button
@@ -239,18 +239,18 @@ export default function PlansPage() {
                                 {data?.plan === 'PREMIUM' ? 'Plano Atual' : 'Upgrade para Premium'}
                             </button>
 
-                            <div className="mt-12 space-y-6 pt-10 border-t border-white/5">
-                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1 mb-2">Inclui Standard e MAIS:</p>
+                            <div className="mt-12 space-y-6 pt-10 border-t border-[var(--border)]">
+                                <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest ml-1 mb-2">Inclui Standard e MAIS:</p>
                                 <ul className="space-y-4">
                                     <li className="flex items-center gap-4">
                                         <div className="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center"><MessageSquare size={16} className="text-purple-400" /></div>
-                                        <span className="text-sm font-bold text-white tracking-tight">Lembretes WhatsApp (24h e 2h)</span>
+                                        <span className="text-sm font-bold text-[var(--text-primary)] tracking-tight">Lembretes WhatsApp (24h e 2h)</span>
                                     </li>
-                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                    <li className="flex items-center gap-4 text-sm font-medium text-[var(--text-secondary)]">
                                         <div className="w-5 h-5 rounded-full bg-purple-500/10 flex items-center justify-center"><Check size={12} className="text-purple-400" /></div>
                                         WhatsApp via Evolution ou API Oficial
                                     </li>
-                                    <li className="flex items-center gap-4 text-sm font-medium text-slate-400">
+                                    <li className="flex items-center gap-4 text-sm font-medium text-[var(--text-secondary)]">
                                         <div className="w-5 h-5 rounded-full bg-purple-500/10 flex items-center justify-center"><Check size={12} className="text-purple-400" /></div>
                                         Mensagens 100% Personalizáveis
                                     </li>

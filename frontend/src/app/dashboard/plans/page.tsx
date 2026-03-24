@@ -122,15 +122,15 @@ export default function PlansPage() {
 
                 {/* ── Toggle Ciclo ───────────────────────────────────── */}
                 <div className="flex justify-center">
-                    <div className="bg-[#0c0c10] border border-white/10 p-1.5 rounded-[1.8rem] flex relative shadow-2xl">
+                    <div className="bg-[#0c0c10] border border-white/10 p-2 rounded-2xl flex items-center gap-2 relative shadow-2xl">
                         {['MONTHLY', 'QUARTERLY', 'YEARLY'].map((cycle) => (
                             <button
                                 key={cycle}
                                 onClick={() => setSelectedCycle(cycle)}
-                                className={`px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-500 ${
+                                className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 ${
                                     selectedCycle === cycle 
                                         ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg shadow-purple-600/30' 
-                                        : 'text-slate-500 hover:text-white'
+                                        : 'text-slate-500 hover:text-white hover:bg-white/5'
                                 }`}
                             >
                                 {cycle === 'MONTHLY' && 'Mensal'}
@@ -144,8 +144,8 @@ export default function PlansPage() {
                 {/* ── Plan Cards ────────────────────────────────────── */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
                     {/* Plano Standard */}
-                    <div className={`relative group p-[1px] rounded-[3rem] transition-all duration-500 ${data?.plan === 'STANDARD' ? 'bg-gradient-to-b from-slate-400/20 to-transparent' : 'bg-white/5 hover:bg-white/10'}`}>
-                        <div className="bg-[#0c0c10] rounded-[3rem] p-10 h-full flex flex-col relative overflow-hidden">
+                    <div className={`relative group p-[1px] rounded-[2rem] transition-all duration-500 ${data?.plan === 'STANDARD' ? 'bg-gradient-to-b from-slate-400/20 to-transparent' : 'bg-white/5 hover:bg-white/10'}`}>
+                        <div className="bg-[#0c0c10] rounded-[2rem] p-10 h-full flex flex-col relative overflow-hidden">
                             {data?.plan === 'STANDARD' && (
                                 <div className="absolute top-8 right-8 px-4 py-1.5 bg-white/5 border border-white/10 text-[10px] font-black text-slate-400 uppercase tracking-widest rounded-full backdrop-blur-md">
                                     Plano Ativo
@@ -205,8 +205,8 @@ export default function PlansPage() {
                     </div>
 
                     {/* Plano Premium */}
-                    <div className={`relative group p-[1.5px] rounded-[3rem] transition-all duration-500 ${data?.plan === 'PREMIUM' ? 'bg-gradient-to-b from-purple-500 to-transparent shadow-[0_30px_100px_rgba(124,58,237,0.1)]' : 'bg-white/5 hover:bg-white/10'}`}>
-                        <div className="bg-[#0c0c10] rounded-[3rem] p-10 h-full flex flex-col relative overflow-hidden">
+                    <div className={`relative group p-[1.5px] rounded-[2rem] transition-all duration-500 ${data?.plan === 'PREMIUM' ? 'bg-gradient-to-b from-purple-500 to-transparent shadow-[0_30px_100px_rgba(124,58,237,0.1)]' : 'bg-white/5 hover:bg-white/10'}`}>
+                        <div className="bg-[#0c0c10] rounded-[2rem] p-10 h-full flex flex-col relative overflow-hidden">
                             <div className="absolute top-8 right-8 px-4 py-1.5 bg-purple-600 text-[10px] font-black text-white uppercase tracking-widest rounded-full shadow-lg shadow-purple-600/30">
                                 {data?.plan === 'PREMIUM' ? 'Plano Ativo' : 'Recomendado'}
                             </div>

@@ -88,150 +88,151 @@ export default function CommissionsPage() {
     }, {} as Record<string, { professional: any; totalPending: number; totalPaid: number; items: Commission[] }>));
 
     return (
-        <div className="animate-fade-in w-full pb-20">
-            
-            {/* ── Header ──────────────────────────────────────────── */}
-            <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
-                <div>
-                    <h1 className="text-3xl font-serif font-bold tracking-tight text-white mb-2">
-                        Remunerações
-                    </h1>
-                    <p className="text-sm font-medium text-slate-400">
-                        {user?.role === 'PROFESSIONAL' ? 'Seu extrato detalhado de comissões' : 'Gestão e controle de repasses para a equipe'}
-                    </p>
-                </div>
-
-                {/* Seletor de mês */}
-                <div className="flex items-center gap-2 p-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                    <button onClick={() => changeMonth(-1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
-                        <ChevronLeft size={18} />
-                    </button>
-                    
-                    <div className="flex items-center gap-3 px-4 min-w-[160px] justify-center">
-                        <Star size={16} className="text-[#8b5cf6]" />
-                        <span className="text-sm font-bold tracking-wide text-white uppercase">
-                            {MONTHS[month - 1]} {year}
-                        </span>
+        <>
+            <div className="animate-fade-in w-full pb-20">
+                {/* ── Header ──────────────────────────────────────────── */}
+                <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
+                    <div>
+                        <h1 className="text-3xl font-serif font-bold tracking-tight text-white mb-2">
+                            Remunerações
+                        </h1>
+                        <p className="text-sm font-medium text-slate-400">
+                            {user?.role === 'PROFESSIONAL' ? 'Seu extrato detalhado de comissões' : 'Gestão e controle de repasses para a equipe'}
+                        </p>
                     </div>
 
-                    <button onClick={() => changeMonth(1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
-                        <ChevronRight size={18} />
-                    </button>
-                </div>
-            </div>
+                    {/* Seletor de mês */}
+                    <div className="flex items-center gap-2 p-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+                        <button onClick={() => changeMonth(-1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                            <ChevronLeft size={18} />
+                        </button>
+                        
+                        <div className="flex items-center gap-3 px-4 min-w-[160px] justify-center">
+                            <Star size={16} className="text-[#8b5cf6]" />
+                            <span className="text-sm font-bold tracking-wide text-white uppercase">
+                                {MONTHS[month - 1]} {year}
+                            </span>
+                        </div>
 
-            {/* ── KPIs Gerais ───────────────────────────────────── */}
-            {user?.role !== 'PROFESSIONAL' && (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                    <div className="card flex items-center gap-6 group">
-                        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shadow-lg shadow-amber-500/5 transition-transform group-hover:scale-105">
-                            <Clock size={28} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-1">Total Pendente</p>
-                            <p className="text-3xl font-serif font-bold text-white tracking-tight">
-                                R$ {totalPending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="card flex items-center gap-6 group">
-                        <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-lg shadow-emerald-500/5 transition-transform group-hover:scale-105">
-                            <DollarSign size={28} />
-                        </div>
-                        <div>
-                            <p className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-1">Total Liquidado</p>
-                            <p className="text-3xl font-serif font-bold text-white tracking-tight">
-                                R$ {totalPaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                            </p>
-                        </div>
+                        <button onClick={() => changeMonth(1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                            <ChevronRight size={18} />
+                        </button>
                     </div>
                 </div>
-            )}
 
-            {/* ── Lista de Profissionais ───────────────────── */}
-            <div className="space-y-4">
-                <div className="flex items-center justify-between px-4 mb-2">
-                    <h2 className="text-sm font-bold tracking-widest text-slate-500 uppercase">Equipe & Performance</h2>
-                    <span className="text-[11px] text-slate-600 font-medium">Total: {groupedCommissions.length} profissionais</span>
-                </div>
-
-                {loading ? (
-                    <div className="flex flex-col items-center justify-center py-20 gap-4">
-                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-                        <p className="text-sm text-slate-500 font-medium italic">Sincronizando dados financeiros...</p>
-                    </div>
-                ) : commissions.length === 0 ? (
-                    <div className="card flex flex-col items-center justify-center py-24 text-center">
-                        <div className="w-20 h-20 rounded-full bg-slate-900/50 flex items-center justify-center mb-6 text-slate-700">
-                            <Star size={40} strokeWidth={1} />
-                        </div>
-                        <h3 className="text-lg font-serif font-bold text-slate-300 mb-2">Sem registros este mês</h3>
-                        <p className="text-sm text-slate-500 max-w-[280px]">Nenhuma comissão foi processada para o período selecionado.</p>
-                    </div>
-                ) : (
-                    groupedCommissions.map((group) => (
-                        <div key={group.professional.id} 
-                             className="card group hover:border-purple-500/30 transition-all duration-300">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-2">
-                                
-                                {/* Info Profissional */}
-                                <div className="flex items-center gap-5">
-                                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/5 flex items-center justify-center text-lg font-serif font-bold text-white shadow-xl group-hover:scale-105 transition-transform duration-300">
-                                        {group.professional.name?.charAt(0).toUpperCase()}
-                                    </div>
-                                    <div>
-                                        <h3 className="text-lg font-bold text-white capitalize tracking-tight group-hover:text-purple-400 transition-colors">
-                                            {group.professional.name?.toLowerCase()}
-                                        </h3>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
-                                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                                {group.items.length} COMISSÕES REGISTRADAS
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                {/* Valores e Ação */}
-                                <div className="flex flex-wrap items-center gap-10">
-                                    <div className="grid grid-cols-2 gap-8 md:gap-12">
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Pendente</span>
-                                            <span className="text-lg font-bold text-amber-500 font-mono">
-                                                R$ {group.totalPending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                                            </span>
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Liquidado</span>
-                                            <span className="text-lg font-bold text-emerald-500 font-mono">
-                                                R$ {group.totalPaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <button 
-                                        onClick={() => setSelectedProf({ name: group.professional.name, items: group.items })}
-                                        className="btn-primary !py-3 !px-6 text-[13px] font-bold flex items-center gap-2"
-                                    >
-                                        <Search size={16} strokeWidth={2.5} />
-                                        <span>DETALHES</span>
-                                    </button>
-                                </div>
+                {/* ── KPIs Gerais ───────────────────────────────────── */}
+                {user?.role !== 'PROFESSIONAL' && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                        <div className="card flex items-center gap-6 group">
+                            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shadow-lg shadow-amber-500/5 transition-transform group-hover:scale-105">
+                                <Clock size={28} />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-1">Total Pendente</p>
+                                <p className="text-3xl font-serif font-bold text-white tracking-tight">
+                                    R$ {totalPending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </p>
                             </div>
                         </div>
-                    ))
+
+                        <div className="card flex items-center gap-6 group">
+                            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-lg shadow-emerald-500/5 transition-transform group-hover:scale-105">
+                                <DollarSign size={28} />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-1">Total Liquidado</p>
+                                <p className="text-3xl font-serif font-bold text-white tracking-tight">
+                                    R$ {totalPaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 )}
+
+                {/* ── Lista de Profissionais ───────────────────── */}
+                <div className="space-y-4">
+                    <div className="flex items-center justify-between px-4 mb-2">
+                        <h2 className="text-sm font-bold tracking-widest text-slate-500 uppercase">Equipe & Performance</h2>
+                        <span className="text-[11px] text-slate-600 font-medium">Total: {groupedCommissions.length} profissionais</span>
+                    </div>
+
+                    {loading ? (
+                        <div className="flex flex-col items-center justify-center py-20 gap-4">
+                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
+                            <p className="text-sm text-slate-500 font-medium italic">Sincronizando dados financeiros...</p>
+                        </div>
+                    ) : commissions.length === 0 ? (
+                        <div className="card flex flex-col items-center justify-center py-24 text-center">
+                            <div className="w-20 h-20 rounded-full bg-slate-900/50 flex items-center justify-center mb-6 text-slate-700">
+                                <Star size={40} strokeWidth={1} />
+                            </div>
+                            <h3 className="text-lg font-serif font-bold text-slate-300 mb-2">Sem registros este mês</h3>
+                            <p className="text-sm text-slate-500 max-w-[280px]">Nenhuma comissão foi processada para o período selecionado.</p>
+                        </div>
+                    ) : (
+                        groupedCommissions.map((group) => (
+                            <div key={group.professional.id} 
+                                 className="card group hover:border-purple-500/30 transition-all duration-300">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-2">
+                                    
+                                    {/* Info Profissional */}
+                                    <div className="flex items-center gap-5">
+                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/5 flex items-center justify-center text-lg font-serif font-bold text-white shadow-xl group-hover:scale-105 transition-transform duration-300">
+                                            {group.professional.name?.charAt(0).toUpperCase()}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-white capitalize tracking-tight group-hover:text-purple-400 transition-colors">
+                                                {group.professional.name?.toLowerCase()}
+                                            </h3>
+                                            <div className="flex items-center gap-2 mt-1">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
+                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
+                                                    {group.items.length} COMISSÕES REGISTRADAS
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Valores e Ação */}
+                                    <div className="flex flex-wrap items-center gap-10">
+                                        <div className="grid grid-cols-2 gap-8 md:gap-12">
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Pendente</span>
+                                                <span className="text-lg font-bold text-amber-500 font-mono">
+                                                    R$ {group.totalPending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                </span>
+                                            </div>
+                                            <div className="flex flex-col">
+                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Liquidado</span>
+                                                <span className="text-lg font-bold text-emerald-500 font-mono">
+                                                    R$ {group.totalPaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <button 
+                                            onClick={() => setSelectedProf({ name: group.professional.name, items: group.items })}
+                                            className="btn-primary !py-3 !px-6 text-[13px] font-bold flex items-center gap-2"
+                                        >
+                                            <Search size={16} strokeWidth={2.5} />
+                                            <span>DETALHES</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
             </div>
 
             {/* ── Modal Detalhamento ───────────────────────── */}
             {selectedProf && (
-                <div className="fixed inset-0 z-[999] grid place-items-center p-4 md:p-8 overflow-y-auto" onClick={() => setSelectedProf(null)}>
+                <div className="fixed inset-0 z-[999] grid place-items-center p-4 md:p-8" onClick={() => setSelectedProf(null)}>
                     {/* Overlay com desfoque mais intenso para foco total */}
-                    <div className="fixed inset-0 bg-black/60 backdrop-blur-md animate-fade-in" />
+                    <div className="fixed inset-0 bg-black/80 backdrop-blur-md animate-fade-in" />
                     
                     {/* Modal Card */}
-                    <div className="relative w-full max-w-[740px] bg-[#0c0c10] border border-white/10 rounded-[32px] flex flex-col max-h-[85vh] shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden animate-scale-in" 
+                    <div className="relative w-full max-w-[740px] bg-[#0c0c10] border border-white/10 rounded-[32px] flex flex-col max-h-[90vh] shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden animate-scale-in" 
                          onClick={e => e.stopPropagation()}>
                         
                         {/* Modal Header Premium */}
@@ -346,6 +347,6 @@ export default function CommissionsPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </>
     );
 }

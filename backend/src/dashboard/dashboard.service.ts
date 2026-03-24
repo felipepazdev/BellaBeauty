@@ -72,28 +72,46 @@ export class DashboardService {
       .slice(0, 5);
 
     let topProfessionals: any[] = [];
-    // Apenas Admin e Manager veem os top colaboradores
     if (role !== 'PROFESSIONAL') {
       topProfessionals = Object.entries(professionalMap)
         .map(([professional, data]) => {
-          // Admin vê faturamento + quantidade
           if (role === 'ADMIN') {
             return { professional, count: data.count, revenue: data.revenue };
           }
-          // Gerentes (MANAGER) veem apenas quantidade de serviços realizados
           return { professional, count: data.count };
         })
         .sort((a: any, b: any) => {
-          // Admin ordena pelo faturamento, gerente ordena pela quantidade
           return role === 'ADMIN' ? b.revenue - a.revenue : b.count - a.count;
         })
         .slice(0, 5);
     }
 
+    // Buscando as métricas financeiras reais da movimentação de caixa
+    const financialTransactions = await this.prisma.financialTransaction.findMany({
+      where: {
+        salonId,
+        createdAt: { gte: startMonth, lte: endMonth }
+      }
+    });
+
+    let realTotalRevenue = 0;
+    let realTotalExpenses = 0;
+
+    financialTransactions.forEach((t) => {
+      const type = t.type.toUpperCase();
+      if (['ENTRADA', 'INCOME', 'RECEITA'].includes(type)) {
+        realTotalRevenue += t.amount;
+      } else if (['SAIDA', 'EXPENSE', 'DESPESA'].includes(type)) {
+        realTotalExpenses += t.amount;
+      }
+    });
+
     return {
       topClients,
       topServices,
       topProfessionals,
+      totalRevenue: realTotalRevenue,
+      totalExpenses: realTotalExpenses,
     };
   }
 }

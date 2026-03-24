@@ -42,6 +42,22 @@ export default function CommissionsPage() {
             .finally(() => setLoading(false));
     }, [year, month]);
 
+    const handlePay = async (id: string) => {
+        try {
+            await api.patch(`/commissions/${id}/pay`);
+            setCommissions(prev => Object.values(prev).map(c => c.id === id ? { ...c, status: 'PAID' } : c));
+            if (selectedProf) {
+                setSelectedProf(prev => prev ? {
+                    ...prev,
+                    items: prev.items.map(c => c.id === id ? { ...c, status: 'PAID' } : c)
+                } : null);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao pagar a comissão.');
+        }
+    };
+
     const changeMonth = (dir: number) => {
         let m = month + dir;
         let y = year;
@@ -206,6 +222,14 @@ export default function CommissionsPage() {
                                                     Cliente: {c.appointment?.client?.name} | {c.appointment?.date ? new Date(c.appointment.date).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : 'Data desconhecida'}
                                                 </p>
                                             </div>
+                                            {user?.role !== 'PROFESSIONAL' && c.status !== 'PAID' && (
+                                                <button 
+                                                    onClick={() => handlePay(c.id)}
+                                                    className="px-3 py-1.5 bg-green-500 hover:bg-green-600 text-black text-[12px] font-bold rounded-lg transition-colors shadow-sm"
+                                                >
+                                                    Pagar
+                                                </button>
+                                            )}
                                         </div>
                                         
                                         <div className={`grid ${user?.role !== 'PROFESSIONAL' ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-1'} gap-3 rounded-lg px-4 py-3 text-xs`} style={{ background: 'var(--bg-surface)' }}>

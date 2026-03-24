@@ -15,6 +15,7 @@ export class PaymentsService {
       include: {
         service: true,
         professional: true,
+        client: true,
       },
     });
 
@@ -25,7 +26,7 @@ export class PaymentsService {
     const commissionValue =
       (data.amount * appointment.professional.commission) / 100;
 
-    const [payment] = await this.prisma.$transaction([
+    const [payment, transaction] = await this.prisma.$transaction([
       this.prisma.payment.create({
         data: {
           amount: data.amount,
@@ -43,6 +44,21 @@ export class PaymentsService {
         },
       }),
     ]);
+
+    // Create the financial transaction linking to the payment
+    await this.prisma.financialTransaction.create({
+      data: {
+        salonId,
+        type: 'ENTRADA',
+        category: 'COMANDA',
+        amount: data.amount,
+        method: data.method,
+        description: `Pagamento de agendamento: ${appointment.service.name} (${appointment.client?.name || 'Cliente'})`,
+        referenceId: appointment.id,
+        referenceType: 'appointment',
+        paymentId: payment.id,
+      },
+    });
 
     return payment;
   }

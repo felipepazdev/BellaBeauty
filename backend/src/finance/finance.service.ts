@@ -260,7 +260,7 @@ export class FinanceService {
       0,
     );
 
-    const realProfit = totalIncome - totalExpense - totalCommissionsPaid;
+    const realProfit = totalIncome - totalExpense;
 
     return {
       totalIncome,

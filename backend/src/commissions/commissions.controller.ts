@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Req, UseGuards, Query, Patch, Param } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { CommissionsService } from './commissions.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -30,5 +30,13 @@ export class CommissionsController {
       year ? parseInt(year) : undefined,
       month ? parseInt(month) : undefined,
     );
+  }
+
+  @ApiOperation({ summary: 'Marcar comissão como paga' })
+  @UseGuards(RolesGuard)
+  @Roles('ADMIN', 'MANAGER')
+  @Patch(':id/pay')
+  async payCommission(@Req() req, @Param('id') id: string) {
+    return this.commissionsService.payCommission(id, req.user.salonId);
   }
 }

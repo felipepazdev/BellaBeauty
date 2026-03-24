@@ -70,4 +70,39 @@ export class CommissionsService {
       include: { appointment: { include: { client: true, service: true } } },
     });
   }
+
+  async payCommission(id: string, salonId: string) {
+    const commission = await this.prisma.commission.findUnique({
+      where: { id },
+      include: { appointment: { include: { professional: true } } },
+    });
+
+    if (!commission) throw new Error('Comissão não encontrada');
+    if (commission.appointment.salonId !== salonId) {
+      throw new Error('Acesso negado');
+    }
+    if (commission.status === 'PAID') {
+      throw new Error('Comissão já foi paga');
+    }
+
+    const updated = await this.prisma.commission.update({
+      where: { id },
+      data: { status: 'PAID' },
+    });
+
+    await this.prisma.financialTransaction.create({
+      data: {
+        salonId,
+        type: 'SAIDA',
+        category: 'REMUNERACAO',
+        amount: commission.amount,
+        method: 'OTHER',
+        description: `Pagamento de comissão para ${commission.appointment.professional.name} - ${commission.appointment.id}`,
+        referenceId: commission.id,
+        referenceType: 'commission',
+      },
+    });
+
+    return updated;
+  }
 }

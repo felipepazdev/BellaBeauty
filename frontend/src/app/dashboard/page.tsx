@@ -15,6 +15,8 @@ interface DashboardData {
     topClients: { name: string; spent: number }[];
     topServices: { service: string; count: number }[];
     topProfessionals: { professional: string; count: number; revenue?: number }[];
+    totalRevenue: number;
+    totalExpenses: number;
 }
 
 const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -101,7 +103,7 @@ export default function DashboardPage() {
         return 'Boa noite';
     };
 
-    const totalRevenue = data?.topProfessionals.reduce((a, p) => a + (p.revenue ?? 0), 0) ?? 0;
+    const totalRevenue = data?.totalRevenue ?? 0;
     const totalServices = data?.topServices.reduce((a, s) => a + s.count, 0) ?? 0;
 
     return (

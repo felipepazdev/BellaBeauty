@@ -43,7 +43,6 @@ export default function LoginPage() {
     };
 
     return (
-    return (
         <div className="min-h-screen flex items-center justify-center p-6 bg-[#060608]"
             style={{ backgroundImage: 'radial-gradient(circle at 50% -20%, rgba(139, 92, 246, 0.15) 0%, transparent 70%)' }}>
 

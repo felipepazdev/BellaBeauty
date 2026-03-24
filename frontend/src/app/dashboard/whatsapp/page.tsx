@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
-import { MessageSquare, Save, Settings } from 'lucide-react';
+import { MessageSquare, Save, Settings, Lock } from 'lucide-react';
+import Link from 'next/link';
 
 interface SettingsData {
+    plan: string;
     whatsappProvider: string;
     whatsappToken: string;
     whatsappPhoneId: string;
@@ -19,6 +21,7 @@ export default function WhatsAppSettingsPage() {
     const [success, setSuccess] = useState('');
 
     const [form, setForm] = useState<SettingsData>({
+        plan: 'STANDARD',
         whatsappProvider: 'NONE',
         whatsappToken: '',
         whatsappPhoneId: '',
@@ -32,6 +35,7 @@ export default function WhatsAppSettingsPage() {
             .then((r) => {
                 const data = r.data;
                 setForm({
+                    plan: data.plan || 'STANDARD',
                     whatsappProvider: data.whatsappProvider || 'NONE',
                     whatsappToken: data.whatsappToken || '',
                     whatsappPhoneId: data.whatsappPhoneId || '',
@@ -46,6 +50,7 @@ export default function WhatsAppSettingsPage() {
     useEffect(() => { fetchSettings(); }, []);
 
     const handleSave = async () => {
+        if (form.plan !== 'PREMIUM') return;
         try {
             setSaving(true);
             setError('');
@@ -68,8 +73,10 @@ export default function WhatsAppSettingsPage() {
         );
     }
 
+    const isPremium = form.plan === 'PREMIUM';
+
     return (
-        <div className="animate-fade-in w-full max-w-4xl">
+        <div className="animate-fade-in w-full max-w-4xl relative">
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h1 className="text-[28px] leading-tight font-semibold tracking-tight text-white mb-1 flex items-center gap-3">
@@ -81,7 +88,26 @@ export default function WhatsAppSettingsPage() {
                 </div>
             </div>
 
-            <div className="bg-[#111116] border border-white/5 rounded-2xl p-6 md:p-8 flex flex-col gap-6">
+            {!isPremium && (
+                <div className="mb-6 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border border-purple-500/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-start gap-4">
+                        <div className="bg-purple-500/20 p-3 rounded-full shrink-0">
+                            <Lock className="text-purple-400" size={24} />
+                        </div>
+                        <div>
+                            <h3 className="text-white font-bold text-lg mb-1">Funcionalidade Premium</h3>
+                            <p className="text-white/60 text-sm">
+                                Para enviar mensagens automáticas via WhatsApp (Lembretes inteligentes 24h e 2h antes) faça o upgrade do seu plano.
+                            </p>
+                        </div>
+                    </div>
+                    <Link href="/dashboard/plans" className="shrink-0 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition-colors shadow-lg">
+                        Fazer Upgrade
+                    </Link>
+                </div>
+            )}
+
+            <div className={`bg-[#111116] border border-white/5 rounded-2xl p-6 md:p-8 flex flex-col gap-6 relative ${!isPremium ? 'opacity-40 pointer-events-none grayscale-[0.8]' : ''}`}>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Provider Setting */}

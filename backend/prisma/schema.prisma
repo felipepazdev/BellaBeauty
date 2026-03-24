@@ -19,6 +19,10 @@ model Salon {
   whatsappPhoneId       String?
   whatsappTemplate24h   String?
   whatsappTemplate2h    String?
+  /// STANDARD | PREMIUM
+  plan                  String                 @default("STANDARD")
+  /// MONTHLY | QUARTERLY | YEARLY
+  billingCycle          String                 @default("MONTHLY")
   appointments          Appointment[]
   appointmentSlots      AppointmentSlot[]
   clients               Client[]

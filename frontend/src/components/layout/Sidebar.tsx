@@ -8,7 +8,7 @@ import {
     LayoutDashboard, Calendar, ClipboardList, DollarSign,
     TrendingDown, BarChart2, Package, Users, UserCog,
     Scissors, LogOut, Star, Menu, X, ChevronRight, Layers,
-    MessageSquare
+    MessageSquare, CreditCard
 } from 'lucide-react';
 
 interface NavItem {
@@ -45,6 +45,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
             { label: 'Clientes', href: '/dashboard/clients', icon: Users, permission: 'clients_manage' },
             { label: 'Colaboradores', href: '/dashboard/collaborators', icon: UserCog, roles: ['ADMIN', 'MANAGER'], permission: 'collaborators_view' },
             { label: 'WhatsApp', href: '/dashboard/whatsapp', icon: MessageSquare, roles: ['ADMIN', 'MANAGER'] },
+            { label: 'Assinatura', href: '/dashboard/plans', icon: CreditCard, roles: ['ADMIN'] },
         ],
     },
 ];

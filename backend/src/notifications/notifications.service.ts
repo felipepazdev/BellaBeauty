@@ -125,6 +125,13 @@ export class NotificationsService {
   }
 
   private async sendMessage(app: any, message: string) {
+    if (app.salon.plan !== 'PREMIUM') {
+      this.logger.debug(
+        `Salão ${app.salon.name} não possui o plano PREMIUM. WhatsApp não enviado.`,
+      );
+      return;
+    }
+
     const phone = app.client.phone;
     const provider = app.salon.whatsappProvider;
 

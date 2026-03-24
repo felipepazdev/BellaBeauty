@@ -23,4 +23,12 @@ export class SettingsController {
     const salonId = req.user.salonId;
     return this.settingsService.updateSalonSettings(salonId, updateSettingDto);
   }
+
+  @Roles('ADMIN')
+  @Patch('plan')
+  updatePlan(@Req() req: any, @Body() body: { plan: string; billingCycle: string }) {
+    const salonId = req.user.salonId;
+    return this.settingsService.updatePlan(salonId, body.plan, body.billingCycle);
+  }
 }
+

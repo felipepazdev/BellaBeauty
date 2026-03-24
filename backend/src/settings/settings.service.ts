@@ -16,6 +16,8 @@ export class SettingsService {
     }
 
     return {
+      plan: salon.plan,
+      billingCycle: salon.billingCycle,
       whatsappProvider: salon.whatsappProvider,
       whatsappToken: salon.whatsappToken,
       whatsappPhoneId: salon.whatsappPhoneId,
@@ -33,6 +35,8 @@ export class SettingsService {
     return {
       message: 'Settings updated successfully',
       settings: {
+        plan: salon.plan,
+        billingCycle: salon.billingCycle,
         whatsappProvider: salon.whatsappProvider,
         whatsappToken: salon.whatsappToken,
         whatsappPhoneId: salon.whatsappPhoneId,
@@ -41,4 +45,17 @@ export class SettingsService {
       },
     };
   }
+
+  async updatePlan(salonId: string, plan: string, billingCycle: string) {
+    const salon = await this.prisma.salon.update({
+      where: { id: salonId },
+      data: { plan, billingCycle },
+    });
+    return {
+      message: 'Plan updated successfully',
+      plan: salon.plan,
+      billingCycle: salon.billingCycle,
+    };
+  }
 }
+

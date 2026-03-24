@@ -85,113 +85,88 @@ function NavContent({ onClose }: { onClose?: () => void }) {
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <div className="flex flex-col h-full">
 
             {/* ── Logo ─────────────────────────────────────── */}
-            <div style={{
-                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                padding: '20px 16px 16px',
-                borderBottom: '1px solid var(--border)',
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{
-                        width: 36, height: 36, borderRadius: 10,
-                        background: 'linear-gradient(135deg,#7c3aed,#6d28d9)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        boxShadow: '0 4px 12px rgba(124,58,237,0.35)',
-                        flexShrink: 0,
-                    }}>
-                        <Scissors size={15} color="#fff" />
+            <div className="flex items-center justify-between px-6 py-8 border-b border-white/5">
+                <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
+                        <Scissors size={20} color="#fff" strokeWidth={2} />
                     </div>
                     <div>
-                        <p style={{ fontSize: 14, fontWeight: 700, lineHeight: 1 }}>Bella Beauty</p>
-                        <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 3 }}>Gestão de Salão</p>
+                        <p className="text-xl font-serif font-bold tracking-tight text-white leading-tight">Bella Beauty</p>
+                        <p className="text-[10px] font-bold tracking-widest text-[#8b5cf6] uppercase mt-0.5">Premium Spa</p>
                     </div>
                 </div>
                 {onClose && (
-                    <button onClick={onClose}
-                        style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 4 }}>
-                        <X size={18} />
+                    <button onClick={onClose} className="p-2 text-slate-500 hover:text-white transition-colors lg:hidden">
+                        <X size={20} />
                     </button>
                 )}
             </div>
 
             {/* ── Nav com grupos ───────────────────────────── */}
-            <nav style={{ flex: 1, overflowY: 'auto', padding: '12px 10px' }}>
+            <nav className="flex-1 overflow-y-auto px-4 py-8 custom-scrollbar">
                 {NAV_GROUPS.map((group) => {
                     const visible = group.items.filter((item) => canSee(item.roles, item.permission));
                     if (!visible.length) return null;
                     return (
-                        <div key={group.label} style={{ marginBottom: 8 }}>
+                        <div key={group.label} className="mb-10 last:mb-0">
                             {/* Label do grupo */}
-                            <p style={{
-                                fontSize: 10, fontWeight: 700, letterSpacing: '0.08em',
-                                color: 'var(--text-muted)', textTransform: 'uppercase',
-                                padding: '8px 8px 4px',
-                            }}>
+                            <p className="px-3 mb-4 text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase">
                                 {group.label}
                             </p>
-                            {visible.map((item) => {
-                                const Icon = item.icon;
-                                const active = isActive(item.href);
-                                return (
-                                    <Link key={item.href} href={item.href} onClick={onClose}
-                                        style={{
-                                            display: 'flex', alignItems: 'center', gap: 10,
-                                            padding: '9px 10px', borderRadius: 10,
-                                            fontSize: 13, fontWeight: active ? 600 : 400,
-                                            color: active ? 'var(--accent-light)' : 'var(--text-secondary)',
-                                            background: active ? 'rgba(124,58,237,0.14)' : 'transparent',
-                                            border: active ? '1px solid rgba(124,58,237,0.22)' : '1px solid transparent',
-                                            marginBottom: 2,
-                                            textDecoration: 'none',
-                                            transition: 'all 0.15s ease',
-                                        }}>
-                                        <Icon size={15} style={{ flexShrink: 0 }} />
-                                        <span style={{ flex: 1 }}>{item.label}</span>
-                                        {active && <ChevronRight size={13} />}
-                                    </Link>
-                                );
-                            })}
+                            <div className="space-y-1">
+                                {visible.map((item) => {
+                                    const Icon = item.icon;
+                                    const active = isActive(item.href);
+                                    return (
+                                        <Link key={item.href} href={item.href} onClick={onClose}
+                                            className={`
+                                                flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group
+                                                ${active 
+                                                    ? 'bg-gradient-to-r from-purple-500/10 to-transparent text-white font-semibold' 
+                                                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                                }
+                                            `}
+                                        >
+                                            <Icon size={18} className={`flex-shrink-0 transition-colors ${active ? 'text-[#8b5cf6]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                                            <span className="flex-1">{item.label}</span>
+                                            {active && (
+                                                <div className="w-1 h-1 rounded-full bg-[#8b5cf6] shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                                            )}
+                                        </Link>
+                                    );
+                                })}
+                            </div>
                         </div>
                     );
                 })}
             </nav>
 
-            {/* ── Usuário ──────────────────────────────────── */}
-            <div style={{ padding: '10px', borderTop: '1px solid var(--border)' }}>
-                <div style={{
-                    display: 'flex', alignItems: 'center', gap: 10,
-                    padding: '10px 12px', borderRadius: 12,
-                    background: 'var(--bg-surface)',
-                    border: '1px solid var(--border)',
-                }}>
+            {/* ── Usuário Profile Card ──────────────────────── */}
+            <div className="p-4 mt-auto border-t border-white/5 bg-black/20">
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-3 shadow-sm">
                     {/* Avatar */}
-                    <div style={{
-                        width: 34, height: 34, borderRadius: '50%',
-                        background: `${roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'}22`,
-                        border: `2px solid ${roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'}44`,
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: 13, fontWeight: 700, flexShrink: 0,
-                        color: roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed',
-                    }}>
+                    <div className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0"
+                         style={{ 
+                            backgroundColor: `${roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'}22`,
+                            borderColor: `${roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'}44`,
+                            color: roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'
+                         }}>
                         {user?.name?.charAt(0).toUpperCase()}
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 12, fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                            {user?.name}
+                    <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-white/90 truncate capitalize">
+                            {user?.name?.toLowerCase()}
                         </p>
-                        <p style={{ fontSize: 10, color: 'var(--text-muted)', marginTop: 1 }}>
+                        <p className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">
                             {user?.role ? roleLabel[user.role] : ''}
                         </p>
                     </div>
-                    <button onClick={handleLogout} title="Sair"
-                        style={{
-                            background: 'none', border: 'none', cursor: 'pointer',
-                            color: 'var(--text-muted)', padding: 4, borderRadius: 6,
-                            display: 'flex', alignItems: 'center',
-                        }}>
-                        <LogOut size={14} />
+                    <button onClick={handleLogout} title="Sair do sistema"
+                        className="p-2 text-slate-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
+                        <LogOut size={16} />
                     </button>
                 </div>
             </div>

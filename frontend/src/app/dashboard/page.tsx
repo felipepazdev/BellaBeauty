@@ -33,32 +33,20 @@ function StatCard({ icon: Icon, label, value, color, sub }: {
     sub?: string;
 }) {
     return (
-        <div style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border)',
-            borderRadius: 16,
-            padding: '20px 24px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 16,
-        }}>
-            <div style={{
-                width: 48, height: 48, borderRadius: 12,
-                background: `${color}20`,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-            }}>
-                <Icon size={22} style={{ color }} />
+        <div className="card flex items-center gap-5 group">
+            <div className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-110"
+                style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
+                <Icon size={24} style={{ color }} />
             </div>
-            <div style={{ minWidth: 0 }}>
-                <p style={{ fontSize: 12, color: 'var(--text-secondary)', fontWeight: 500, marginBottom: 4 }}>
+            <div className="min-w-0">
+                <p className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-1">
                     {label}
                 </p>
-                <p style={{ fontSize: 22, fontWeight: 700, lineHeight: 1.1, letterSpacing: -0.5 }}>
+                <p className="text-2xl font-serif font-bold tracking-tight text-white leading-none">
                     {value}
                 </p>
                 {sub && (
-                    <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>{sub}</p>
+                    <p className="text-[11px] text-slate-500 mt-2 font-medium">{sub}</p>
                 )}
             </div>
         </div>
@@ -110,42 +98,31 @@ export default function DashboardPage() {
         <div className="animate-fade-in" style={{ width: '100%' }}>
 
             {/* ── Header ──────────────────────────────────────────── */}
-            <div style={{
-                display: 'flex',
-                flexWrap: 'wrap',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 16,
-                marginBottom: 32,
-            }}>
+            <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
                 <div>
-                    <h1 style={{ fontSize: 24, fontWeight: 700, letterSpacing: -0.5 }}>
+                    <h1 className="text-3xl font-serif font-bold tracking-tight text-white mb-2">
                         {greeting()}, {user?.name?.split(' ')[0]} 👋
                     </h1>
-                    <p style={{ fontSize: 13, marginTop: 6, color: 'var(--text-secondary)' }}>
-                        Resumo do período selecionado
+                    <p className="text-sm font-medium text-slate-400">
+                        {user?.role === 'ADMIN' ? 'Visão geral da sua operação premium' : 'Seu resumo de atividades e performance'}
                     </p>
                 </div>
 
                 {/* Seletor de mês */}
-                <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 8,
-                    background: 'var(--bg-card)',
-                    border: '1px solid var(--border)',
-                    borderRadius: 12,
-                    padding: '8px 14px',
-                }}>
-                    <CalendarDays size={15} style={{ color: 'var(--accent-light)' }} />
-                    <button onClick={() => changeMonth(-1)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', padding: 4 }}>
-                        <ChevronLeft size={16} />
+                <div className="flex items-center gap-2 p-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+                    <button onClick={() => changeMonth(-1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                        <ChevronLeft size={18} />
                     </button>
-                    <span style={{ fontSize: 14, fontWeight: 600, minWidth: 120, textAlign: 'center' }}>
-                        {MONTHS[month - 1]} {year}
-                    </span>
-                    <button onClick={() => changeMonth(1)} style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', display: 'flex', padding: 4 }}>
-                        <ChevronRight size={16} />
+                    
+                    <div className="flex items-center gap-3 px-4 min-w-[160px] justify-center">
+                        <CalendarDays size={16} className="text-[#8b5cf6]" />
+                        <span className="text-sm font-bold tracking-wide text-white">
+                            {MONTHS[month - 1].toUpperCase()} {year}
+                        </span>
+                    </div>
+
+                    <button onClick={() => changeMonth(1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                        <ChevronRight size={18} />
                     </button>
                 </div>
             </div>
@@ -177,70 +154,87 @@ export default function DashboardPage() {
                     )}
 
                     {/* ── Gráficos ──────────────────────────────────── */}
-                    <div className="charts-grid">
+                    <div className="charts-grid mt-4">
 
                         {/* Top Serviços */}
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '24px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-                                <BarChart2 size={17} style={{ color: 'var(--accent-light)' }} />
-                                <h2 style={{ fontSize: 14, fontWeight: 600 }}>
-                                    {isProfessional ? 'Meus Serviços' : 'Top 5 Serviços'}
-                                </h2>
+                        <div className="card !p-8">
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-[#8b5cf6]">
+                                        <Scissors size={18} strokeWidth={2} />
+                                    </div>
+                                    <h2 className="text-base font-serif font-bold tracking-wide text-white/90">
+                                        {isProfessional ? 'Serviços Prestados' : 'Top Performance de Serviços'}
+                                    </h2>
+                                </div>
+                                <BarChart2 size={16} className="text-slate-600" />
                             </div>
+                            
                             {!data?.topServices.length ? (
-                                <p style={{ textAlign: 'center', padding: '40px 0', fontSize: 14, color: 'var(--text-muted)' }}>
-                                    Nenhum dado no período
-                                </p>
+                                <div className="h-[220px] flex flex-col items-center justify-center text-slate-500">
+                                    <BarChart2 size={32} className="opacity-10 mb-2" />
+                                    <p className="text-sm">Sem dados registrados</p>
+                                </div>
                             ) : (
                                 <ResponsiveContainer width="100%" height={220}>
-                                    <BarChart data={data.topServices} layout="vertical" margin={{ top: 0, right: 16, bottom: 0, left: 8 }}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3a" horizontal={false} />
-                                        <XAxis type="number" tick={{ fill: '#9898b0', fontSize: 11 }} axisLine={false} tickLine={false} />
-                                        <YAxis dataKey="service" type="category" tick={{ fill: '#9898b0', fontSize: 11 }} width={95} axisLine={false} tickLine={false} />
-                                        <Tooltip contentStyle={{ background: '#1a1a24', border: '1px solid #2a2a3a', borderRadius: 8, color: '#f4f4f8' }} cursor={{ fill: 'rgba(124,58,237,0.06)' }} />
-                                        <Bar dataKey="count" fill="#7c3aed" radius={[0, 6, 6, 0]} name="Realizações" />
+                                    <BarChart data={data.topServices} layout="vertical" margin={{ top: 0, right: 30, bottom: 0, left: 10 }}>
+                                        <CartesianGrid strokeDasharray="4 4" stroke="rgba(255,255,255,0.03)" horizontal={false} />
+                                        <XAxis type="number" hide />
+                                        <YAxis dataKey="service" type="category" tick={{ fill: '#94a3b8', fontSize: 11, fontWeight: 500 }} width={100} axisLine={false} tickLine={false} />
+                                        <Tooltip 
+                                            cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                                            contentStyle={{ background: '#0e0e14', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
+                                        />
+                                        <Bar dataKey="count" fill="url(#barGradient)" radius={[0, 4, 4, 0]} barSize={20}>
+                                            <defs>
+                                                <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stopColor="#8b5cf6" />
+                                                    <stop offset="100%" stopColor="#6d28d9" />
+                                                </linearGradient>
+                                            </defs>
+                                        </Bar>
                                     </BarChart>
                                 </ResponsiveContainer>
                             )}
                         </div>
 
                         {/* Top Clientes */}
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '24px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20 }}>
-                                <Users size={17} style={{ color: '#38bdf8' }} />
-                                <h2 style={{ fontSize: 14, fontWeight: 600 }}>
-                                    {isProfessional ? 'Meus Melhores Clientes' : 'Top 5 Clientes'}
-                                </h2>
+                        <div className="card !p-8">
+                            <div className="flex items-center justify-between mb-8">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-[#0ea5e9]">
+                                        <Users size={18} strokeWidth={2} />
+                                    </div>
+                                    <h2 className="text-base font-serif font-bold tracking-wide text-white/90">
+                                        {isProfessional ? 'Fidelidade de Clientes' : 'Top Clientes do Mês'}
+                                    </h2>
+                                </div>
+                                <Star size={16} className="text-slate-600" />
                             </div>
+
                             {!data?.topClients.length ? (
-                                <p style={{ textAlign: 'center', padding: '40px 0', fontSize: 14, color: 'var(--text-muted)' }}>
-                                    Nenhum dado no período
-                                </p>
+                                <div className="h-[220px] flex flex-col items-center justify-center text-slate-500">
+                                    <Users size={32} className="opacity-10 mb-2" />
+                                    <p className="text-sm">Sem movimentação</p>
+                                </div>
                             ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                <div className="space-y-4">
                                     {data.topClients.map((c, i) => (
-                                        <div key={c.name} style={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: 12,
-                                            padding: '10px 12px',
-                                            borderRadius: 10,
-                                            background: i % 2 === 0 ? 'var(--bg-surface)' : 'transparent',
-                                        }}>
-                                            <span style={{
-                                                width: 28, height: 28, borderRadius: '50%',
-                                                background: `${COLORS[i]}22`, color: COLORS[i],
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                fontSize: 12, fontWeight: 700, flexShrink: 0,
-                                            }}>
-                                                {i + 1}
-                                            </span>
-                                            <span style={{ flex: 1, fontSize: 14, fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                                {c.name}
-                                            </span>
-                                            <span style={{ fontSize: 13, fontWeight: 700, color: '#22c55e', flexShrink: 0 }}>
-                                                R$ {c.spent.toFixed(2)}
-                                            </span>
+                                        <div key={c.name} className="group/item flex items-center gap-4 p-3 rounded-2xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.05] transition-all duration-300">
+                                            <div className="w-8 h-8 rounded-full border border-white/5 flex items-center justify-center text-[11px] font-bold text-slate-400 group-hover/item:text-white transition-colors"
+                                                 style={{ backgroundColor: `${COLORS[i]}15` }}>
+                                                0{i + 1}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-semibold text-white/80 truncate group-hover/item:text-white transition-colors capitalize">
+                                                    {c.name.toLowerCase()}
+                                                </p>
+                                            </div>
+                                            <div className="text-right flex-shrink-0">
+                                                <p className="text-sm font-bold text-[#10b981]">
+                                                    R$ {c.spent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                </p>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -250,41 +244,51 @@ export default function DashboardPage() {
 
                     {/* ── Ranking ───────────────────────────────────── */}
                     {!isProfessional && data?.topProfessionals && data.topProfessionals.length > 0 && (
-                        <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 16, padding: '24px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 20, flexWrap: 'wrap' }}>
-                                <Star size={17} style={{ color: '#f59e0b' }} />
-                                <h2 style={{ fontSize: 14, fontWeight: 600 }}>🏆 Ranking de Colaboradores</h2>
-                                <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-muted)' }}>
-                                    {isAdmin ? 'Atendimentos + Faturamento' : 'Atendimentos realizados'}
+                        <div className="card !p-8 mt-4">
+                            <div className="flex items-center justify-between mb-10">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-[#f59e0b]">
+                                        <Award size={18} strokeWidth={2} />
+                                    </div>
+                                    <h2 className="text-base font-serif font-bold tracking-wide text-white/90">
+                                        🏆 Performance por Colaborador
+                                    </h2>
+                                </div>
+                                <span className="text-[10px] font-bold tracking-widest text-slate-500 uppercase">
+                                    {isAdmin ? 'Métricas de Venda / Serviço' : 'Volume de Atendimentos'}
                                 </span>
                             </div>
+
                             <div className="ranking-grid">
                                 {data.topProfessionals.map((p, i) => (
-                                    <div key={p.professional} style={{
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        textAlign: 'center',
-                                        gap: 10,
-                                        padding: '20px 16px',
-                                        borderRadius: 14,
-                                        background: 'var(--bg-surface)',
-                                        border: i === 0 ? '1px solid rgba(245,158,11,0.4)' : '1px solid var(--border)',
-                                    }}>
-                                        <div style={{
-                                            width: 44, height: 44, borderRadius: '50%',
-                                            background: `${COLORS[i] ?? '#6b7280'}22`, color: COLORS[i] ?? '#6b7280',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontSize: 16, fontWeight: 700,
-                                        }}>
+                                    <div key={p.professional} 
+                                        className={`
+                                            flex flex-col items-center text-center p-6 rounded-[24px] border transition-all duration-300 group
+                                            ${i === 0 ? 'bg-amber-500/[0.03] border-amber-500/20 shadow-lg shadow-amber-500/5' : 'bg-white/[0.02] border-white/5 hover:border-white/10'}
+                                        `}
+                                    >
+                                        <div className={`
+                                            w-14 h-14 rounded-full flex items-center justify-center text-xl mb-4 shadow-inner
+                                            ${i === 0 ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30' : 'bg-slate-800/50 text-slate-400 border border-white/10'}
+                                        `}>
                                             {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
                                         </div>
-                                        <p style={{ fontSize: 13, fontWeight: 600, lineHeight: 1.3 }}>{p.professional}</p>
-                                        <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>{p.count} atend.</p>
-                                        {isAdmin && p.revenue !== undefined && (
-                                            <p style={{ fontSize: 13, fontWeight: 700, color: '#22c55e' }}>
-                                                R$ {p.revenue.toFixed(2)}
+                                        <p className="text-sm font-bold text-white mb-1 capitalize leading-tight group-hover:text-[#8b5cf6] transition-colors">
+                                            {p.professional.toLowerCase()}
+                                        </p>
+                                        <div className="flex items-center gap-2 mb-3">
+                                            <div className="w-1.5 h-1.5 rounded-full bg-[#10b981]" />
+                                            <p className="text-[11px] font-bold text-slate-500 uppercase tracking-tighter">
+                                                {p.count} Atendimentos
                                             </p>
+                                        </div>
+                                        {isAdmin && p.revenue !== undefined && (
+                                            <div className="mt-auto pt-4 border-t border-white/5 w-full">
+                                                <p className="text-xs text-slate-500 mb-1">Faturamento</p>
+                                                <p className="text-sm font-bold text-white">
+                                                    R$ {p.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                                </p>
+                                            </div>
                                         )}
                                     </div>
                                 ))}

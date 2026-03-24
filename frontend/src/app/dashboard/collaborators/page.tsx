@@ -319,151 +319,142 @@ export default function CollaboratorsPage() {
 
             {/* Modal */}
             {showForm && (
-                <div className="fixed inset-0 z-[150] grid place-items-center p-4 bg-black/90 backdrop-blur-md overflow-y-auto" onClick={() => setShowForm(false)}>
-                    <div className="relative z-10 w-full max-w-lg lg:ml-[230px] my-auto animate-scale-in" onClick={e => e.stopPropagation()}>
-                        <div className="bg-[#111116] border border-white/5 p-8 md:p-10 rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.6)] flex flex-col gap-8 relative overflow-hidden">
-                            {/* Decorative Glow */}
-                            <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#8b5cf6]/10 blur-[100px] rounded-full" />
-                            
-                            <div className="flex items-center justify-between relative z-10">
-                                <h2 className="text-2xl font-serif font-bold text-white uppercase tracking-wider">
-                                    {isEditing ? 'Editar Colaborador' : 'Novo Colaborador'}
-                                </h2>
-                                <button onClick={() => setShowForm(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-white/40 hover:text-white transition-colors">
-                                    <X size={20} />
-                                </button>
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setShowForm(false)}>
+                    <div 
+                        className="w-full max-w-lg lg:ml-[230px] bg-[#15151e] border border-white/5 p-8 rounded-[2rem] shadow-2xl animate-scale-in relative max-h-[90vh] overflow-y-auto custom-scrollbar"
+                        onClick={e => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between mb-8">
+                            <h2 className="text-2xl font-black uppercase tracking-widest text-white">
+                                {isEditing ? 'Editar Colaborador' : 'Novo Colaborador'}
+                            </h2>
+                            <button onClick={() => setShowForm(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-white/40 hover:text-white transition-colors">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="space-y-6">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Nome completo *</label>
+                                <input 
+                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                    placeholder="Ex: Maria Antonieta"
+                                    value={form.name}
+                                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                />
                             </div>
 
-                            <div className="flex flex-col gap-6 relative z-10">
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">E-mail de acesso *</label>
+                                <input 
+                                    type="email"
+                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                    placeholder="email@exemplo.com"
+                                    value={form.email}
+                                    onChange={(e) => setForm({ ...form, email: e.target.value })}
+                                />
+                            </div>
+
+                            {!isEditing && (
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 ml-1">Nome completo *</label>
+                                    <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Senha de acesso *</label>
                                     <input 
-                                        className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-medium text-white placeholder-white/20 focus:outline-none focus:border-[#8b5cf6]/50 focus:bg-white/10 transition-all"
-                                        placeholder="Ex: Maria Antonieta"
-                                        value={form.name}
-                                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                        type="password"
+                                        className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                        placeholder="Mínimo 6 caracteres"
+                                        value={form.password}
+                                        onChange={(e) => setForm({ ...form, password: e.target.value })}
                                     />
                                 </div>
+                            )}
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 ml-1">E-mail de acesso *</label>
-                                    <input 
-                                        type="email"
-                                        className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-medium text-white placeholder-white/20 focus:outline-none focus:border-[#8b5cf6]/50 focus:bg-white/10 transition-all"
-                                        placeholder="email@exemplo.com"
-                                        value={form.email}
-                                        onChange={(e) => setForm({ ...form, email: e.target.value })}
-                                    />
-                                </div>
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Função do colaborador</label>
+                                <select 
+                                    value={form.role}
+                                    onChange={(e) => setForm({ ...form, role: e.target.value })}
+                                    disabled={isEditing}
+                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white appearance-none focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                >
+                                    <option value="PROFESSIONAL" className="bg-[#1a1628]">Profissional</option>
+                                    <option value="MANAGER" className="bg-[#1a1628]">Gerente</option>
+                                    <option value="ADMIN" className="bg-[#1a1628]">Administrador</option>
+                                </select>
+                            </div>
 
-                                {!isEditing && (
-                                    <div className="space-y-2">
-                                        <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 ml-1">Senha de acesso *</label>
-                                        <input 
-                                            type="password"
-                                            className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-medium text-white placeholder-white/20 focus:outline-none focus:border-[#8b5cf6]/50 focus:bg-white/10 transition-all"
-                                            placeholder="Mínimo 6 caracteres"
-                                            value={form.password}
-                                            onChange={(e) => setForm({ ...form, password: e.target.value })}
-                                        />
+                            {form.role === 'PROFESSIONAL' && (
+                                <div className="pt-4 flex flex-col gap-6 border-t border-white/5">
+                                    <div className="space-y-3">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Nichos de Atuação no sistema</label>
+                                        <div className="flex flex-wrap gap-2">
+                                            {niches.map(n => {
+                                                const isSelected = form.nicheIds.includes(n.id);
+                                                return (
+                                                    <button
+                                                        key={n.id}
+                                                        onClick={() => {
+                                                            const newIds = isSelected 
+                                                                ? form.nicheIds.filter(id => id !== n.id)
+                                                                : [...form.nicheIds, n.id];
+                                                            setForm({ ...form, nicheIds: newIds });
+                                                        }}
+                                                        className={`
+                                                            px-4 py-2 rounded-xl text-xs font-bold transition-all
+                                                            ${isSelected 
+                                                                ? 'bg-[var(--accent-light)] text-[#111] shadow-lg shadow-[var(--accent-light)]/20' 
+                                                                : 'bg-white/5 text-white/40 hover:bg-white/10'}
+                                                        `}
+                                                    >
+                                                        {n.name}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
-                                )}
 
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 ml-1">Função do colaborador</label>
-                                    <select 
-                                        value={form.role}
-                                        onChange={(e) => setForm({ ...form, role: e.target.value })}
-                                        disabled={isEditing}
-                                        className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-medium text-white appearance-none focus:outline-none focus:border-[#8b5cf6]/50 transition-all cursor-pointer"
-                                    >
-                                        <option value="PROFESSIONAL" className="bg-[#1a1628]">Profissional</option>
-                                        <option value="MANAGER" className="bg-[#1a1628]">Gerente</option>
-                                        <option value="ADMIN" className="bg-[#1a1628]">Administrador</option>
-                                    </select>
-                                </div>
-
-                                {form.role === 'PROFESSIONAL' && (
-                                    <div className="pt-4 flex flex-col gap-6">
-                                        <div className="space-y-3">
-                                            <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 ml-1">Nichos de Atuação no sistema</label>
-                                            <div className="flex flex-wrap gap-2 p-4 rounded-2xl bg-white/[0.02] border border-white/5">
-                                                {niches.map(n => {
-                                                    const isSelected = form.nicheIds.includes(n.id);
-                                                    return (
-                                                        <button
-                                                            key={n.id}
-                                                            onClick={() => {
-                                                                const newIds = isSelected 
-                                                                    ? form.nicheIds.filter(id => id !== n.id)
-                                                                    : [...form.nicheIds, n.id];
-                                                                setForm({ ...form, nicheIds: newIds });
-                                                            }}
-                                                            className={`
-                                                                px-4 py-2 rounded-xl text-[11px] font-bold transition-all border
-                                                                ${isSelected 
-                                                                    ? 'bg-white text-black border-white' 
-                                                                    : 'bg-transparent border-white/10 text-white/40 hover:border-white/20 hover:text-white'}
-                                                            `}
-                                                        >
-                                                            {n.name}
-                                                        </button>
-                                                    );
-                                                })}
-                                            </div>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Tipo de Contrato</label>
+                                            <select 
+                                                value={form.contractType}
+                                                onChange={(e) => setForm({ ...form, contractType: e.target.value })}
+                                                className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-bold text-white appearance-none focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                            >
+                                                <option value="COMMISSION" className="bg-[#1a1628]">Comissionado</option>
+                                                <option value="RENT" className="bg-[#1a1628]">Aluguel</option>
+                                            </select>
                                         </div>
 
-                                        <div className="grid grid-cols-2 gap-4">
+                                        {form.contractType === 'COMMISSION' && (
                                             <div className="space-y-2">
-                                                <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 ml-1">Tipo de Contrato</label>
-                                                <select 
-                                                    value={form.contractType}
-                                                    onChange={(e) => setForm({ ...form, contractType: e.target.value })}
-                                                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-[14px] font-medium text-white appearance-none focus:outline-none focus:border-[#8b5cf6]/50 transition-all cursor-pointer"
-                                                >
-                                                    <option value="COMMISSION" className="bg-[#1a1628]">Comissionado</option>
-                                                    <option value="RENT" className="bg-[#1a1628]">Aluguel</option>
-                                                </select>
-                                            </div>
-
-                                            {form.contractType === 'COMMISSION' && (
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold uppercase tracking-[0.15em] text-white/40 ml-1">Comissão Geral (%)</label>
-                                                    <div className="relative">
-                                                        <input 
-                                                            type="number"
-                                                            value={form.commission}
-                                                            onChange={(e) => setForm({ ...form, commission: Number(e.target.value) })}
-                                                            min={0} max={100}
-                                                            className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 pr-12 text-[14px] font-medium text-white focus:outline-none focus:border-[#8b5cf6]/50 transition-all"
-                                                        />
-                                                        <span className="absolute right-5 top-1/2 -translate-y-1/2 text-white/20 font-bold">%</span>
-                                                    </div>
+                                                <label className="text-[10px] font-black uppercase tracking-widest text-white/40 ml-1">Comissão Geral (%)</label>
+                                                <div className="relative">
+                                                    <input 
+                                                        type="number"
+                                                        value={form.commission}
+                                                        onChange={(e) => setForm({ ...form, commission: Number(e.target.value) })}
+                                                        min={0} max={100}
+                                                        className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl px-5 pr-12 text-[14px] font-bold text-white focus:outline-none focus:border-[var(--accent-light)] transition-all"
+                                                    />
+                                                    <span className="absolute right-5 top-1/2 -translate-y-1/2 text-white/20 font-bold">%</span>
                                                 </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {error && <p className="text-[12px] font-semibold text-red-400 p-4 bg-red-400/5 border border-red-400/10 rounded-2xl">{error}</p>}
-
-                                <div className="flex items-center gap-4 mt-4">
-                                    <button onClick={() => setShowForm(false)}
-                                        className="flex-1 h-14 rounded-2xl text-[12px] font-bold uppercase tracking-widest text-white/40 hover:text-white hover:bg-white/5 transition-all">
-                                        Cancelar
-                                    </button>
-                                    <button onClick={handleSave} disabled={saving} 
-                                        className="flex-[1.5] h-14 bg-gradient-to-r from-[#8b5cf6] to-[#d946ef] text-white rounded-2xl text-[12px] font-black uppercase tracking-widest shadow-lg shadow-[#8b5cf6]/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
-                                        {saving ? (
-                                            <>
-                                                <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
-                                                Processando...
-                                            </>
-                                        ) : (
-                                            isEditing ? 'Salvar Alterações' : 'Criar Conta'
+                                            </div>
                                         )}
-                                    </button>
+                                    </div>
                                 </div>
+                            )}
+
+                            {error && <p className="text-xs font-bold text-red-500 bg-red-500/10 p-4 rounded-2xl">{error}</p>}
+
+                            <div className="flex items-center gap-4 pt-4">
+                                <button onClick={() => setShowForm(false)}
+                                    className="flex-1 h-12 rounded-xl text-[11px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-all">
+                                    Cancelar
+                                </button>
+                                <button onClick={handleSave} disabled={saving} 
+                                    className="flex-[1.5] h-12 bg-gradient-to-r from-[#8b5cf6] to-[#d946ef] text-white rounded-xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-[#8b5cf6]/20 hover:scale-[1.02] active:scale-95 transition-all text-center">
+                                    {saving ? 'CRIANDO...' : (isEditing ? 'SALVAR ALTERAÇÕES' : 'CRIAR CONTA')}
+                                </button>
                             </div>
                         </div>
                     </div>

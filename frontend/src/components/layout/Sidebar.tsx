@@ -88,14 +88,14 @@ function NavContent({ onClose }: { onClose?: () => void }) {
         <div className="flex flex-col h-full">
 
             {/* ── Logo ─────────────────────────────────────── */}
-            <div className="flex items-center justify-between px-6 py-8 border-b border-white/5">
-                <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
-                        <Scissors size={20} color="#fff" strokeWidth={2} />
+            <div className="flex items-center justify-between px-8 py-10 border-b border-white/5">
+                <div className="flex items-center gap-5">
+                    <div className="w-11 h-11 rounded-[1.25rem] bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
+                        <Scissors size={22} color="#fff" strokeWidth={2} />
                     </div>
                     <div>
                         <p className="text-xl font-serif font-bold tracking-tight text-white leading-tight">Bella Beauty</p>
-                        <p className="text-[10px] font-bold tracking-widest text-[#8b5cf6] uppercase mt-0.5">Premium Spa</p>
+                        <p className="text-[10px] font-bold tracking-[0.2em] text-[#8b5cf6] uppercase mt-1">Premium Spa</p>
                     </div>
                 </div>
                 {onClose && (
@@ -106,34 +106,34 @@ function NavContent({ onClose }: { onClose?: () => void }) {
             </div>
 
             {/* ── Nav com grupos ───────────────────────────── */}
-            <nav className="flex-1 overflow-y-auto px-4 py-8 custom-scrollbar">
+            <nav className="flex-1 overflow-y-auto px-5 py-10 custom-scrollbar">
                 {NAV_GROUPS.map((group) => {
                     const visible = group.items.filter((item) => canSee(item.roles, item.permission));
                     if (!visible.length) return null;
                     return (
-                        <div key={group.label} className="mb-10 last:mb-0">
+                        <div key={group.label} className="mb-12 last:mb-0">
                             {/* Label do grupo */}
-                            <p className="px-3 mb-4 text-[10px] font-bold tracking-[0.2em] text-slate-500 uppercase">
+                            <p className="px-4 mb-6 text-[10px] font-bold tracking-[0.25em] text-slate-600 uppercase">
                                 {group.label}
                             </p>
-                            <div className="space-y-1">
+                            <div className="space-y-2">
                                 {visible.map((item) => {
                                     const Icon = item.icon;
                                     const active = isActive(item.href);
                                     return (
                                         <Link key={item.href} href={item.href} onClick={onClose}
                                             className={`
-                                                flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group
+                                                flex items-center gap-4 px-4 py-3.5 rounded-2xl text-[13px] transition-all duration-300 group
                                                 ${active 
-                                                    ? 'bg-gradient-to-r from-purple-500/10 to-transparent text-white font-semibold' 
-                                                    : 'text-slate-400 hover:text-white hover:bg-white/5'
+                                                    ? 'bg-gradient-to-r from-purple-500/10 via-purple-500/5 to-transparent text-white font-bold shadow-sm' 
+                                                    : 'text-slate-400 hover:text-white hover:bg-white/[0.03]'
                                                 }
                                             `}
                                         >
-                                            <Icon size={18} className={`flex-shrink-0 transition-colors ${active ? 'text-[#8b5cf6]' : 'text-slate-500 group-hover:text-slate-300'}`} />
-                                            <span className="flex-1">{item.label}</span>
+                                            <Icon size={18} className={`flex-shrink-0 transition-colors duration-300 ${active ? 'text-[#8b5cf6]' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                                            <span className="flex-1 tracking-wide">{item.label}</span>
                                             {active && (
-                                                <div className="w-1 h-1 rounded-full bg-[#8b5cf6] shadow-[0_0_8px_rgba(139,92,246,0.8)]" />
+                                                <div className="w-1.5 h-1.5 rounded-full bg-[#8b5cf6] shadow-[0_0_10px_rgba(139,92,246,0.6)]" />
                                             )}
                                         </Link>
                                     );
@@ -180,44 +180,37 @@ export default function Sidebar() {
     return (
         <>
             {/* ── Desktop ──────────────────────────────────── */}
-            <aside className="hidden lg:flex flex-col h-screen w-[230px] shrink-0"
-                style={{ background: 'var(--bg-card)', borderRight: '1px solid var(--border)' }}>
+            <aside className="hidden lg:flex flex-col h-screen w-[270px] shrink-0 sticky top-0"
+                style={{ 
+                    background: 'var(--bg-base)', 
+                    borderRight: '1px solid var(--border)',
+                    boxShadow: '10px 0 30px rgba(0,0,0,0.2)'
+                }}>
                 <NavContent />
             </aside>
 
             {/* ── Mobile top bar ───────────────────────────── */}
-            <div className="lg:hidden flex items-center justify-between" style={{
-                position: 'fixed', top: 0, left: 0, right: 0, zIndex: 40,
-                padding: '12px 16px',
-                background: 'var(--bg-card)',
-                borderBottom: '1px solid var(--border)',
-                backdropFilter: 'blur(8px)',
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <div style={{
-                        width: 28, height: 28, borderRadius: 8,
-                        background: 'linear-gradient(135deg,#7c3aed,#6d28d9)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}>
-                        <Scissors size={12} color="#fff" />
+            <div className="lg:hidden flex items-center justify-between fixed top-0 left-0 right-0 z-40 px-6 py-4 bg-[#060608]/80 border-b border-white/5 backdrop-blur-xl">
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center shadow-lg shadow-purple-500/20">
+                        <Scissors size={18} color="#fff" strokeWidth={2} />
                     </div>
-                    <span style={{ fontSize: 14, fontWeight: 700 }}>Bella Beauty</span>
+                    <div>
+                        <span className="text-sm font-serif font-bold text-white block leading-none">Bella Beauty</span>
+                        <span className="text-[9px] font-bold text-[#8b5cf6] uppercase tracking-wider">Premium Spa</span>
+                    </div>
                 </div>
-                <button onClick={() => setMobileOpen(true)}
-                    style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: 4 }}>
-                    <Menu size={22} />
+                <button onClick={() => setMobileOpen(true)} className="p-2 text-slate-400 hover:text-white transition-colors">
+                    <Menu size={24} />
                 </button>
             </div>
 
             {/* ── Mobile drawer ────────────────────────────── */}
             {mobileOpen && (
-                <div className="lg:hidden" style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex' }}>
-                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.65)' }}
+                <div className="lg:hidden fixed inset-0 z-50 flex animate-fade-in">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                         onClick={() => setMobileOpen(false)} />
-                    <aside style={{
-                        position: 'relative', width: 250, height: '100%', display: 'flex', flexDirection: 'column',
-                        background: 'var(--bg-card)', borderRight: '1px solid var(--border)',
-                    }}>
+                    <aside className="relative w-[300px] h-full flex flex-col bg-[#060608] border-r border-white/10 shadow-2xl animate-scale-in">
                         <NavContent onClose={() => setMobileOpen(false)} />
                     </aside>
                 </div>

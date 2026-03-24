@@ -218,7 +218,7 @@ export default function ServicesPage() {
                         Gestão de Serviços
                     </h1>
                     <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-500">
+                        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-[var(--accent-gold)]/10 border border-[var(--accent-gold)]/20 text-[var(--accent-gold)]">
                             <Boxes size={12} className="animate-pulse" />
                             <span className="text-[10px] font-black uppercase tracking-widest">{niches.length} Nichos Ativos</span>
                         </div>
@@ -231,7 +231,7 @@ export default function ServicesPage() {
                 <div className="flex items-center gap-3 self-start md:self-center">
                     <button 
                         onClick={openNewNiche}
-                        className="h-14 px-8 bg-gradient-to-r from-purple-600 to-purple-500 text-white text-[11px] font-black uppercase tracking-[0.2em] rounded-2xl shadow-xl shadow-purple-600/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3"
+                        className="btn-gold h-14 px-8 shadow-[var(--accent-gold-glow)]"
                     >
                         <FolderPlus size={18} /> Novo Nicho
                     </button>
@@ -241,8 +241,8 @@ export default function ServicesPage() {
             {loading ? (
                 <div className="flex flex-col items-center justify-center py-40 gap-6 text-center">
                     <div className="relative">
-                        <div className="w-16 h-16 border-2 border-purple-500/20 rounded-full animate-ping absolute inset-0" />
-                        <div className="w-16 h-16 border-2 border-t-purple-500 border-r-transparent border-b-purple-500 border-l-transparent rounded-full animate-spin relative z-10" />
+                        <div className="w-16 h-16 border-2 border-[var(--accent-gold)]/20 rounded-full animate-ping absolute inset-0" />
+                        <div className="w-16 h-16 border-2 border-t-[var(--accent-gold)] border-r-transparent border-b-[var(--accent-gold)] border-l-transparent rounded-full animate-spin relative z-10" />
                     </div>
                     <p className="text-sm font-serif italic text-slate-500">Sincronizando catálogo de serviços...</p>
                 </div>
@@ -276,11 +276,11 @@ export default function ServicesPage() {
                                         className="flex items-center gap-6 cursor-pointer" 
                                         onClick={() => toggleNiche(niche.id)}
                                     >
-                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 text-purple-400 transition-all duration-500 ${isNicheExpanded ? 'rotate-0 shadow-lg shadow-purple-500/10' : '-rotate-90 opacity-40'}`}>
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center bg-white/5 border border-white/10 text-[var(--accent-gold)] transition-all duration-500 ${isNicheExpanded ? 'rotate-0 shadow-lg shadow-[var(--accent-gold-glow)]' : '-rotate-90 opacity-40'}`}>
                                             <ChevronDown size={24} />
                                         </div>
                                         <div>
-                                            <h2 className="text-4xl font-serif font-bold tracking-tight text-white group-hover/niche-section:text-purple-400 transition-colors">
+                                            <h2 className="text-4xl font-serif font-bold tracking-tight text-white group-hover/niche-section:text-[var(--accent-gold)] transition-colors">
                                                 {niche.name}
                                             </h2>
                                             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mt-1 ml-1">
@@ -292,7 +292,7 @@ export default function ServicesPage() {
                                     <div className="flex items-center gap-3">
                                         <button 
                                             onClick={() => openNewCategory(niche.id)}
-                                            className="px-5 py-2.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[10px] font-black text-purple-400 uppercase tracking-widest hover:bg-purple-500 hover:text-white transition-all duration-300"
+                                            className="px-5 py-2.5 rounded-xl bg-[var(--accent-gold)]/10 border border-[var(--accent-gold)]/20 text-[10px] font-black text-[var(--accent-gold)] uppercase tracking-widest hover:bg-[var(--accent-gold)] hover:text-[#1a1505] transition-all duration-300"
                                         >
                                             + Categoria
                                         </button>
@@ -312,7 +312,7 @@ export default function ServicesPage() {
                                         {!niche.categories?.length ? (
                                             <div className="py-12 px-8 rounded-3xl border border-dashed border-white/5 flex flex-col items-center gap-4 text-center">
                                                 <p className="text-sm font-serif italic text-slate-600">Nenhuma categoria cadastrada em {niche.name}.</p>
-                                                <button onClick={() => openNewCategory(niche.id)} className="text-[9px] font-black uppercase tracking-widest text-purple-400 py-1 underline">Adicionar categoria agora</button>
+                                                <button onClick={() => openNewCategory(niche.id)} className="text-[9px] font-black uppercase tracking-widest text-[var(--accent-gold)] py-1 underline">Adicionar categoria agora</button>
                                             </div>
                                         ) : (
                                             niche.categories.map(cat => {
@@ -328,7 +328,7 @@ export default function ServicesPage() {
                                                                 <div className={`transition-all duration-500 ${isExpanded ? 'rotate-0 opacity-100' : '-rotate-90 opacity-20'}`}>
                                                                     <ChevronDown size={18} className="text-slate-400" />
                                                                 </div>
-                                                                <h3 className="text-xl font-bold tracking-tight text-white group-hover/category:text-purple-300 transition-colors">
+                                                                <h3 className="text-xl font-bold tracking-tight text-white group-hover/category:text-[var(--accent-gold)] transition-colors">
                                                                     {cat.name}
                                                                 </h3>
                                                                 <div className="flex items-center gap-2 px-2.5 py-0.5 rounded-lg bg-white/5 text-[9px] font-black text-slate-500 uppercase tracking-widest border border-white/5">
@@ -339,7 +339,7 @@ export default function ServicesPage() {
                                                             <div className="flex items-center gap-4">
                                                                 <button 
                                                                     onClick={() => openNewService(cat.id)}
-                                                                    className="text-[9px] font-black tracking-[0.2em] text-slate-500 hover:text-purple-400 uppercase transition-all"
+                                                                    className="text-[9px] font-black tracking-[0.2em] text-slate-500 hover:text-[var(--accent-gold)] uppercase transition-all"
                                                                 >
                                                                     + ADICIONAR SERVIÇO
                                                                 </button>
@@ -367,7 +367,7 @@ export default function ServicesPage() {
                                                                             className="card group/card-service flex flex-col gap-6 p-6 hover:border-purple-500/40 hover:-translate-y-1 transition-all duration-500 cursor-default"
                                                                         >
                                                                             <div className="flex items-start justify-between">
-                                                                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/5 flex items-center justify-center text-purple-400 group-hover/card-service:scale-110 transition-transform duration-500">
+                                                                                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/5 flex items-center justify-center text-[var(--accent-gold)] group-hover/card-service:scale-110 transition-transform duration-500">
                                                                                     <Scissors size={22} strokeWidth={1.5} />
                                                                                 </div>
                                                                                 <div className="flex items-center gap-1 opacity-0 group-hover/card-service:opacity-100 transition-opacity">
@@ -455,7 +455,7 @@ export default function ServicesPage() {
                                         <input 
                                             value={form.name} 
                                             onChange={e => setForm({...form, name: e.target.value})} 
-                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-purple-500/50 transition-all outline-none font-bold" 
+                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-gold)]/50 transition-all outline-none font-bold" 
                                             placeholder="Ex: Corte Premium" 
                                         />
                                     </div>
@@ -480,7 +480,7 @@ export default function ServicesPage() {
                                                     type="number" 
                                                     value={form.duration} 
                                                     onChange={e => setForm({...form, duration: e.target.value})} 
-                                                    className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-white focus:border-purple-500/50 transition-all outline-none font-bold" 
+                                                    className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-white focus:border-[var(--accent-gold)]/50 transition-all outline-none font-bold" 
                                                     placeholder="60" 
                                                 />
                                                 <Clock size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-500" />
@@ -497,7 +497,7 @@ export default function ServicesPage() {
                                         <select 
                                             value={categoryForm.nicheId} 
                                             onChange={e => setCategoryForm({...categoryForm, nicheId: e.target.value})}
-                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-purple-500/50 transition-all outline-none font-bold appearance-none"
+                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-gold)]/50 transition-all outline-none font-bold appearance-none"
                                         >
                                             <option value="" className="bg-[#0c0c10]">Selecione um Nicho</option>
                                             {niches.map(n => <option key={n.id} value={n.id} className="bg-[#0c0c10]">{n.name}</option>)}
@@ -508,7 +508,7 @@ export default function ServicesPage() {
                                         <input 
                                             value={categoryForm.name} 
                                             onChange={e => setCategoryForm({...categoryForm, name: e.target.value})} 
-                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-purple-500/50 transition-all outline-none font-bold" 
+                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-gold)]/50 transition-all outline-none font-bold" 
                                             placeholder="Ex: Tratamento Capilar" 
                                         />
                                     </div>
@@ -522,7 +522,7 @@ export default function ServicesPage() {
                                         <input 
                                             value={nicheForm.name} 
                                             onChange={e => setNicheForm({...nicheForm, name: e.target.value})} 
-                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-purple-500/50 transition-all outline-none font-bold" 
+                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-gold)]/50 transition-all outline-none font-bold" 
                                             placeholder="Ex: Cabelos e Penteados" 
                                         />
                                     </div>
@@ -532,7 +532,7 @@ export default function ServicesPage() {
                                             type="number" 
                                             value={nicheForm.order} 
                                             onChange={e => setNicheForm({...nicheForm, order: Number(e.target.value)})} 
-                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-purple-500/50 transition-all outline-none font-bold" 
+                                            className="h-14 bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-gold)]/50 transition-all outline-none font-bold" 
                                         />
                                     </div>
                                 </div>
@@ -557,7 +557,7 @@ export default function ServicesPage() {
                             <button 
                                 onClick={showForm ? handleSaveService : showNicheForm ? handleSaveNiche : handleSaveCategory} 
                                 disabled={saving}
-                                className="flex-1 h-14 rounded-2xl bg-gradient-to-r from-purple-600 to-purple-500 text-white text-[10px] font-black uppercase tracking-widest shadow-xl shadow-purple-600/20 active:scale-95 transition-all"
+                                className="flex-1 h-14 btn-gold shadow-[var(--accent-gold-glow)]"
                             >
                                 {saving ? 'Sincronizando...' : 'Confirmar'}
                             </button>

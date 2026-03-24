@@ -115,7 +115,7 @@ export default function DashboardPage() {
                     </button>
                     
                     <div className="flex items-center gap-3 px-4 min-w-[160px] justify-center">
-                        <CalendarDays size={16} className="text-[#8b5cf6]" />
+                        <CalendarDays size={16} className="text-[var(--accent-gold)]" />
                         <span className="text-sm font-bold tracking-wide text-[var(--text-primary)]">
                             {MONTHS[month - 1].toUpperCase()} {year}
                         </span>
@@ -141,7 +141,7 @@ export default function DashboardPage() {
                             <StatCard icon={Users} label="Clientes atendidos" value={data?.topClients.length ?? 0} color="#7c3aed" sub="top 5 exibidos" />
                             <StatCard icon={Award} label="Profissionais ativos" value={data?.topProfessionals.length ?? 0} color="#22c55e" />
                             {isAdmin && (
-                                <StatCard icon={DollarSign} label="Faturamento bruto" value={`R$ ${totalRevenue.toFixed(2)}`} color="#f59e0b" sub="receita total do período" />
+                                <StatCard icon={DollarSign} label="Faturamento bruto" value={`R$ ${totalRevenue.toFixed(2)}`} color="var(--accent-gold)" sub="receita total do período" />
                             )}
                         </div>
                     )}
@@ -160,7 +160,7 @@ export default function DashboardPage() {
                         <div className="card !p-8 bg-[var(--bg-surface)] border border-[var(--border)] rounded-[2rem]">
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-[#8b5cf6]">
+                                    <div className="w-8 h-8 rounded-lg bg-[var(--accent-gold)]/10 flex items-center justify-center text-[var(--accent-gold)]">
                                         <Scissors size={18} strokeWidth={2} />
                                     </div>
                                     <h2 className="text-base font-serif font-bold tracking-wide text-[var(--text-primary)]">
@@ -194,8 +194,8 @@ export default function DashboardPage() {
                                         <Bar dataKey="count" fill="url(#barGradient)" radius={[0, 4, 4, 0]} barSize={20}>
                                             <defs>
                                                 <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
-                                                    <stop offset="0%" stopColor="#8b5cf6" />
-                                                    <stop offset="100%" stopColor="#6d28d9" />
+                                                    <stop offset="0%" stopColor="var(--accent-gold-deep)" />
+                                                    <stop offset="100%" stopColor="var(--accent-gold)" />
                                                 </linearGradient>
                                             </defs>
                                         </Bar>
@@ -253,7 +253,7 @@ export default function DashboardPage() {
                         <div className="card !p-8 mt-4 bg-[var(--bg-surface)] border border-[var(--border)] rounded-[2rem]">
                             <div className="flex items-center justify-between mb-10">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-[#f59e0b]">
+                                    <div className="w-8 h-8 rounded-lg bg-[var(--accent-gold)]/10 flex items-center justify-center text-[var(--accent-gold)]">
                                         <Award size={18} strokeWidth={2} />
                                     </div>
                                     <h2 className="text-base font-serif font-bold tracking-wide text-[var(--text-primary)]">
@@ -279,7 +279,7 @@ export default function DashboardPage() {
                                         `}>
                                             {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
                                         </div>
-                                        <p className="text-sm font-bold text-[var(--text-primary)] mb-1 capitalize leading-tight group-hover:text-[#8b5cf6] transition-colors">
+                                        <p className="text-sm font-bold text-[var(--text-primary)] mb-1 capitalize leading-tight group-hover:text-[var(--accent-gold)] transition-colors">
                                             {p.professional.toLowerCase()}
                                         </p>
                                         <div className="flex items-center gap-2 mb-3">

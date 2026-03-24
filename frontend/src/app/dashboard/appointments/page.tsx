@@ -506,9 +506,9 @@ function BookingModal({ date, slot, professional, professionals, onClose, onSave
                                 Cancelar
                             </button>
                             <button onClick={handleSave} disabled={saving} 
-                                className="btn-primary"
+                                className="btn-gold !rounded-xl"
                                 style={{
-                                    flex: 2, padding: '12px 0', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                                    flex: 2, padding: '12px 0', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
                                     fontSize: 13, fontWeight: 700, transition: 'all 0.2s',
                                     opacity: saving ? 0.7 : 1
                                 }}
@@ -761,10 +761,9 @@ function AppointmentDetailsModal({ ap, professionals, onClose, onSaved, onEdit }
                         <div className="flex gap-2 mt-4">
                             <button className="btn-secondary flex-1" onClick={() => setView('DETAILS')}>Voltar</button>
                             <button 
-                                className="btn-primary flex-1" 
+                                className="btn-gold flex-1 !rounded-xl" 
                                 disabled={saving || payments.reduce((acc, p) => acc + Number(p.amount), 0) < total - 0.01} 
                                 onClick={handleCheckout} 
-                                style={{ background: 'var(--success)' }}
                             >
                                 {saving ? "Processando..." : `Cobrar R$ ${total.toFixed(2)}`}
                             </button>
@@ -925,7 +924,8 @@ export default function AppointmentsPage() {
                     {date === today && (
                         <span style={{
                             display: 'inline-block', marginTop: 2, fontSize: 11, fontWeight: 700, letterSpacing: '0.04em',
-                            background: 'rgba(124,58,237,0.2)', color: 'var(--accent-light)', borderRadius: 999, padding: '1px 10px',
+                            background: 'var(--accent-gold-glow)', color: 'var(--accent-gold)', borderRadius: 999, padding: '1px 10px',
+                            border: '1px solid var(--accent-gold-glow)'
                         }}>HOJE</span>
                     )}
                 </div>
@@ -1054,7 +1054,7 @@ export default function AppointmentsPage() {
                                                             background: isUnavailable ? 'rgba(255,255,255,0.02)' : 'transparent'
                                                         }}
                                                         onMouseEnter={e => {
-                                                            if (canClick) (e.currentTarget as HTMLElement).style.background = 'rgba(124,58,237,0.07)';
+                                                            if (canClick) (e.currentTarget as HTMLElement).style.background = 'var(--accent-gold-glow)';
                                                         }}
                                                         onMouseLeave={e => {
                                                             (e.currentTarget as HTMLElement).style.background = 'transparent';
@@ -1070,7 +1070,7 @@ export default function AppointmentsPage() {
                                                                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
                                                                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '0'; }}
                                                             >
-                                                                <span style={{ fontSize: 11, color: 'var(--accent-light)', fontWeight: 600 }}>+ agendar</span>
+                                                                <span style={{ fontSize: 11, color: 'var(--accent-gold)', fontWeight: 600 }}>+ agendar</span>
                                                             </div>
                                                         )}
 
@@ -1080,13 +1080,13 @@ export default function AppointmentsPage() {
                                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                                 opacity: canScheduleOutside ? 0.6 : 0.2,
                                                                 background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px)',
-                                                                border: (isUnavailable && canScheduleOutside) ? '1px dashed var(--accent-light)' : 'none',
+                                                                border: (isUnavailable && canScheduleOutside) ? '1px dashed var(--accent-gold)' : 'none',
                                                                 transition: 'opacity 0.2s'
                                                             }}
                                                             title={canScheduleOutside ? 'Fora do horário de trabalho' : 'Indisponível'}>
                                                                 <span style={{ 
                                                                     fontSize: 8, 
-                                                                    color: canScheduleOutside ? 'var(--accent-light)' : 'var(--text-muted)', 
+                                                                    color: canScheduleOutside ? 'var(--accent-gold)' : 'var(--text-muted)', 
                                                                     fontWeight: 800, 
                                                                     textTransform: 'uppercase', 
                                                                     letterSpacing: '0.1em' 

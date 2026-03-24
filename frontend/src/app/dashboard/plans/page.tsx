@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { CreditCard, Check, Sparkles, Building2, MessageSquare, X } from 'lucide-react';
+import { useSettingsStore } from '@/store/settings.store';
 
 interface SettingsData {
     plan: string;
@@ -12,31 +13,24 @@ interface SettingsData {
 }
 
 export default function PlansPage() {
-    const [loading, setLoading] = useState(true);
+    const { settings: data, fetchSettings, updatePlan, loading } = useSettingsStore();
     const [saving, setSaving] = useState(false);
-    const [data, setData] = useState<SettingsData | null>(null);
     const [selectedCycle, setSelectedCycle] = useState('MONTHLY');
     const [success, setSuccess] = useState('');
 
-    const fetchSettings = () => {
-        setLoading(true);
-        api.get('/settings')
-            .then((r) => {
-                setData(r.data);
-                setSelectedCycle(r.data.billingCycle || 'MONTHLY');
-            })
-            .catch(console.error)
-            .finally(() => setLoading(false));
-    };
+    useEffect(() => {
+        fetchSettings();
+    }, []);
 
-    useEffect(() => { fetchSettings(); }, []);
+    useEffect(() => {
+        if (data?.billingCycle) setSelectedCycle(data.billingCycle);
+    }, [data?.billingCycle]);
 
     const handleSubscribe = async (plan: string) => {
         try {
             setSaving(true);
             setSuccess('');
-            const res = await api.patch('/settings/plan', { plan, billingCycle: selectedCycle });
-            setData(prev => prev ? { ...prev, plan, billingCycle: selectedCycle, planStartedAt: res.data.planStartedAt, planActiveUntil: res.data.planActiveUntil } : null);
+            await updatePlan(plan, selectedCycle);
             setSuccess(`Plano ${plan === 'PREMIUM' ? 'Premium' : 'Standard'} ativado com sucesso!`);
             setTimeout(() => setSuccess(''), 4000);
         } catch (e) {
@@ -80,9 +74,9 @@ export default function PlansPage() {
             <div className="w-full max-w-6xl space-y-12">
                 {/* ── Header ────────────────────────────────────────── */}
                 <div className="flex flex-col items-center text-center space-y-6">
-                    <div className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-purple-600 to-purple-500 p-[1px] shadow-2xl shadow-purple-600/20">
+                    <div className="w-20 h-20 rounded-[2.5rem] bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-gold-deep)] p-[1px] shadow-2xl shadow-[var(--accent-gold-glow)]">
                         <div className="w-full h-full rounded-[2.5rem] bg-[var(--bg-surface)] flex items-center justify-center">
-                            <CreditCard className="text-purple-400" size={32} strokeWidth={1.5} />
+                            <CreditCard className="text-[var(--accent-gold)]" size={32} strokeWidth={1.5} />
                         </div>
                     </div>
                     
@@ -106,8 +100,8 @@ export default function PlansPage() {
                                 <span className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest">Expira em</span>
                                 <span className="text-sm font-bold text-[var(--text-primary)]">{new Date(data.planActiveUntil).toLocaleDateString('pt-BR')}</span>
                             </div>
-                            <div className="px-6 py-4 rounded-[1.5rem] bg-purple-500/10 border border-purple-500/20 backdrop-blur-md flex flex-col items-start gap-1">
-                                <span className="text-[9px] font-black text-purple-400 uppercase tracking-widest">Tempo Restante</span>
+                            <div className="px-6 py-4 rounded-[1.5rem] bg-[var(--accent-gold-glow)] border border-[var(--accent-gold)]/20 backdrop-blur-md flex flex-col items-start gap-1">
+                                <span className="text-[9px] font-black text-[var(--accent-gold)] uppercase tracking-widest">Tempo Restante</span>
                                 <span className="text-sm font-black text-[var(--text-primary)]">{remainingDays} {remainingDays === 1 ? 'dia' : 'dias'}</span>
                             </div>
                         </div>
@@ -129,7 +123,7 @@ export default function PlansPage() {
                                 onClick={() => setSelectedCycle(cycle)}
                                 className={`px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all duration-300 whitespace-nowrap ${
                                     selectedCycle === cycle 
-                                        ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-white shadow-lg shadow-purple-600/30' 
+                                        ? 'bg-gradient-to-r from-[var(--accent-gold)] to-[var(--accent-gold-deep)] text-[#1a1505] shadow-lg shadow-[var(--accent-gold-glow)]' 
                                         : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--accent)]/5'
                                 }`}
                             >
@@ -205,14 +199,14 @@ export default function PlansPage() {
                     </div>
 
                     {/* Plano Premium */}
-                    <div className={`relative group p-[1.5px] rounded-[1.5rem] transition-all duration-500 ${data?.plan === 'PREMIUM' ? 'bg-gradient-to-b from-purple-500 to-transparent shadow-[0_30px_100px_rgba(124,58,237,0.1)]' : 'bg-[var(--border)] hover:bg-[var(--border-hover)]'}`}>
+                    <div className={`relative group p-[1.5px] rounded-[1.5rem] transition-all duration-500 ${data?.plan === 'PREMIUM' ? 'bg-gradient-to-b from-[var(--accent-gold)] to-transparent shadow-[0_30px_100px_rgba(212,175,55,0.1)]' : 'bg-[var(--border)] hover:bg-[var(--border-hover)]'}`}>
                         <div className="bg-[var(--bg-surface)] rounded-[1.5rem] p-12 h-full flex flex-col relative">
-                            <div className="absolute top-8 right-8 px-4 py-1.5 bg-purple-600 text-[10px] font-black text-white uppercase tracking-widest rounded-full shadow-lg shadow-purple-600/30">
+                            <div className={`absolute top-8 right-8 px-4 py-1.5 text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg ${data?.plan === 'PREMIUM' ? 'bg-[var(--accent-gold)] text-[#1a1505]' : 'bg-[var(--text-muted)] text-white'}`}>
                                 {data?.plan === 'PREMIUM' ? 'Plano Ativo' : 'Recomendado'}
                             </div>
-
-                            <div className="w-14 h-14 bg-purple-500/10 rounded-2xl flex items-center justify-center mb-8 border border-purple-500/10">
-                                <Sparkles size={24} className="text-purple-400" />
+ 
+                            <div className="w-14 h-14 bg-[var(--accent-gold)]/10 rounded-2xl flex items-center justify-center mb-8 border border-[var(--accent-gold)]/10">
+                                <Sparkles size={24} className="text-[var(--accent-gold)]" />
                             </div>
 
                             <h2 className="text-3xl font-serif font-bold text-[var(--text-primary)] mb-2">Premium</h2>
@@ -232,8 +226,8 @@ export default function PlansPage() {
                                 disabled={saving || data?.plan === 'PREMIUM'}
                                 className={`w-full py-5 rounded-[1.8rem] text-[11px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl ${
                                     data?.plan === 'PREMIUM'
-                                        ? 'bg-purple-500/5 text-purple-400/50 cursor-not-allowed border border-purple-500/10'
-                                        : 'bg-gradient-to-r from-purple-600 to-purple-500 text-white hover:scale-[1.02] active:scale-95 shadow-purple-600/30'
+                                        ? 'bg-[var(--accent-gold)]/5 text-[var(--accent-gold)]/50 cursor-not-allowed border border-[var(--accent-gold)]/10'
+                                        : 'btn-gold hover:scale-[1.02] active:scale-95 shadow-[var(--accent-gold-glow)]'
                                 }`}
                             >
                                 {data?.plan === 'PREMIUM' ? 'Plano Atual' : 'Upgrade para Premium'}
@@ -243,15 +237,15 @@ export default function PlansPage() {
                                 <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest ml-1 mb-2">Inclui Standard e MAIS:</p>
                                 <ul className="space-y-4">
                                     <li className="flex items-center gap-4">
-                                        <div className="w-8 h-8 rounded-xl bg-purple-500/10 flex items-center justify-center"><MessageSquare size={16} className="text-purple-400" /></div>
+                                        <div className="w-8 h-8 rounded-xl bg-[var(--accent-gold)]/10 flex items-center justify-center"><MessageSquare size={16} className="text-[var(--accent-gold)]" /></div>
                                         <span className="text-sm font-bold text-[var(--text-primary)] tracking-tight">Lembretes WhatsApp (24h e 2h)</span>
                                     </li>
                                     <li className="flex items-center gap-4 text-sm font-medium text-[var(--text-secondary)]">
-                                        <div className="w-5 h-5 rounded-full bg-purple-500/10 flex items-center justify-center"><Check size={12} className="text-purple-400" /></div>
+                                        <div className="w-5 h-5 rounded-full bg-[var(--accent-gold)]/10 flex items-center justify-center"><Check size={12} className="text-[var(--accent-gold)]" /></div>
                                         WhatsApp via Evolution ou API Oficial
                                     </li>
                                     <li className="flex items-center gap-4 text-sm font-medium text-[var(--text-secondary)]">
-                                        <div className="w-5 h-5 rounded-full bg-purple-500/10 flex items-center justify-center"><Check size={12} className="text-purple-400" /></div>
+                                        <div className="w-5 h-5 rounded-full bg-[var(--accent-gold)]/10 flex items-center justify-center"><Check size={12} className="text-[var(--accent-gold)]" /></div>
                                         Mensagens 100% Personalizáveis
                                     </li>
                                 </ul>

@@ -4,11 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth.store';
+import { useSettingsStore } from '@/store/settings.store';
+import { useEffect } from 'react';
 import {
     LayoutDashboard, Calendar, ClipboardList, DollarSign,
     TrendingDown, BarChart2, Package, Users, UserCog,
     Scissors, LogOut, Star, Menu, X, ChevronRight, Layers,
-    MessageSquare, CreditCard
+    MessageSquare, CreditCard, Sparkles
 } from 'lucide-react';
 
 interface NavItem {
@@ -68,6 +70,13 @@ function NavContent({ onClose }: { onClose?: () => void }) {
     const pathname = usePathname();
     const router = useRouter();
     const { user, logout } = useAuthStore();
+    const { settings, fetchSettings } = useSettingsStore();
+
+    useEffect(() => {
+        if (!settings) fetchSettings();
+    }, []);
+
+    if (!user) return null;
 
     const handleLogout = () => {
         logout();
@@ -87,56 +96,44 @@ function NavContent({ onClose }: { onClose?: () => void }) {
     };
 
     return (
-        <div className="flex flex-col h-full">
-
-            {/* ── Logo ─────────────────────────────────────── */}
-            <div className="flex items-center justify-between px-8 py-10 border-b border-[var(--border)]">
-                <div className="flex items-center gap-5">
-                    <div className="w-11 h-11 rounded-[1.25rem] bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center shadow-lg shadow-purple-500/20 flex-shrink-0">
-                        <Scissors size={22} color="#fff" strokeWidth={2} />
-                    </div>
-                    <div>
-                        <p className="text-xl font-serif font-bold tracking-tight text-[var(--text-primary)] leading-tight">Bella Beauty</p>
-                        <p className="text-[10px] font-bold tracking-[0.2em] text-[var(--accent)] uppercase mt-1">Premium Spa</p>
-                    </div>
+        <div className="flex flex-col h-full py-8 px-6">
+            {/* Logo */}
+            <div className="flex items-center gap-4 px-4 mb-20 animate-scale-in">
+                <div className="w-10 h-10 rounded-[1.2rem] bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-gold-deep)] flex items-center justify-center shadow-lg shadow-[var(--accent-gold-glow)] ring-1 ring-white/10">
+                    <Scissors size={20} color="#1a1505" strokeWidth={2.5} />
                 </div>
-                <div className="flex items-center gap-2">
-                    <ThemeToggle />
-                    {onClose && (
-                        <button onClick={onClose} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors lg:hidden">
-                            <X size={20} />
-                        </button>
-                    )}
+                <div className="flex flex-col">
+                    <span className="text-xl font-serif font-bold text-[var(--text-primary)] leading-none tracking-tight">Bella Beauty</span>
+                    <span className="text-[9px] font-black text-[var(--accent-gold)] uppercase tracking-[0.2em] mt-1.5">Premium Spa</span>
                 </div>
             </div>
 
-            {/* ── Nav com grupos ───────────────────────────── */}
-            <nav className="flex-1 overflow-y-auto px-5 py-10 custom-scrollbar">
+            <nav className="flex-1 space-y-12 overflow-y-auto px-2 -mx-2 pr-4 custom-scrollbar">
                 {NAV_GROUPS.map((group) => {
                     const visible = group.items.filter((item) => canSee(item.roles, item.permission));
                     if (!visible.length) return null;
                     return (
-                        <div key={group.label} className="mb-12 last:mb-0">
+                        <div key={group.label} className="mb-16 last:mb-0">
                             {/* Label do grupo */}
-                            <p className="px-4 mb-6 text-[10px] font-bold tracking-[0.25em] text-[var(--text-muted)] uppercase">
+                            <p className="px-4 mb-8 text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)] opacity-60">
                                 {group.label}
                             </p>
-                            <div className="space-y-2">
+                            <div className="space-y-4">
                                 {visible.map((item) => {
                                     const Icon = item.icon;
                                     const active = isActive(item.href);
                                     return (
                                         <Link key={item.href} href={item.href} onClick={onClose}
                                             className={`
-                                                flex items-center gap-4 px-4 py-3.5 rounded-2xl text-[13px] transition-all duration-300 group
+                                                flex items-center gap-5 px-5 py-4 rounded-2xl text-[14px] transition-all duration-300 group
                                                 ${active 
                                                     ? 'bg-gradient-to-r from-[var(--accent)]/10 via-[var(--accent)]/5 to-transparent text-[var(--text-primary)] font-bold shadow-sm' 
                                                     : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--accent)]/5'
                                                 }
                                             `}
                                         >
-                                            <Icon size={18} className={`flex-shrink-0 transition-colors duration-300 ${active ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]'}`} />
-                                            <span className="flex-1 tracking-wide">{item.label}</span>
+                                            <Icon size={20} className={`flex-shrink-0 transition-colors duration-300 ${active ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]'}`} />
+                                            <span className="flex-1 tracking-tight">{item.label}</span>
                                             {active && (
                                                 <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(139,92,246,0.6)]" />
                                             )}
@@ -147,6 +144,41 @@ function NavContent({ onClose }: { onClose?: () => void }) {
                         </div>
                     );
                 })}
+
+                {/* Subscription Status Widget */}
+                {settings && (
+                    <div className="mt-4 mb-16 px-4">
+                        <Link href="/dashboard/plans" className={`
+                            relative overflow-hidden p-5 rounded-[1.8rem] border transition-all duration-500 group/sub
+                            ${settings.plan === 'PREMIUM' 
+                                ? 'bg-gradient-to-br from-[#1a1505] to-[#0c0c10] border-[var(--accent-gold)]/30 shadow-lg shadow-[var(--accent-gold-glow)]' 
+                                : 'bg-[var(--bg-card)] border-[var(--border)]'
+                            }
+                        `}>
+                            <div className="flex items-center gap-3 relative z-10">
+                                <div className={`
+                                    w-10 h-10 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover/sub:scale-110
+                                    ${settings.plan === 'PREMIUM' ? 'bg-[var(--accent-gold)]/10 text-[var(--accent-gold)]' : 'bg-slate-500/10 text-slate-400'}
+                                `}>
+                                    {settings.plan === 'PREMIUM' ? <Sparkles size={20} /> : <CreditCard size={20} />}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-0.5 ${settings?.plan === 'PREMIUM' ? 'text-[var(--accent-gold)]' : 'text-[var(--text-muted)]'}`}>
+                                        Plano {settings?.plan}
+                                    </p>
+                                    <p className="text-[11px] font-bold text-[var(--text-primary)] truncate">
+                                        Assinatura Ativa
+                                    </p>
+                                </div>
+                                <ChevronRight size={14} className="text-[var(--text-muted)] group-hover/sub:translate-x-1 transition-transform" />
+                            </div>
+                            
+                            {settings.plan === 'PREMIUM' && (
+                                <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-gold)]/5 rounded-full blur-2xl -translate-y-12 translate-x-12" />
+                            )}
+                        </Link>
+                    </div>
+                )}
             </nav>
 
             {/* ── Usuário Profile Card ──────────────────────── */}
@@ -197,12 +229,12 @@ export default function Sidebar() {
             {/* ── Mobile top bar ───────────────────────────── */}
             <div className="lg:hidden flex items-center justify-between fixed top-0 left-0 right-0 z-40 px-6 py-4 bg-[var(--bg-surface)]/80 border-b border-[var(--border)] backdrop-blur-xl">
                 <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[var(--accent)] to-[var(--accent-deep)] flex items-center justify-center shadow-lg shadow-purple-500/20">
-                        <Scissors size={18} color="#fff" strokeWidth={2} />
+                    <div className="w-10 h-10 rounded-[1.2rem] bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-gold-deep)] flex items-center justify-center shadow-lg shadow-[var(--accent-gold-glow)] ring-1 ring-white/10">
+                        <Scissors size={20} color="#1a1505" strokeWidth={2.5} />
                     </div>
                     <div>
-                        <span className="text-sm font-serif font-bold text-[var(--text-primary)] block leading-none">Bella Beauty</span>
-                        <span className="text-[9px] font-bold text-[var(--accent)] uppercase tracking-wider">Premium Spa</span>
+                        <span className="text-base font-serif font-bold text-[var(--text-primary)] block leading-none tracking-tight">Bella Beauty</span>
+                        <span className="text-[9px] font-black text-[var(--accent-gold)] uppercase tracking-[0.2em] mt-1 block">Premium Spa</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">

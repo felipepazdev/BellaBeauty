@@ -226,10 +226,10 @@ export default function CashFlowPage() {
                                     key={m.id}
                                     onClick={() => setViewMode(m.id as ViewMode)}
                                     className={`
-                                        px-6 py-2.5 text-[11px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300
+                                        px-6 py-2.5 text-[11px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-500
                                         ${viewMode === m.id
-                                            ? 'bg-white text-black shadow-[0_8px_20px_-6px_rgba(255,255,255,0.3)]'
-                                            : 'text-white/30 hover:text-white/60 hover:bg-white/5'}
+                                            ? 'bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-gold-deep)] text-[#1a1505] shadow-lg shadow-[var(--accent-gold-glow)]'
+                                            : 'text-white/30 hover:text-[var(--accent-gold)] hover:bg-[var(--accent-gold)]/5'}
                                     `}
                                 >
                                     {m.label}
@@ -237,7 +237,7 @@ export default function CashFlowPage() {
                             ))}
                         </div>
 
-                        <button className="bg-[#22c55e] text-black h-11 px-6 rounded-xl font-black text-xs uppercase tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all">
+                        <button className="btn-gold h-11 px-8 !rounded-xl text-xs uppercase tracking-widest transition-all">
                             Nova Entrada
                         </button>
                     </div>
@@ -272,7 +272,7 @@ export default function CashFlowPage() {
                     <Card title="Receitas (+)" value={totals.income} green icon={<TrendingUp size={16} />} />
                     <Card title="Despesas (-)" value={totals.expense} red icon={<TrendingDown size={16} />} />
                     <Card title="Resultado (=)" value={totals.net} highlight icon={<ArrowRight size={16} />} />
-                    <Card title="Saldo Final" value={totals.final} fill icon={<LayoutGrid size={16} />} />
+                    <Card title="Saldo Final" value={totals.final} gold icon={<LayoutGrid size={16} />} />
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-[1fr] gap-8">
@@ -382,28 +382,30 @@ export default function CashFlowPage() {
 
 // --- SUBCOMPONENTS ---
 
-function Card({ title, value, green, red, highlight, fill, icon }: { title: string, value: number, green?: boolean, red?: boolean, highlight?: boolean, fill?: boolean, icon?: React.ReactNode }) {
+function Card({ title, value, green, red, highlight, gold, icon }: { title: string, value: number, green?: boolean, red?: boolean, highlight?: boolean, gold?: boolean, icon?: React.ReactNode }) {
     return (
         <div className={`
             relative overflow-hidden p-8 rounded-3xl border transition-all duration-500 group
-            ${fill ? 'bg-white text-black border-white shadow-[0_20px_40px_-15px_rgba(255,255,255,0.2)]' : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10'}
+            ${gold 
+                ? 'bg-gradient-to-br from-[#1a1505] to-[#0c0c10] border-[var(--accent-gold)]/30 shadow-lg shadow-[var(--accent-gold-glow)]' 
+                : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10'}
             flex flex-col items-center justify-center text-center gap-3 min-h-[180px]
         `}>
             {/* BACKGROUND ICON DECORATION */}
-            <div className={`absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 ${fill ? 'text-black' : 'text-white'}`}>
+            <div className={`absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 ${gold ? 'text-[var(--accent-gold)]' : 'text-white'}`}>
                 {icon ? <div className="scale-[4]">{icon}</div> : null}
             </div>
 
             <div className="flex flex-col items-center gap-1.5 relative z-10">
-                <span className={`text-[13px] font-medium uppercase tracking-[0.15em] ${fill ? 'text-black/50' : 'text-white/40'}`}>
+                <span className={`text-[13px] font-medium uppercase tracking-[0.15em] ${gold ? 'text-[var(--accent-gold)]/50' : 'text-white/40'}`}>
                     {title}
                 </span>
-                <h3 className={`text-[36px] font-black tracking-tighter leading-none ${fill ? 'text-black' : highlight ? 'text-white' : (value >= 0 && !red) ? 'text-white' : 'text-[#ef4444]'}`}>
+                <h3 className={`text-[36px] font-black tracking-tighter leading-none ${gold ? 'text-[var(--accent-gold)]' : highlight ? 'text-white' : (value >= 0 && !red) ? 'text-white' : 'text-[#ef4444]'}`}>
                     {value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </h3>
             </div>
 
-            <div className={`h-1.5 w-10 rounded-full transition-all duration-500 group-hover:w-16 ${fill ? 'bg-black/10' : green ? 'bg-[#22c55e]' : red ? 'bg-[#ef4444]' : 'bg-white/10'}`} />
+            <div className={`h-1.5 w-10 rounded-full transition-all duration-500 group-hover:w-16 ${gold ? 'bg-[var(--accent-gold)]/20' : green ? 'bg-[#22c55e]' : red ? 'bg-[#ef4444]' : 'bg-white/10'}`} />
         </div>
     );
 }

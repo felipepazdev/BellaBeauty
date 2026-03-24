@@ -22,7 +22,9 @@
     --accent: #8b5cf6;
     --accent-deep: #6d28d9;
     --accent-gold: #d4af37;
+    --accent-gold-deep: #b48c26;
     --accent-glow: rgba(139, 92, 246, 0.1);
+    --accent-gold-glow: rgba(212, 175, 55, 0.15);
     
     /* Tipografia */
     --text-primary: #0f172a;
@@ -58,6 +60,7 @@
     --text-gold: #e2b84a;
 
     --accent-glow: rgba(139, 92, 246, 0.15);
+    --accent-gold-glow: rgba(212, 175, 55, 0.2);
 }
 
 * {
@@ -151,6 +154,40 @@ h1, h2, h3, h4, .font-serif {
     opacity: 0.4;
     cursor: not-allowed;
     filter: grayscale(0.5);
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, var(--accent-gold), var(--accent-gold-deep));
+    color: #1a1505;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-input);
+    padding: 0.75rem 1.75rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px var(--accent-gold-glow);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-gold:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--accent-gold-glow);
+    filter: brightness(1.1);
+}
+
+.btn-gold:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-gold:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 /* Card Glassmorphism */

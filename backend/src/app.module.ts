@@ -23,6 +23,7 @@ import { ServiceCategoriesModule } from './service-categories/service-categories
 import { ProfessionalCategoriesModule } from './professional-categories/professional-categories.module';
 import { AdvancesModule } from './advances/advances.module';
 import { ExpensesModule } from './expenses/expenses.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -59,6 +60,7 @@ import { ExpensesModule } from './expenses/expenses.module';
     ProfessionalCategoriesModule,
     AdvancesModule,
     ExpensesModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

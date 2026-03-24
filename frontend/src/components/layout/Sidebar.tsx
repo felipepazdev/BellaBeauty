@@ -7,7 +7,8 @@ import { useAuthStore } from '@/store/auth.store';
 import {
     LayoutDashboard, Calendar, ClipboardList, DollarSign,
     TrendingDown, BarChart2, Package, Users, UserCog,
-    Scissors, LogOut, Star, Menu, X, ChevronRight, Layers
+    Scissors, LogOut, Star, Menu, X, ChevronRight, Layers,
+    MessageSquare
 } from 'lucide-react';
 
 interface NavItem {
@@ -43,6 +44,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
             { label: 'Produtos', href: '/dashboard/products', icon: Package, permission: 'products_manage' },
             { label: 'Clientes', href: '/dashboard/clients', icon: Users, permission: 'clients_manage' },
             { label: 'Colaboradores', href: '/dashboard/collaborators', icon: UserCog, roles: ['ADMIN', 'MANAGER'], permission: 'collaborators_view' },
+            { label: 'WhatsApp', href: '/dashboard/whatsapp', icon: MessageSquare, roles: ['ADMIN', 'MANAGER'] },
         ],
     },
 ];

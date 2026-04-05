@@ -25,7 +25,7 @@ const NAV_GROUPS: { label: string; items: NavItem[] }[] = [
     {
         label: 'Principal',
         items: [
-            { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+            { label: 'Painel', href: '/dashboard', icon: LayoutDashboard },
             { label: 'Atendimentos', href: '/dashboard/appointments', icon: Calendar, permission: 'appointments_view' },
             { label: 'Comandas', href: '/dashboard/orders', icon: ClipboardList, permission: 'orders_manage' },
         ],
@@ -60,8 +60,8 @@ const roleLabel: Record<string, string> = {
 
 const roleColor: Record<string, string> = {
     ADMIN: '#7c3aed',
-    MANAGER: '#0ea5e9',
-    PROFESSIONAL: '#22c55e',
+    MANAGER: '#0284c7',
+    PROFESSIONAL: '#059669',
 };
 
 import { ThemeToggle } from './ThemeToggle';
@@ -96,46 +96,72 @@ function NavContent({ onClose }: { onClose?: () => void }) {
     };
 
     return (
-        <div className="flex flex-col h-full py-8 px-6">
+        <div className="flex flex-col h-full py-5 px-4">
             {/* Logo */}
-            <div className="flex items-center gap-4 px-4 mb-20 animate-scale-in">
-                <div className="w-10 h-10 rounded-[1.2rem] bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-gold-deep)] flex items-center justify-center shadow-lg shadow-[var(--accent-gold-glow)] ring-1 ring-white/10">
-                    <Scissors size={20} color="#1a1505" strokeWidth={2.5} />
+            <div className="flex items-center justify-between px-2 mb-6 animate-scale-in">
+                <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm"
+                        style={{
+                            background: 'linear-gradient(135deg, #d4af37, #b48c26)',
+                            boxShadow: '0 2px 8px rgba(180,140,38,0.3)'
+                        }}>
+                        <Scissors size={18} color="#3d2800" strokeWidth={2.5} />
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[15px] font-serif font-bold leading-none" style={{ color: 'var(--text-primary)' }}>
+                            Bella Beauty
+                        </span>
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] mt-0.5" style={{ color: '#b48c26' }}>
+                            Salão &amp; Spa
+                        </span>
+                    </div>
                 </div>
-                <div className="flex flex-col">
-                    <span className="text-xl font-serif font-bold text-[var(--text-primary)] leading-none tracking-tight">Bella Beauty</span>
-                    <span className="text-[9px] font-black text-[var(--accent-gold)] uppercase tracking-[0.2em] mt-1.5">Premium Spa</span>
-                </div>
+                <ThemeToggle />
             </div>
 
-            <nav className="flex-1 space-y-12 overflow-y-auto px-2 -mx-2 pr-4 custom-scrollbar">
+            {/* Separador */}
+            <div className="h-px mx-2 mb-5" style={{ background: 'var(--border)' }} />
+
+            <nav className="flex-1 overflow-y-auto space-y-6 pr-1">
                 {NAV_GROUPS.map((group) => {
                     const visible = group.items.filter((item) => canSee(item.roles, item.permission));
                     if (!visible.length) return null;
                     return (
-                        <div key={group.label} className="mb-16 last:mb-0">
-                            {/* Label do grupo */}
-                            <p className="px-4 mb-8 text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-muted)] opacity-60">
+                        <div key={group.label}>
+                            <p className="px-3 mb-2 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
                                 {group.label}
                             </p>
-                            <div className="space-y-4">
+                            <div className="space-y-0.5">
                                 {visible.map((item) => {
                                     const Icon = item.icon;
                                     const active = isActive(item.href);
                                     return (
-                                        <Link key={item.href} href={item.href} onClick={onClose}
+                                        <Link
+                                            key={item.href}
+                                            href={item.href}
+                                            onClick={onClose}
                                             className={`
-                                                flex items-center gap-5 px-5 py-4 rounded-2xl text-[14px] transition-all duration-300 group
-                                                ${active 
-                                                    ? 'bg-gradient-to-r from-[var(--accent)]/10 via-[var(--accent)]/5 to-transparent text-[var(--text-primary)] font-bold shadow-sm' 
-                                                    : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--accent)]/5'
+                                                flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium transition-all duration-200 group
+                                                ${active
+                                                    ? 'font-semibold'
+                                                    : 'hover:bg-black/[0.04]'
                                                 }
                                             `}
+                                            style={active ? {
+                                                background: 'rgba(124,58,237,0.08)',
+                                                color: 'var(--accent)',
+                                            } : {
+                                                color: 'var(--text-secondary)',
+                                            }}
                                         >
-                                            <Icon size={20} className={`flex-shrink-0 transition-colors duration-300 ${active ? 'text-[var(--accent)]' : 'text-[var(--text-muted)] group-hover:text-[var(--text-secondary)]'}`} />
-                                            <span className="flex-1 tracking-tight">{item.label}</span>
+                                            <Icon
+                                                size={17}
+                                                className="flex-shrink-0"
+                                                style={{ color: active ? 'var(--accent)' : 'var(--text-muted)' }}
+                                            />
+                                            <span className="flex-1">{item.label}</span>
                                             {active && (
-                                                <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] shadow-[0_0_10px_rgba(139,92,246,0.6)]" />
+                                                <div className="w-1.5 h-1.5 rounded-full" style={{ background: 'var(--accent)' }} />
                                             )}
                                         </Link>
                                     );
@@ -145,65 +171,76 @@ function NavContent({ onClose }: { onClose?: () => void }) {
                     );
                 })}
 
-                {/* Subscription Status Widget */}
+                {/* Widget de Assinatura */}
                 {settings && (
-                    <div className="mt-4 mb-16 px-4">
-                        <Link href="/dashboard/plans" className={`
-                            relative overflow-hidden p-5 rounded-[1.8rem] border transition-all duration-500 group/sub
-                            ${settings.plan === 'PREMIUM' 
-                                ? 'bg-gradient-to-br from-[#1a1505] to-[#0c0c10] border-[var(--accent-gold)]/30 shadow-lg shadow-[var(--accent-gold-glow)]' 
-                                : 'bg-[var(--bg-card)] border-[var(--border)]'
-                            }
-                        `}>
-                            <div className="flex items-center gap-3 relative z-10">
-                                <div className={`
-                                    w-10 h-10 rounded-2xl flex items-center justify-center transition-transform duration-500 group-hover/sub:scale-110
-                                    ${settings.plan === 'PREMIUM' ? 'bg-[var(--accent-gold)]/10 text-[var(--accent-gold)]' : 'bg-slate-500/10 text-slate-400'}
-                                `}>
-                                    {settings.plan === 'PREMIUM' ? <Sparkles size={20} /> : <CreditCard size={20} />}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-0.5 ${settings?.plan === 'PREMIUM' ? 'text-[var(--accent-gold)]' : 'text-[var(--text-muted)]'}`}>
-                                        Plano {settings?.plan}
-                                    </p>
-                                    <p className="text-[11px] font-bold text-[var(--text-primary)] truncate">
-                                        Assinatura Ativa
-                                    </p>
-                                </div>
-                                <ChevronRight size={14} className="text-[var(--text-muted)] group-hover/sub:translate-x-1 transition-transform" />
+                    <div className="px-1 pt-2">
+                        <Link href="/dashboard/plans"
+                            className="flex items-center gap-3 p-3 rounded-xl border transition-all duration-300 group"
+                            style={{
+                                background: settings.plan === 'PREMIUM'
+                                    ? 'linear-gradient(135deg, #fff9e6, #fffdf5)'
+                                    : 'var(--bg-card)',
+                                border: `1px solid ${settings.plan === 'PREMIUM' ? 'rgba(180,140,38,0.3)' : 'var(--border)'}`,
+                            }}>
+                            <div className="w-8 h-8 rounded-lg flex items-center justify-center"
+                                style={{
+                                    background: settings.plan === 'PREMIUM' ? 'rgba(212,175,55,0.15)' : 'rgba(100,116,139,0.1)',
+                                    color: settings.plan === 'PREMIUM' ? '#b48c26' : '#64748b',
+                                }}>
+                                {settings.plan === 'PREMIUM' ? <Sparkles size={16} /> : <CreditCard size={16} />}
                             </div>
-                            
-                            {settings.plan === 'PREMIUM' && (
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-gold)]/5 rounded-full blur-2xl -translate-y-12 translate-x-12" />
-                            )}
+                            <div className="flex-1 min-w-0">
+                                <p className="text-[9px] font-bold uppercase tracking-[0.15em] mb-0.5"
+                                    style={{ color: settings.plan === 'PREMIUM' ? '#b48c26' : 'var(--text-muted)' }}>
+                                    Plano {settings.plan}
+                                </p>
+                                <p className="text-[12px] font-semibold truncate" style={{ color: 'var(--text-primary)' }}>
+                                    Assinatura ativa
+                                </p>
+                            </div>
+                            <ChevronRight size={14} style={{ color: 'var(--text-muted)' }} />
                         </Link>
                     </div>
                 )}
             </nav>
 
-            {/* ── Usuário Profile Card ──────────────────────── */}
-            <div className="p-4 mt-auto border-t border-[var(--border)] bg-[var(--bg-base)]/50">
-                <div className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] flex items-center gap-3 shadow-sm">
+            {/* Perfil do usuário */}
+            <div className="pt-4 mt-2 border-t" style={{ borderColor: 'var(--border)' }}>
+                <div className="flex items-center gap-3 px-2 py-2 rounded-xl" style={{ background: 'var(--bg-base)' }}>
                     {/* Avatar */}
-                    <div className="w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold flex-shrink-0"
-                         style={{ 
-                            backgroundColor: `${roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'}22`,
-                            borderColor: `${roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'}44`,
-                            color: roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'
-                         }}>
+                    <div
+                        className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 border"
+                        style={{
+                            backgroundColor: `${roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'}18`,
+                            borderColor: `${roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed'}40`,
+                            color: roleColor[user?.role ?? 'ADMIN'] ?? '#7c3aed',
+                        }}
+                    >
                         {user?.name?.charAt(0).toUpperCase()}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-[var(--text-primary)] truncate capitalize">
+                        <p className="text-[13px] font-semibold truncate capitalize" style={{ color: 'var(--text-primary)' }}>
                             {user?.name?.toLowerCase()}
                         </p>
-                        <p className="text-[10px] text-[var(--text-secondary)] font-medium uppercase tracking-wider">
+                        <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                             {user?.role ? roleLabel[user.role] : ''}
                         </p>
                     </div>
-                    <button onClick={handleLogout} title="Sair do sistema"
-                        className="p-2 text-[var(--text-muted)] hover:text-[var(--danger)] hover:bg-[var(--danger)]/10 rounded-lg transition-all">
-                        <LogOut size={16} />
+                    <button
+                        onClick={handleLogout}
+                        title="Sair do sistema"
+                        className="p-2 rounded-lg transition-all"
+                        style={{ color: 'var(--text-muted)' }}
+                        onMouseEnter={(e) => {
+                            (e.currentTarget as HTMLButtonElement).style.color = '#dc2626';
+                            (e.currentTarget as HTMLButtonElement).style.background = '#fee2e2';
+                        }}
+                        onMouseLeave={(e) => {
+                            (e.currentTarget as HTMLButtonElement).style.color = 'var(--text-muted)';
+                            (e.currentTarget as HTMLButtonElement).style.background = 'transparent';
+                        }}
+                    >
+                        <LogOut size={15} />
                     </button>
                 </div>
             </div>
@@ -216,41 +253,74 @@ export default function Sidebar() {
 
     return (
         <>
-            {/* ── Desktop ──────────────────────────────────── */}
-            <aside className="hidden lg:flex flex-col h-screen w-[270px] shrink-0 sticky top-0"
-                style={{ 
-                    background: 'var(--bg-base)', 
+            {/* Desktop */}
+            <aside
+                className="hidden lg:flex flex-col h-screen w-[250px] shrink-0 sticky top-0"
+                style={{
+                    background: 'var(--bg-surface)',
                     borderRight: '1px solid var(--border)',
-                    boxShadow: '10px 0 30px rgba(0,0,0,0.2)'
-                }}>
+                    boxShadow: '1px 0 0 var(--border)',
+                }}
+            >
                 <NavContent />
             </aside>
 
-            {/* ── Mobile top bar ───────────────────────────── */}
-            <div className="lg:hidden flex items-center justify-between fixed top-0 left-0 right-0 z-40 px-6 py-4 bg-[var(--bg-surface)]/80 border-b border-[var(--border)] backdrop-blur-xl">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-[1.2rem] bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-gold-deep)] flex items-center justify-center shadow-lg shadow-[var(--accent-gold-glow)] ring-1 ring-white/10">
-                        <Scissors size={20} color="#1a1505" strokeWidth={2.5} />
+            {/* Mobile top bar */}
+            <div
+                className="lg:hidden flex items-center justify-between fixed top-0 left-0 right-0 z-40 px-4 py-3"
+                style={{
+                    background: 'rgba(255,255,255,0.92)',
+                    borderBottom: '1px solid var(--border)',
+                    backdropFilter: 'blur(16px)',
+                }}
+            >
+                <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+                        style={{ background: 'linear-gradient(135deg, #d4af37, #b48c26)' }}>
+                        <Scissors size={16} color="#3d2800" strokeWidth={2.5} />
                     </div>
                     <div>
-                        <span className="text-base font-serif font-bold text-[var(--text-primary)] block leading-none tracking-tight">Bella Beauty</span>
-                        <span className="text-[9px] font-black text-[var(--accent-gold)] uppercase tracking-[0.2em] mt-1 block">Premium Spa</span>
+                        <span className="text-sm font-serif font-bold block leading-none" style={{ color: 'var(--text-primary)' }}>
+                            Bella Beauty
+                        </span>
+                        <span className="text-[9px] font-bold uppercase tracking-[0.18em] mt-0.5 block" style={{ color: '#b48c26' }}>
+                            Salão &amp; Spa
+                        </span>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
-                    <ThemeToggle />
-                    <button onClick={() => setMobileOpen(true)} className="p-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">
-                        <Menu size={24} />
-                    </button>
-                </div>
+                <button
+                    onClick={() => setMobileOpen(true)}
+                    className="p-2 rounded-lg transition-colors"
+                    style={{ color: 'var(--text-secondary)' }}
+                >
+                    <Menu size={22} />
+                </button>
             </div>
 
-            {/* ── Mobile drawer ────────────────────────────── */}
+            {/* Mobile drawer */}
             {mobileOpen && (
                 <div className="lg:hidden fixed inset-0 z-50 flex animate-fade-in">
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                        onClick={() => setMobileOpen(false)} />
-                    <aside className="relative w-[300px] h-full flex flex-col bg-[var(--bg-base)] border-r border-[var(--border)] shadow-2xl animate-scale-in">
+                    <div
+                        className="absolute inset-0"
+                        style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}
+                        onClick={() => setMobileOpen(false)}
+                    />
+                    <aside
+                        className="relative w-[280px] h-full flex flex-col animate-scale-in"
+                        style={{
+                            background: 'var(--bg-surface)',
+                            borderRight: '1px solid var(--border)',
+                        }}
+                    >
+                        <div className="absolute top-4 right-4">
+                            <button
+                                onClick={() => setMobileOpen(false)}
+                                className="p-1.5 rounded-lg transition-colors"
+                                style={{ color: 'var(--text-muted)', background: 'var(--bg-base)' }}
+                            >
+                                <X size={18} />
+                            </button>
+                        </div>
                         <NavContent onClose={() => setMobileOpen(false)} />
                     </aside>
                 </div>

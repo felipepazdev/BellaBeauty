@@ -12,13 +12,20 @@ export function ThemeToggle() {
 
     if (!mounted) return null;
 
+    const isDark = theme === 'dark';
+
     return (
         <button
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 border border-white/5 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/10 transition-all active:scale-95"
-            title="Alternar tema"
+            onClick={() => setTheme(isDark ? 'light' : 'dark')}
+            className="w-8 h-8 flex items-center justify-center rounded-lg transition-all active:scale-95"
+            title={isDark ? 'Alternar para modo claro' : 'Alternar para modo escuro'}
+            style={{
+                background: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)',
+                border: '1px solid var(--border)',
+                color: 'var(--text-muted)',
+            }}
         >
-            {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
         </button>
     );
 }

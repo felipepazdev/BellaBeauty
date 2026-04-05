@@ -150,21 +150,21 @@ function ServiceSelectorModal({ niches, professionalNicheIds, enabledServiceIds,
     return (
         <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
             <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-            <div className="card w-full max-w-[440px] max-h-[85vh] z-10 overflow-hidden flex flex-col p-0 shadow-2xl animate-scale-in border border-white/5">
+            <div className="card w-full max-w-[440px] max-h-[85vh] z-10 overflow-hidden flex flex-col p-0 shadow-2xl animate-scale-in">
                 
-                {/* Header */}
-                <div className="px-6 py-5 border-b border-white/10 flex items-center justify-between">
+                {/* Cabeçalho */}
+                <div className="px-6 py-5 flex items-center justify-between" style={{ borderBottom: '1px solid var(--border)' }}>
                     <div className="flex items-center gap-4">
                         {view !== 'NICHES' && (
-                            <button onClick={goBack} className="p-2 -ml-2 hover:bg-white/5 rounded-full text-[var(--text-secondary)] transition-colors">
+                            <button onClick={goBack} className="p-2 -ml-2 rounded-full transition-colors" style={{ color: 'var(--text-secondary)' }}>
                                 <ChevronLeft size={20} />
                             </button>
                         )}
-                        <h3 className="font-bold text-lg text-white/90 tracking-tight">
+                        <h3 className="font-bold text-lg tracking-tight" style={{ color: 'var(--text-primary)' }}>
                             {getTitle()}
                         </h3>
                     </div>
-                    <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full text-[var(--text-muted)] transition-colors">
+                    <button onClick={onClose} className="p-2 rounded-full transition-colors" style={{ color: 'var(--text-muted)' }}>
                         <X size={22} />
                     </button>
                 </div>
@@ -172,43 +172,52 @@ function ServiceSelectorModal({ niches, professionalNicheIds, enabledServiceIds,
                 {/* Content */}
                 <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
                     {view === 'NICHES' && (
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1">
                             {filteredNiches.map(n => (
-                                <button key={n.id} onClick={() => handleNicheClick(n)} className="w-full py-4 px-5 flex items-center justify-between text-left hover:bg-white/5 rounded-xl transition-all group duration-200">
-                                    <span className="font-semibold text-[15px] group-hover:text-[var(--primary)] text-white/80">{n.name}</span>
-                                    <ChevronRight size={18} className="text-white/20 group-hover:text-[var(--primary)] group-hover:translate-x-1 transition-all" />
+                                <button key={n.id} onClick={() => handleNicheClick(n)} className="w-full py-3.5 px-5 flex items-center justify-between text-left rounded-xl transition-all group duration-200" style={{ color: 'var(--text-secondary)' }}
+                                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-base)'; }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                                >
+                                    <span className="font-semibold text-[15px]" style={{ color: 'var(--text-primary)' }}>{n.name}</span>
+                                    <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />
                                 </button>
                             ))}
                         </div>
                     )}
 
                     {view === 'CATEGORIES' && selectedNiche && (
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1">
                             {selectedNiche.categories.map(cat => (
-                                <button key={cat.id} onClick={() => handleCatClick(cat)} className="w-full py-4 px-5 flex items-center justify-between text-left hover:bg-white/5 rounded-xl transition-all group duration-200">
-                                    <span className="font-semibold text-[15px] group-hover:text-[var(--primary)] text-white/80">{cat.name}</span>
-                                    <ChevronRight size={18} className="text-white/20 group-hover:text-[var(--primary)] group-hover:translate-x-1 transition-all" />
+                                <button key={cat.id} onClick={() => handleCatClick(cat)} className="w-full py-3.5 px-5 flex items-center justify-between text-left rounded-xl transition-all group duration-200"
+                                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-base)'; }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                                >
+                                    <span className="font-semibold text-[15px]" style={{ color: 'var(--text-primary)' }}>{cat.name}</span>
+                                    <ChevronRight size={18} style={{ color: 'var(--text-muted)' }} />
                                 </button>
                             ))}
                         </div>
                     )}
 
                     {view === 'SERVICES' && selectedCat && (
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-1">
                             {selectedCat.services.map(s => (
-                                <button key={s.id} onClick={() => onSelect(s)} className="w-full py-4 px-5 flex items-center justify-between text-left hover:bg-white/5 rounded-xl transition-all group duration-200">
+                                <button key={s.id} onClick={() => onSelect(s)} className="w-full py-3.5 px-5 flex items-center justify-between text-left rounded-xl transition-all group duration-200"
+                                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--bg-base)'; }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'transparent'; }}
+                                >
                                     <div>
-                                        <p className="font-bold text-[15px] group-hover:text-[var(--primary)] text-white/90">{s.name}</p>
-                                        <div className="flex items-center gap-3 mt-1.5">
-                                            <span className="flex items-center gap-1 text-xs text-white/40 font-medium bg-white/5 px-2 py-0.5 rounded-full group-hover:bg-[var(--primary)]/10 group-hover:text-[var(--primary)] transition-colors">
+                                        <p className="font-semibold text-[15px]" style={{ color: 'var(--text-primary)' }}>{s.name}</p>
+                                        <div className="flex items-center gap-3 mt-1">
+                                            <span className="flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full" style={{ background: 'var(--bg-base)', color: 'var(--text-muted)', border: '1px solid var(--border)' }}>
                                                 <Clock size={12} />
                                                 {s.duration}min
                                             </span>
-                                            <span className="text-xs text-white/60 font-semibold">R$ {s.price.toFixed(2)}</span>
+                                            <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>R$ {s.price.toFixed(2)}</span>
                                         </div>
                                     </div>
-                                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 group-hover:bg-[var(--primary)]/15 transition-colors">
-                                        <ChevronRight size={16} className="text-white/20 group-hover:text-[var(--primary)]" />
+                                    <div className="w-8 h-8 flex items-center justify-center rounded-full" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
+                                        <ChevronRight size={16} style={{ color: 'var(--text-muted)' }} />
                                     </div>
                                 </button>
                             ))}
@@ -475,7 +484,7 @@ function BookingModal({ date, slot, professional, professionals, onClose, onSave
                     )}
 
                     {/* Resumo de Tempo e Ações */}
-                    <div style={{ marginTop: 8, padding: '14px', borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)' }}>
+                    <div style={{ marginTop: 8, padding: '14px', borderRadius: 12, background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <p style={{ fontSize: 13, color: diffMin > 0 ? 'var(--text-secondary)' : '#ef4444', fontWeight: 600 }}>
                                 <Clock size={14} style={{ display: 'inline', marginRight: 6, verticalAlign: 'middle' }} />
@@ -1004,10 +1013,10 @@ export default function AppointmentsPage() {
                                             <div key={slot} style={{
                                                 display: 'grid',
                                                 gridTemplateColumns: `64px repeat(${professionals.length}, 1fr)`,
-                                                borderBottom: isHour ? '1px solid var(--border)' : '1px solid rgba(255,255,255,0.03)',
+                                                borderBottom: isHour ? '1px solid var(--border)' : '1px dashed var(--border)',
                                                 borderStyle: isHour ? 'solid' : 'dashed',
                                                 minHeight: ROW_H,
-                                                background: isHour ? 'transparent' : 'rgba(255,255,255,0.005)'
+                                                background: isHour ? 'transparent' : 'transparent'
                                             }}>
                                                 {/* Coluna de hora */}
                                                 <div style={{
@@ -1051,7 +1060,7 @@ export default function AppointmentsPage() {
                                                             minHeight: ROW_H,
                                                             cursor: canClick ? 'pointer' : (isUnavailable ? 'not-allowed' : 'default'),
                                                             transition: 'background 0.12s',
-                                                            background: isUnavailable ? 'rgba(255,255,255,0.02)' : 'transparent'
+                                                            background: isUnavailable ? 'rgba(0,0,0,0.03)' : 'transparent'
                                                         }}
                                                         onMouseEnter={e => {
                                                             if (canClick) (e.currentTarget as HTMLElement).style.background = 'var(--accent-gold-glow)';
@@ -1079,7 +1088,7 @@ export default function AppointmentsPage() {
                                                                 position: 'absolute', inset: 0,
                                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                                 opacity: canScheduleOutside ? 0.6 : 0.2,
-                                                                background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px)',
+                                                            background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.025) 10px, rgba(0,0,0,0.025) 20px)',
                                                                 border: (isUnavailable && canScheduleOutside) ? '1px dashed var(--accent-gold)' : 'none',
                                                                 transition: 'opacity 0.2s'
                                                             }}

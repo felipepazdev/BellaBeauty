@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
-import { MessageSquare, Save, Settings, Lock } from 'lucide-react';
+import { MessageSquare, Save, Settings, Lock, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 interface SettingsData {
@@ -68,7 +68,7 @@ export default function WhatsAppSettingsPage() {
     if (loading) {
         return (
             <div className="flex justify-center py-16">
-                <span className="spinner" style={{ width: 32, height: 32, opacity: 0.5 }} />
+                <span className="spinner" style={{ width: 32, height: 32 }} />
             </div>
         );
     }
@@ -76,129 +76,179 @@ export default function WhatsAppSettingsPage() {
     const isPremium = form.plan === 'PREMIUM';
 
     return (
-        <div className="animate-fade-in w-full max-w-4xl relative">
-            <div className="flex items-center justify-between mb-8">
+        <div className="animate-fade-in w-full max-w-3xl">
+            {/* Cabeçalho */}
+            <div className="flex items-start gap-4 mb-8">
+                <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)' }}>
+                    <MessageSquare size={22} color="#16a34a" />
+                </div>
                 <div>
-                    <h1 className="text-[28px] leading-tight font-semibold tracking-tight text-white mb-1 flex items-center gap-3">
-                        <MessageSquare className="text-green-500" /> WhatsApp
+                    <h1 className="text-2xl font-serif font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                        Integração WhatsApp
                     </h1>
-                    <p className="text-[14px] text-white/50 mb-4">
-                        Configure o envio automático de mensagens e lembretes para seus clientes.
+                    <p className="text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                        Configure o envio automático de lembretes e mensagens para seus clientes.
                     </p>
                 </div>
             </div>
 
+            {/* Banner Premium */}
             {!isPremium && (
-                <div className="mb-6 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 border border-purple-500/30 rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="mb-6 p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4"
+                    style={{
+                        background: 'linear-gradient(135deg, rgba(124,58,237,0.06), rgba(99,102,241,0.06))',
+                        border: '1px solid rgba(124,58,237,0.2)',
+                    }}>
                     <div className="flex items-start gap-4">
-                        <div className="bg-purple-500/20 p-3 rounded-full shrink-0">
-                            <Lock className="text-purple-400" size={24} />
+                        <div className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+                            style={{ background: 'rgba(124,58,237,0.1)', color: 'var(--accent)' }}>
+                            <Lock size={20} />
                         </div>
                         <div>
-                            <h3 className="text-white font-bold text-lg mb-1">Funcionalidade Premium</h3>
-                            <p className="text-white/60 text-sm">
-                                Para enviar mensagens automáticas via WhatsApp (Lembretes inteligentes 24h e 2h antes) faça o upgrade do seu plano.
+                            <h3 className="text-base font-bold mb-1" style={{ color: 'var(--text-primary)' }}>
+                                Recurso Exclusivo do Plano Premium
+                            </h3>
+                            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                                Para enviar mensagens automáticas via WhatsApp (lembretes inteligentes 24h e 2h antes do agendamento), faça upgrade do seu plano.
                             </p>
                         </div>
                     </div>
-                    <Link href="/dashboard/plans" className="shrink-0 px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition-colors shadow-lg">
-                        Fazer Upgrade
+                    <Link
+                        href="/dashboard/plans"
+                        className="flex items-center gap-2 shrink-0 px-6 py-3 rounded-xl text-sm font-bold text-white transition-all active:scale-95"
+                        style={{ background: 'var(--accent)', boxShadow: '0 4px 12px var(--accent-glow)' }}
+                    >
+                        Fazer Upgrade <ChevronRight size={16} />
                     </Link>
                 </div>
             )}
 
-            <div className={`bg-[#111116] border border-white/5 rounded-2xl p-6 md:p-8 flex flex-col gap-6 relative ${!isPremium ? 'opacity-40 pointer-events-none grayscale-[0.8]' : ''}`}>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Provider Setting */}
-                    <div className="md:col-span-2">
-                        <label className="text-sm mb-1 block text-white/60 font-medium">Provedor do WhatsApp</label>
-                        <select 
-                            value={form.whatsappProvider} 
+            {/* Formulário */}
+            <div
+                className={`card flex flex-col gap-8 ${!isPremium ? 'opacity-50 pointer-events-none grayscale' : ''}`}
+                style={{ padding: '2rem' }}
+            >
+                {/* Provedor */}
+                <section>
+                    <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-5" style={{ color: 'var(--text-muted)' }}>
+                        Configuração do Provedor
+                    </h3>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="form-label">Provedor do WhatsApp</label>
+                        <select
+                            value={form.whatsappProvider}
                             onChange={(e) => setForm({ ...form, whatsappProvider: e.target.value })}
-                            className="bg-black border border-white/10 rounded-xl px-4 py-3 w-full text-white text-[14px] focus:outline-none focus:border-green-500/50 transition-colors"
+                            className="input-field"
                         >
                             <option value="NONE">Desativado</option>
-                            <option value="EVOLUTION">Evolution API</option>
+                            <option value="EVOLUTION">Evolution API (Recomendado)</option>
                             <option value="OFFICIAL">API Oficial do WhatsApp (Meta)</option>
                         </select>
-                        <p className="text-xs text-white/40 mt-2">Escolha qual serviço fará o envio das mensagens.</p>
+                        <p className="text-[11px] mt-1.5 font-medium" style={{ color: 'var(--text-muted)' }}>
+                            Escolha qual serviço realizará o envio das mensagens.
+                        </p>
+                    </div>
+                </section>
+
+                {form.whatsappProvider === 'OFFICIAL' && (
+                    <section className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="flex flex-col gap-1.5">
+                            <label className="form-label">Token de Acesso (Meta)</label>
+                            <input
+                                type="password"
+                                value={form.whatsappToken}
+                                onChange={(e) => setForm({ ...form, whatsappToken: e.target.value })}
+                                placeholder="EAABw..."
+                                className="input-field"
+                            />
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                            <label className="form-label">Phone ID (Meta)</label>
+                            <input
+                                type="text"
+                                value={form.whatsappPhoneId}
+                                onChange={(e) => setForm({ ...form, whatsappPhoneId: e.target.value })}
+                                placeholder="123456789012345"
+                                className="input-field"
+                            />
+                        </div>
+                    </section>
+                )}
+
+                {/* Separador */}
+                <div className="h-px" style={{ background: 'var(--border)' }} />
+
+                {/* Mensagens Automáticas */}
+                <section>
+                    <div className="flex items-center gap-2.5 mb-5">
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center"
+                            style={{ background: 'rgba(34,197,94,0.1)', color: '#16a34a' }}>
+                            <Settings size={16} />
+                        </div>
+                        <h3 className="text-sm font-serif font-bold" style={{ color: 'var(--text-primary)' }}>
+                            Mensagens Automáticas
+                        </h3>
                     </div>
 
-                    {form.whatsappProvider === 'OFFICIAL' && (
-                        <>
-                            <div>
-                                <label className="text-sm mb-1 block text-white/60 font-medium">Token de Acesso (Meta)</label>
-                                <input 
-                                    type="password"
-                                    value={form.whatsappToken} 
-                                    onChange={(e) => setForm({ ...form, whatsappToken: e.target.value })}
-                                    placeholder="EAABw..." 
-                                    className="bg-black border border-white/10 rounded-xl px-4 py-3 w-full text-white text-[14px] focus:outline-none focus:border-green-500/50 transition-colors"
-                                />
-                            </div>
-                            <div>
-                                <label className="text-sm mb-1 block text-white/60 font-medium">Phone ID (Meta)</label>
-                                <input 
-                                    type="text"
-                                    value={form.whatsappPhoneId} 
-                                    onChange={(e) => setForm({ ...form, whatsappPhoneId: e.target.value })}
-                                    placeholder="123456789012345" 
-                                    className="bg-black border border-white/10 rounded-xl px-4 py-3 w-full text-white text-[14px] focus:outline-none focus:border-green-500/50 transition-colors"
-                                />
-                            </div>
-                        </>
-                    )}
-                </div>
+                    <div className="p-4 rounded-xl mb-6" style={{ background: 'var(--bg-base)', border: '1px solid var(--border)' }}>
+                        <p className="text-[11px] font-semibold mb-2" style={{ color: 'var(--text-muted)' }}>
+                            Variáveis disponíveis para personalização:
+                        </p>
+                        <div className="flex flex-wrap gap-2">
+                            {['{{clientName}}', '{{serviceName}}', '{{salonName}}', '{{date}}', '{{time}}'].map((v) => (
+                                <code key={v} className="text-[10px] font-bold px-2 py-1 rounded-lg"
+                                    style={{ background: 'rgba(34,197,94,0.1)', color: '#16a34a', border: '1px solid rgba(34,197,94,0.2)' }}>
+                                    {v}
+                                </code>
+                            ))}
+                        </div>
+                    </div>
 
-                <div className="h-px bg-white/5 my-2 w-full" />
+                    <div className="flex flex-col gap-5">
+                        <div className="flex flex-col gap-1.5">
+                            <label className="form-label">
+                                <span className="badge badge-warning">24h</span>
+                                Lembrete 24 horas antes
+                            </label>
+                            <textarea
+                                value={form.whatsappTemplate24h}
+                                onChange={(e) => setForm({ ...form, whatsappTemplate24h: e.target.value })}
+                                placeholder={`Olá *{{clientName}}*!\nPassando para confirmar o seu agendamento de *{{serviceName}}* amanhã ({{date}}) às *{{time}}* no *{{salonName}}*.\nNos vemos em breve!`}
+                                className="input-field"
+                                style={{ height: 'auto', minHeight: '120px', paddingTop: '12px', paddingBottom: '12px', lineHeight: 1.6, resize: 'vertical' }}
+                            />
+                        </div>
 
-                <div className="flex flex-col gap-6">
-                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                        <Settings size={18} className="text-white/50" /> Mensagens Automáticas
-                    </h3>
-                    
-                    <p className="text-sm text-white/40">
-                        Variáveis disponíveis: <code className="text-green-400 bg-green-400/10 px-1 py-0.5 rounded">{'{{clientName}}'}</code>, 
-                        <code className="text-green-400 bg-green-400/10 px-1 py-0.5 rounded ml-1">{'{{serviceName}}'}</code>, 
-                        <code className="text-green-400 bg-green-400/10 px-1 py-0.5 rounded ml-1">{'{{salonName}}'}</code>, 
-                        <code className="text-green-400 bg-green-400/10 px-1 py-0.5 rounded ml-1">{'{{date}}'}</code>, 
-                        <code className="text-green-400 bg-green-400/10 px-1 py-0.5 rounded ml-1">{'{{time}}'}</code>
-                    </p>
+                        <div className="flex flex-col gap-1.5">
+                            <label className="form-label">
+                                <span className="badge badge-info">2h</span>
+                                Lembrete 2 horas antes
+                            </label>
+                            <textarea
+                                value={form.whatsappTemplate2h}
+                                onChange={(e) => setForm({ ...form, whatsappTemplate2h: e.target.value })}
+                                placeholder={`Olá *{{clientName}}*, seu agendamento de *{{serviceName}}* no *{{salonName}}* é em 2 horas!\nEstamos aguardando você.`}
+                                className="input-field"
+                                style={{ height: 'auto', minHeight: '120px', paddingTop: '12px', paddingBottom: '12px', lineHeight: 1.6, resize: 'vertical' }}
+                            />
+                        </div>
+                    </div>
+                </section>
 
+                {/* Rodapé */}
+                <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: 'var(--border)' }}>
                     <div>
-                        <label className="text-sm mb-1 block text-white/60 font-medium">Lembrete (24 horas antes)</label>
-                        <textarea 
-                            value={form.whatsappTemplate24h} 
-                            onChange={(e) => setForm({ ...form, whatsappTemplate24h: e.target.value })}
-                            placeholder={`Olá *{{clientName}}*!\nPassando para confirmar o seu agendamento de *{{serviceName}}* amanhã ({{date}}) às *{{time}}* no *{{salonName}}*.\nNos vemos em breve!`}
-                            className="bg-black border border-white/10 rounded-xl px-4 py-3 w-full text-white text-[14px] focus:outline-none focus:border-green-500/50 transition-colors min-h-[120px]"
-                        />
+                        {error && <p className="text-sm font-medium" style={{ color: 'var(--danger)' }}>{error}</p>}
+                        {success && <p className="text-sm font-medium" style={{ color: 'var(--success)' }}>{success}</p>}
                     </div>
-
-                    <div>
-                        <label className="text-sm mb-1 block text-white/60 font-medium">Lembrete (2 horas antes)</label>
-                        <textarea 
-                            value={form.whatsappTemplate2h} 
-                            onChange={(e) => setForm({ ...form, whatsappTemplate2h: e.target.value })}
-                            placeholder={`Olá *{{clientName}}*, seu agendamento de *{{serviceName}}* no *{{salonName}}* é em 2 horas!\nEstamos aguardando você.`}
-                            className="bg-black border border-white/10 rounded-xl px-4 py-3 w-full text-white text-[14px] focus:outline-none focus:border-green-500/50 transition-colors min-h-[120px]"
-                        />
-                    </div>
-                </div>
-
-                <div className="flex items-center justify-between mt-4">
-                    <div className="flex-1">
-                        {error && <p className="text-sm text-red-400">{error}</p>}
-                        {success && <p className="text-sm text-green-400">{success}</p>}
-                    </div>
-                    
-                    <button 
-                        onClick={handleSave} 
-                        disabled={saving} 
-                        className="flex items-center gap-2 px-6 py-2.5 bg-green-500 text-black shadow-[0_0_15px_rgba(34,197,94,0.3)] hover:shadow-[0_0_20px_rgba(34,197,94,0.5)] font-semibold text-[14px] rounded-lg transition-all"
+                    <button
+                        onClick={handleSave}
+                        disabled={saving}
+                        className="flex items-center gap-2 px-8 py-3 rounded-xl font-bold text-sm text-white transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ background: '#16a34a', boxShadow: '0 4px 12px rgba(22,163,74,0.2)' }}
                     >
-                        {saving ? <span className="spinner border-black" style={{ width: 16, height: 16 }} /> : <Save size={18} />}
+                        {saving ? <span className="spinner" style={{ width: 16, height: 16 }} /> : <Save size={16} />}
                         {saving ? 'Salvando...' : 'Salvar Configurações'}
                     </button>
                 </div>

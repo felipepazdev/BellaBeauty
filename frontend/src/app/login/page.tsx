@@ -7,8 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
-import { Eye, EyeOff, Scissors } from 'lucide-react';
-import Image from 'next/image';
+import { Eye, EyeOff } from 'lucide-react';
 
 const schema = z.object({
     email: z.string().email('E-mail inválido'),
@@ -17,7 +16,6 @@ const schema = z.object({
 
 type LoginForm = z.infer<typeof schema>;
 
-// SVG Icons for social login
 const GoogleIcon = () => (
     <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -36,7 +34,6 @@ const FacebookIcon = () => (
 export default function LoginPage() {
     const router = useRouter();
     const setAuth = useAuthStore((s) => s.setAuth);
-
     const [showPass, setShowPass] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -54,92 +51,80 @@ export default function LoginPage() {
             setAuth(user, accessToken);
             router.push('/dashboard');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Credenciais inválidas. Verifique seus dados.');
+            setError(err.response?.data?.message || 'Credenciais inválidas.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0A0A0A]">
+        <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#0a0a0a]">
             
-            {/* Background Image / Abstract Shapes */}
+            {/* Background Image Immersive */}
             <div className="absolute inset-0 z-0">
                 <img 
                     src="/cyan_abstract_bg_1775353354617.png" 
-                    alt="Abstract Background" 
+                    alt="Background" 
                     className="w-full h-full object-cover"
                 />
-                {/* Fallback solid gradient overlay just in case image is missing */}
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-900/40 via-black/60 to-black/80 mix-blend-overlay" />
+                <div className="absolute inset-0 bg-[#001524]/60 backdrop-blur-[2px]" />
             </div>
 
-            {/* Inner Glass Container Box (similar to the dark semi-transparent wider box in reference) */}
-            <div className="relative z-10 w-full max-w-5xl h-[80vh] min-h-[600px] flex items-center justify-center my-6">
+            <div className="relative z-10 w-full max-w-[400px] animate-fade-in">
                 
-                {/* The Login Card */}
-                <div className="w-full max-w-[400px] bg-white/10 backdrop-blur-3xl border border-white/20 rounded-3xl p-8 shadow-2xl relative">
+                {/* Your Logo (Reference Style) */}
+                <div className="text-center mb-6">
+                    <h1 className="text-white text-xl font-bold tracking-tight">Your logo</h1>
+                </div>
+
+                {/* Login Card - Ultra Glassmorphism */}
+                <div className="bg-white/5 backdrop-blur-[40px] border border-white/10 rounded-[35px] p-10 shadow-2xl relative overflow-hidden">
                     
-                    {/* Header */}
-                    <div className="flex flex-col items-center mb-8 text-center pt-2">
-                        <div className="flex items-center gap-2 mb-4">
-                            <div className="p-2 bg-cyan-500 rounded-lg text-black">
-                                <Scissors size={20} strokeWidth={2} />
-                            </div>
-                            <span className="text-xl font-bold text-white tracking-wide">Bella Beauty</span>
-                        </div>
-                        <h2 className="text-2xl font-bold text-white">Login</h2>
+                    <div className="text-left mb-8">
+                        <h2 className="text-2xl font-bold text-white mb-6">Login</h2>
                     </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                        
-                        {/* E-mail */}
-                        <div className="space-y-1.5">
-                            <label className="text-[12px] text-white/80 ml-1">Email</label>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                        {/* Email */}
+                        <div className="space-y-2">
+                            <label className="text-xs text-white/70 ml-1">Email</label>
                             <input
                                 {...register('email')}
                                 type="email"
                                 placeholder="username@gmail.com"
-                                className="w-full bg-white text-black py-3 px-4 rounded-xl text-sm outline-none focus:ring-2 focus:ring-cyan-400 placeholder:text-gray-400 font-medium"
+                                className="w-full bg-white py-3.5 px-5 rounded-2xl text-[14px] text-black outline-none focus:ring-2 focus:ring-cyan-400 placeholder:text-stone-300 font-medium"
                             />
-                            {errors.email && (
-                                <p className="text-[11px] font-semibold text-red-400 ml-1">{errors.email.message}</p>
-                            )}
                         </div>
 
                         {/* Password */}
-                        <div className="space-y-1.5">
-                            <label className="text-[12px] text-white/80 ml-1">Password</label>
+                        <div className="space-y-2 relative">
+                            <label className="text-xs text-white/70 ml-1">Password</label>
                             <div className="relative">
                                 <input
                                     {...register('password')}
                                     type={showPass ? 'text' : 'password'}
                                     placeholder="Password"
-                                    className="w-full bg-white text-black py-3 px-4 pr-10 rounded-xl text-sm outline-none focus:ring-2 focus:ring-cyan-400 placeholder:text-gray-400 font-medium"
+                                    className="w-full bg-white py-3.5 px-5 rounded-2xl text-[14px] text-black outline-none focus:ring-2 focus:ring-cyan-400 placeholder:text-stone-300 font-medium"
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPass(!showPass)}
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition-colors"
+                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-300 hover:text-black transition-colors"
                                 >
                                     {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
-                            {errors.password && (
-                                <p className="text-[11px] font-semibold text-red-400 ml-1">{errors.password.message}</p>
-                            )}
                         </div>
 
                         {/* Forgot Password */}
                         <div className="flex justify-start">
-                            <button type="button" className="text-[12px] text-cyan-300 hover:text-cyan-200 transition-colors ml-1">
+                            <button type="button" className="text-[12px] text-white/50 hover:text-white transition-colors ml-1">
                                 Forgot Password?
                             </button>
                         </div>
 
-                        {/* Error Message */}
                         {error && (
-                            <div className="bg-red-500/20 text-red-200 border border-red-500/50 text-xs py-2.5 px-3 rounded-lg font-medium text-center">
+                            <div className="text-red-400 text-[11px] font-bold text-center bg-red-400/10 py-2 rounded-lg">
                                 {error}
                             </div>
                         )}
@@ -149,7 +134,7 @@ export default function LoginPage() {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full py-3.5 bg-black hover:bg-black/80 text-white rounded-xl font-bold text-sm transition-all duration-300 shadow-lg disabled:opacity-50"
+                                className="w-full py-4 bg-[#0a2333] hover:bg-[#113a53] text-white rounded-2xl font-bold text-sm transition-all duration-300 shadow-xl disabled:opacity-50"
                             >
                                 {loading ? (
                                     <div className="w-5 h-5 mx-auto border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -160,31 +145,30 @@ export default function LoginPage() {
                         </div>
                     </form>
 
-                    {/* Social Login Options */}
+                    {/* Or continue with */}
                     <div className="mt-8">
                         <div className="relative flex items-center mb-6">
-                            <div className="flex-grow border-t border-white/20"></div>
-                            <span className="flex-shrink-0 mx-4 text-white/50 text-[11px]">or continue with</span>
-                            <div className="flex-grow border-t border-white/20"></div>
+                            <div className="flex-grow border-t border-white/10"></div>
+                            <span className="flex-shrink-0 mx-4 text-white/30 text-[10px]">or continue with</span>
+                            <div className="flex-grow border-t border-white/10"></div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3">
-                            <button type="button" className="flex items-center justify-center py-2.5 bg-white hover:bg-gray-50 rounded-xl transition-colors shadow-sm">
+                        <div className="grid grid-cols-2 gap-4">
+                            <button type="button" className="flex items-center justify-center py-3 bg-white hover:bg-stone-50 rounded-2xl transition-all shadow-sm">
                                 <GoogleIcon />
                             </button>
-                            <button type="button" className="flex items-center justify-center py-2.5 bg-white hover:bg-gray-50 rounded-xl transition-colors shadow-sm">
+                            <button type="button" className="flex items-center justify-center py-4 bg-white hover:bg-stone-50 rounded-2xl transition-all shadow-sm translate-y-[-1px]">
                                 <FacebookIcon />
                             </button>
                         </div>
                     </div>
 
-                    {/* Register Link */}
-                    <div className="mt-8 text-center">
-                        <p className="text-[11px] text-white/70">
-                            Don't have an account yet? <button className="font-bold text-white hover:text-cyan-300 transition-colors">Register for free</button>
+                    {/* Footer Link */}
+                    <div className="mt-8 text-center pt-2">
+                        <p className="text-[11px] text-white/30">
+                            Don't have an account yet? <button className="font-bold text-white/70 hover:text-white transition-colors">Register for free</button>
                         </p>
                     </div>
-
                 </div>
             </div>
         </div>

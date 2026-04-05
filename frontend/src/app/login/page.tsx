@@ -17,7 +17,7 @@ type LoginForm = z.infer<typeof schema>;
 
 // ── SVG Icons ──────────────────────────────────────────
 const GoogleIcon = () => (
-    <svg viewBox="0 0 24 24" width="18" height="18">
+    <svg viewBox="0 0 24 24" width="20" height="20">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
         <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
@@ -25,14 +25,8 @@ const GoogleIcon = () => (
     </svg>
 );
 
-const GitHubIcon = () => (
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
-        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61-.546-1.385-1.335-1.755-1.335-1.755-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
-    </svg>
-);
-
 const FacebookIcon = () => (
-    <svg viewBox="0 0 24 24" width="18" height="18">
+    <svg viewBox="0 0 24 24" width="20" height="20">
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
     </svg>
 );
@@ -56,11 +50,10 @@ export default function LoginPage() {
             setAuth(user, accessToken);
             router.push('/dashboard');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Credenciais inválidas.');
+            setError(err.response?.data?.message || 'E-mail ou senha incorretos.');
         } finally { setLoading(false); }
     };
 
-    // ── Inline styles (override globals.css completely) ──
     const s = {
         wrap: {
             minHeight: '100vh',
@@ -231,14 +224,14 @@ export default function LoginPage() {
         },
         socialGrid: {
             display:'grid',
-            gridTemplateColumns:'repeat(3, 1fr)',
-            gap:'10px',
+            gridTemplateColumns:'repeat(2, 1fr)',
+            gap:'12px',
         },
         socialBtn: {
             background:   '#ffffff',
             border:       'none',
             borderRadius: '10px',
-            padding:      '11px',
+            padding:      '12px',
             cursor:       'pointer',
             display:      'flex',
             alignItems:   'center',
@@ -293,11 +286,11 @@ export default function LoginPage() {
 
                         {/* Email */}
                         <div>
-                            <label style={s.label}>Email</label>
+                            <label style={s.label}>E-mail</label>
                             <input
                                 {...register('email')}
                                 type="email"
-                                placeholder="username@gmail.com"
+                                placeholder="usuario@email.com"
                                 style={s.input}
                             />
                             {errors.email && <span style={s.fieldErr}>{errors.email.message}</span>}
@@ -305,12 +298,12 @@ export default function LoginPage() {
 
                         {/* Password */}
                         <div>
-                            <label style={s.label}>Password</label>
+                            <label style={s.label}>Senha</label>
                             <div style={s.inputWrap}>
                                 <input
                                     {...register('password')}
                                     type={showPass ? 'text' : 'password'}
-                                    placeholder="Password"
+                                    placeholder="Sua senha"
                                     style={{ ...s.input, paddingRight:'42px' }}
                                 />
                                 <button type="button" onClick={() => setShowPass(!showPass)} style={s.eyeBtn}>
@@ -322,7 +315,7 @@ export default function LoginPage() {
 
                         {/* Forgot */}
                         <div style={{ textAlign:'left', marginTop:'-6px' }}>
-                            <button type="button" style={s.forgotBtn}>Forgot Password?</button>
+                            <button type="button" style={s.forgotBtn}>Esqueceu sua senha?</button>
                         </div>
 
                         {/* Error */}
@@ -335,8 +328,8 @@ export default function LoginPage() {
                             style={{ ...s.submitBtn, opacity: loading ? 0.6 : 1 }}
                         >
                             {loading
-                                ? 'Signing in...'
-                                : 'Sign in'
+                                ? 'Entrando...'
+                                : 'Acessar Sistema'
                             }
                         </button>
                     </form>
@@ -344,21 +337,20 @@ export default function LoginPage() {
                     {/* Divider */}
                     <div style={s.dividerWrap}>
                         <div style={s.dividerLine} />
-                        <span style={s.dividerText}>or continue with</span>
+                        <span style={s.dividerText}>ou continue com</span>
                         <div style={s.dividerLine} />
                     </div>
 
                     {/* Social */}
                     <div style={s.socialGrid}>
                         <button type="button" style={s.socialBtn}><GoogleIcon /></button>
-                        <button type="button" style={s.socialBtn}><GitHubIcon /></button>
                         <button type="button" style={s.socialBtn}><FacebookIcon /></button>
                     </div>
 
                     {/* Footer */}
                     <p style={s.footerText}>
-                        Don't have an account yet?{' '}
-                        <button type="button" style={s.footerLink}>Register for free</button>
+                        Ainda não tem uma conta?{' '}
+                        <button type="button" style={s.footerLink}>Cadastre-se grátis</button>
                     </p>
                 </div>
             </div>

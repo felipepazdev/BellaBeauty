@@ -203,14 +203,14 @@ export default function CashFlowPage() {
         val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     return (
-        <div className="w-full min-h-screen bg-[#07070a] text-white">
-            <div className="max-w-[1280px] mx-auto px-8 py-10 flex flex-col gap-8">
+        <div style={{ width: '100%', minHeight: '100vh', background: 'var(--bg-main)', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1280, margin: '0 auto', padding: '40px 32px', display: 'flex', flexDirection: 'column', gap: 32 }}>
 
                 {/* HEADER & CONTROLS */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                     <div>
-                        <h1 className="text-4xl font-black tracking-tight">Fluxo de Caixa</h1>
-                        <p className="text-white/40 text-xs uppercase font-bold tracking-widest mt-1">{VIEW_CONFIG[viewMode].subtitle}</p>
+                        <h1 className="text-4xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Fluxo de Caixa</h1>
+                        <p className="text-xs uppercase font-bold tracking-widest mt-1" style={{ color: 'var(--text-muted)' }}>{VIEW_CONFIG[viewMode].subtitle}</p>
                     </div>
 
                     <div className="flex items-center gap-3">

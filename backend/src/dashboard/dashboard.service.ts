@@ -48,7 +48,8 @@ export class DashboardService {
       {};
 
     for (const a of appointments) {
-      const price = a.payment?.amount ?? 0;
+      // Usa service.price como base, pois agendamentos via comanda não têm Payment direto
+      const price = a.payment?.amount ?? a.service?.price ?? 0;
 
       clientMap[a.client.name] = (clientMap[a.client.name] || 0) + price;
 

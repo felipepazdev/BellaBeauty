@@ -27,7 +27,9 @@ interface MonthlyReport {
 const COLORS = ['#7c3aed', '#38bdf8', '#22c55e', '#f59e0b', '#ef4444', '#a78bfa'];
 const CAT_LABELS: Record<string, string> = {
     RENT: 'Aluguel', MATERIAL: 'Materiais', SALARY: 'Salários',
-    PRO_LABORE: 'Pró-labore', PRODUCT: 'Produtos', OTHER: 'Outros', SERVICE: 'Serviços',
+    PRO_LABORE: 'Pró-labore', PRODUCT: 'Produtos', OTHER: 'Outros',
+    SERVICE: 'Serviços', COMANDA: 'Comandas', REMUNERACAO: 'Remunerações',
+    DESPESA: 'Despesas Gerais', SANGRIA: 'Sangria de Caixa', MANUAL: 'Lançamentos Manuais',
 };
 
 export default function ReportsPage() {

@@ -29,7 +29,7 @@ export class CashFlowService {
     return await this.cashFlowRepository.create(
       {
         salonId: expense.salonId,
-        type: 'despesa',
+        type: 'SAIDA',
         category: 'DESPESA',
         amount: expense.value,
         createdAt: expense.date,

@@ -18,11 +18,6 @@ interface Commission {
     };
 }
 
-const STATUS_MAP: Record<string, { label: string; cls: string }> = {
-    PENDING: { label: 'Pendente', cls: 'badge-warning' },
-    PAID: { label: 'Pago', cls: 'badge-success' },
-};
-
 export default function CommissionsPage() {
     const { user } = useAuthStore();
     const now = new Date();
@@ -70,7 +65,6 @@ export default function CommissionsPage() {
     const totalPending = commissions.filter(c => c.status === 'PENDING').reduce((a, c) => a + c.amount, 0);
     const totalPaid = commissions.filter(c => c.status === 'PAID').reduce((a, c) => a + c.amount, 0);
 
-    // Grouping logic for commissions by professional
     const groupedCommissions = Object.values(commissions.reduce((acc, c) => {
         const profId = c.professional?.id || 'unknown';
         if (!acc[profId]) {
@@ -89,32 +83,32 @@ export default function CommissionsPage() {
 
     return (
         <>
-            <div className="animate-fade-in w-full pb-20">
+            <div style={{ width: '100%', paddingBottom: 80 }}>
                 {/* ── Header ──────────────────────────────────────────── */}
-                <div className="flex flex-wrap items-end justify-between gap-6 mb-12">
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 40 }}>
                     <div>
-                        <h1 className="text-3xl font-serif font-bold tracking-tight text-white mb-2">
+                        <h1 style={{ fontSize: 26, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
                             Remunerações
                         </h1>
-                        <p className="text-sm font-medium text-slate-400">
+                        <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
                             {user?.role === 'PROFESSIONAL' ? 'Seu extrato detalhado de comissões' : 'Gestão e controle de repasses para a equipe'}
                         </p>
                     </div>
 
                     {/* Seletor de mês */}
-                    <div className="flex items-center gap-2 p-2 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
-                        <button onClick={() => changeMonth(-1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: 8, borderRadius: 16, background: 'var(--bg-surface)', border: '1px solid var(--border)' }}>
+                        <button onClick={() => changeMonth(-1)} style={{ padding: 8, color: 'var(--text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 10, display: 'flex', alignItems: 'center' }}>
                             <ChevronLeft size={18} />
                         </button>
-                        
-                        <div className="flex items-center gap-3 px-4 min-w-[160px] justify-center">
-                            <Star size={16} className="text-[#8b5cf6]" />
-                            <span className="text-sm font-bold tracking-wide text-white uppercase">
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 16px', minWidth: 160, justifyContent: 'center' }}>
+                            <Star size={16} color="var(--accent)" />
+                            <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                 {MONTHS[month - 1]} {year}
                             </span>
                         </div>
 
-                        <button onClick={() => changeMonth(1)} className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all">
+                        <button onClick={() => changeMonth(1)} style={{ padding: 8, color: 'var(--text-secondary)', background: 'transparent', border: 'none', cursor: 'pointer', borderRadius: 10, display: 'flex', alignItems: 'center' }}>
                             <ChevronRight size={18} />
                         </button>
                     </div>
@@ -122,26 +116,26 @@ export default function CommissionsPage() {
 
                 {/* ── KPIs Gerais ───────────────────────────────────── */}
                 {user?.role !== 'PROFESSIONAL' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-                        <div className="card flex items-center gap-6 group">
-                            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 shadow-lg shadow-amber-500/5 transition-transform group-hover:scale-105">
-                                <Clock size={28} />
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, marginBottom: 40 }}>
+                        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                            <div style={{ width: 56, height: 56, borderRadius: 16, background: 'rgba(245,158,11,0.10)', border: '1px solid rgba(245,158,11,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <Clock size={26} color="#f59e0b" />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-1">Total Pendente</p>
-                                <p className="text-3xl font-serif font-bold text-white tracking-tight">
+                                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Total Pendente</p>
+                                <p style={{ fontSize: 24, fontWeight: 700, color: '#f59e0b', fontFamily: 'monospace' }}>
                                     R$ {totalPending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                 </p>
                             </div>
                         </div>
 
-                        <div className="card flex items-center gap-6 group">
-                            <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 shadow-lg shadow-emerald-500/5 transition-transform group-hover:scale-105">
-                                <DollarSign size={28} />
+                        <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+                            <div style={{ width: 56, height: 56, borderRadius: 16, background: 'rgba(16,185,129,0.10)', border: '1px solid rgba(16,185,129,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <DollarSign size={26} color="#10b981" />
                             </div>
                             <div>
-                                <p className="text-[10px] font-bold tracking-widest text-slate-500 uppercase mb-1">Total Liquidado</p>
-                                <p className="text-3xl font-serif font-bold text-white tracking-tight">
+                                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Total Liquidado</p>
+                                <p style={{ fontSize: 24, fontWeight: 700, color: '#10b981', fontFamily: 'monospace' }}>
                                     R$ {totalPaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                 </p>
                             </div>
@@ -150,72 +144,66 @@ export default function CommissionsPage() {
                 )}
 
                 {/* ── Lista de Profissionais ───────────────────── */}
-                <div className="space-y-4">
-                    <div className="flex items-center justify-between px-4 mb-2">
-                        <h2 className="text-sm font-bold tracking-widest text-slate-500 uppercase">Equipe & Performance</h2>
-                        <span className="text-[11px] text-slate-600 font-medium">Total: {groupedCommissions.length} profissionais</span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 4px', marginBottom: 8 }}>
+                        <h2 style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Equipe &amp; Performance</h2>
+                        <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Total: {groupedCommissions.length} profissionais</span>
                     </div>
 
                     {loading ? (
-                        <div className="flex flex-col items-center justify-center py-20 gap-4">
-                            <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
-                            <p className="text-sm text-slate-500 font-medium italic">Sincronizando dados financeiros...</p>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 0', gap: 16 }}>
+                            <div className="spinner" style={{ width: 36, height: 36 }} />
+                            <p style={{ fontSize: 13, color: 'var(--text-muted)', fontStyle: 'italic' }}>Sincronizando dados financeiros...</p>
                         </div>
                     ) : commissions.length === 0 ? (
-                        <div className="card flex flex-col items-center justify-center py-24 text-center">
-                            <div className="w-20 h-20 rounded-full bg-slate-900/50 flex items-center justify-center mb-6 text-slate-700">
-                                <Star size={40} strokeWidth={1} />
-                            </div>
-                            <h3 className="text-lg font-serif font-bold text-slate-300 mb-2">Sem registros este mês</h3>
-                            <p className="text-sm text-slate-500 max-w-[280px]">Nenhuma comissão foi processada para o período selecionado.</p>
+                        <div className="card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 0', textAlign: 'center' }}>
+                            <Star size={40} color="var(--border)" strokeWidth={1} style={{ marginBottom: 16 }} />
+                            <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-secondary)', marginBottom: 8 }}>Sem registros este mês</h3>
+                            <p style={{ fontSize: 13, color: 'var(--text-muted)', maxWidth: 280 }}>Nenhuma comissão foi processada para o período selecionado.</p>
                         </div>
                     ) : (
                         groupedCommissions.map((group) => (
-                            <div key={group.professional.id} 
-                                 className="card group hover:border-purple-500/30 transition-all duration-300">
-                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 py-2">
-                                    
+                            <div key={group.professional.id} className="card" style={{ transition: 'all 0.2s' }}>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 20, padding: '4px 0' }}>
                                     {/* Info Profissional */}
-                                    <div className="flex items-center gap-5">
-                                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/5 flex items-center justify-center text-lg font-serif font-bold text-white shadow-xl group-hover:scale-105 transition-transform duration-300">
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                                        <div style={{ width: 52, height: 52, borderRadius: 14, background: 'var(--bg-surface)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, fontWeight: 700, color: 'var(--accent)' }}>
                                             {group.professional.name?.charAt(0).toUpperCase()}
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-white capitalize tracking-tight group-hover:text-purple-400 transition-colors">
+                                            <h3 style={{ fontSize: 16, fontWeight: 600, color: 'var(--text-primary)', textTransform: 'capitalize' }}>
                                                 {group.professional.name?.toLowerCase()}
                                             </h3>
-                                            <div className="flex items-center gap-2 mt-1">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-purple-500 animate-pulse" />
-                                                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                                    {group.items.length} COMISSÕES REGISTRADAS
-                                                </p>
-                                            </div>
+                                            <p style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: 2 }}>
+                                                {group.items.length} comissões registradas
+                                            </p>
                                         </div>
                                     </div>
-                                    
+
                                     {/* Valores e Ação */}
-                                    <div className="flex flex-wrap items-center gap-10">
-                                        <div className="grid grid-cols-2 gap-8 md:gap-12">
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Pendente</span>
-                                                <span className="text-lg font-bold text-amber-500 font-mono">
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 32 }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 32 }}>
+                                            <div>
+                                                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: 4 }}>Pendente</span>
+                                                <span style={{ fontSize: 18, fontWeight: 700, color: '#f59e0b', fontFamily: 'monospace' }}>
                                                     R$ {group.totalPending.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                 </span>
                                             </div>
-                                            <div className="flex flex-col">
-                                                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5">Liquidado</span>
-                                                <span className="text-lg font-bold text-emerald-500 font-mono">
+                                            <div>
+                                                <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', display: 'block', marginBottom: 4 }}>Liquidado</span>
+                                                <span style={{ fontSize: 18, fontWeight: 700, color: '#10b981', fontFamily: 'monospace' }}>
                                                     R$ {group.totalPaid.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <button 
+                                        <button
                                             onClick={() => setSelectedProf({ name: group.professional.name, items: group.items })}
-                                            className="btn-primary !py-3 !px-6 text-[13px] font-bold flex items-center gap-2"
+                                            className="btn-primary"
+                                            style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13 }}
                                         >
-                                            <Search size={16} strokeWidth={2.5} />
-                                            <span>DETALHES</span>
+                                            <Search size={15} strokeWidth={2.5} />
+                                            <span>Detalhes</span>
                                         </button>
                                     </div>
                                 </div>
@@ -227,36 +215,42 @@ export default function CommissionsPage() {
 
             {/* ── Modal Detalhamento ───────────────────────── */}
             {selectedProf && (
-                <div className="fixed inset-0 z-[999] grid place-items-center p-4 md:p-8" onClick={() => setSelectedProf(null)}>
-                    {/* Overlay com desfoque mais intenso para foco total */}
-                    <div className="fixed inset-0 bg-black/80 backdrop-blur-md animate-fade-in" />
-                    
-                    {/* Modal Card */}
-                    <div className="relative w-full max-w-[740px] bg-[#0c0c10] border border-white/10 rounded-[32px] flex flex-col max-h-[90vh] shadow-[0_30px_100px_rgba(0,0,0,0.8)] overflow-hidden animate-scale-in" 
-                         onClick={e => e.stopPropagation()}>
-                        
-                        {/* Modal Header Premium */}
-                        <div className="shrink-0 flex items-center justify-between p-8 border-b border-white/5 bg-gradient-to-b from-white/[0.04] to-transparent">
+                <div
+                    onClick={() => setSelectedProf(null)}
+                    style={{ position: 'fixed', inset: 0, zIndex: 999, display: 'grid', placeItems: 'center', padding: 16 }}
+                >
+                    <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)' }} />
+
+                    <div
+                        style={{
+                            position: 'relative', width: '100%', maxWidth: 700,
+                            background: 'var(--bg-card)', border: '1px solid var(--border)',
+                            borderRadius: 24, display: 'flex', flexDirection: 'column',
+                            maxHeight: '90vh', boxShadow: '0 20px 60px rgba(0,0,0,0.2)', overflow: 'hidden'
+                        }}
+                        onClick={e => e.stopPropagation()}
+                    >
+                        {/* Modal Header */}
+                        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '24px 28px', borderBottom: '1px solid var(--border)' }}>
                             <div>
-                                <h2 className="text-2xl font-serif font-bold text-white mb-2 leading-none">
+                                <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 6 }}>
                                     Histórico de Repasses
                                 </h2>
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(139,92,246,0.5)]" />
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] leading-none">
-                                        {selectedProf.name} • {MONTHS[month-1]} {year}
-                                    </p>
-                                </div>
+                                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                                    {selectedProf.name} • {MONTHS[month - 1]} {year}
+                                </p>
                             </div>
-                            <button onClick={() => setSelectedProf(null)} 
-                                    className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all border border-white/5">
-                                <X size={24} />
+                            <button
+                                onClick={() => setSelectedProf(null)}
+                                style={{ width: 44, height: 44, borderRadius: 14, background: 'var(--bg-surface)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: 'var(--text-secondary)' }}
+                            >
+                                <X size={20} />
                             </button>
                         </div>
-                        
-                        {/* Modal Content - Scroll area */}
-                        <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
-                            <div className="space-y-12">
+
+                        {/* Modal Content */}
+                        <div style={{ flex: 1, overflowY: 'auto', padding: '24px 28px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
                                 {Object.entries(
                                     selectedProf.items.reduce((acc, c) => {
                                         const dateStr = c.appointment?.date || new Date().toISOString();
@@ -267,55 +261,54 @@ export default function CommissionsPage() {
                                         return acc;
                                     }, {} as Record<string, Commission[]>)
                                 ).map(([dateLabel, items]) => (
-                                    <div key={dateLabel} className="space-y-6">
-                                        <div className="flex items-center gap-4">
-                                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] whitespace-nowrap bg-white/5 px-3 py-1 rounded-full border border-white/5">{dateLabel}</span>
-                                            <div className="h-[1px] w-full bg-gradient-to-r from-white/5 to-transparent" />
+                                    <div key={dateLabel} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                            <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', background: 'var(--bg-surface)', padding: '4px 12px', borderRadius: 20, border: '1px solid var(--border)', whiteSpace: 'nowrap' }}>
+                                                {dateLabel}
+                                            </span>
+                                            <div style={{ height: 1, flex: 1, background: 'var(--border)' }} />
                                         </div>
 
-                                        <div className="space-y-4">
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                                             {items.map(c => {
                                                 const total = c.appointment?.service?.price || 0;
                                                 const isPaid = c.status === 'PAID';
-                                                
+                                                const statusColor = isPaid ? '#10b981' : '#f59e0b';
+
                                                 return (
-                                                    <div key={c.id} className="p-6 rounded-[24px] bg-gradient-to-br from-white/[0.04] to-transparent border border-white/5 hover:border-purple-500/20 transition-all group relative overflow-hidden">
-                                                        {/* Status indicator line */}
-                                                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${isPaid ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                                                        
-                                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                                                            <div className="flex items-center gap-5">
-                                                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border border-current transition-colors
-                                                                    ${isPaid ? 'bg-emerald-500/10 text-emerald-500/30' : 'bg-amber-500/10 text-amber-500/30'}`}>
-                                                                    <Scissors size={24} strokeWidth={1.5} className={isPaid ? 'text-emerald-500' : 'text-amber-500'} />
+                                                    <div key={c.id} style={{ padding: '16px 20px', borderRadius: 16, background: 'var(--bg-surface)', border: `1px solid var(--border)`, position: 'relative', overflow: 'hidden' }}>
+                                                        <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: 4, background: statusColor, borderRadius: '0 0 0 0' }} />
+                                                        <div style={{ paddingLeft: 8, display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: 16 }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                                                                <div style={{ width: 44, height: 44, borderRadius: 12, background: `${statusColor}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                                    <Scissors size={20} color={statusColor} strokeWidth={1.5} />
                                                                 </div>
                                                                 <div>
-                                                                    <div className="flex items-center gap-3 flex-wrap">
-                                                                        <p className="font-bold text-white text-base tracking-tight">{c.appointment?.service?.name}</p>
-                                                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md tracking-widest border uppercase
-                                                                            ${isPaid ? 'border-emerald-500/20 text-emerald-500 bg-emerald-500/5' : 'border-amber-500/20 text-amber-500 bg-amber-500/5'}`}>
-                                                                            {isPaid ? 'PAGO' : 'PENDENTE'}
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                                                                        <p style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: 14 }}>{c.appointment?.service?.name}</p>
+                                                                        <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 8px', borderRadius: 6, border: `1px solid ${statusColor}30`, color: statusColor, background: `${statusColor}10`, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                                                            {isPaid ? 'Pago' : 'Pendente'}
                                                                         </span>
                                                                     </div>
-                                                                    <p className="text-[11px] text-slate-500 mt-1.5 font-bold uppercase tracking-wider">
-                                                                        {c.appointment?.client?.name} <span className="mx-2 text-slate-800">|</span> 
+                                                                    <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4, fontWeight: 500 }}>
+                                                                        {c.appointment?.client?.name} &nbsp;|&nbsp;
                                                                         {new Date(c.appointment?.date || "").toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                                                     </p>
                                                                 </div>
                                                             </div>
 
-                                                            <div className="flex items-center gap-10">
-                                                                <div className="text-right">
-                                                                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1.5 opacity-60">Sua Comissão</p>
-                                                                    <p className={`text-xl font-bold font-mono tracking-tighter ${isPaid ? 'text-emerald-500' : 'text-amber-500'}`}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+                                                                <div style={{ textAlign: 'right' }}>
+                                                                    <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Sua Comissão</p>
+                                                                    <p style={{ fontSize: 20, fontWeight: 700, color: statusColor, fontFamily: 'monospace' }}>
                                                                         R$ {c.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                                                                     </p>
                                                                 </div>
 
                                                                 {user?.role !== 'PROFESSIONAL' && !isPaid && (
-                                                                    <button 
+                                                                    <button
                                                                         onClick={() => handlePay(c.id)}
-                                                                        className="h-12 px-6 bg-emerald-500 hover:bg-emerald-400 text-black text-[11px] font-black rounded-2xl transition-all shadow-[0_10px_20px_rgba(16,185,129,0.2)] uppercase tracking-widest active:scale-95"
+                                                                        style={{ height: 44, padding: '0 20px', background: '#10b981', color: '#fff', fontSize: 12, fontWeight: 700, borderRadius: 12, border: 'none', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.05em' }}
                                                                     >
                                                                         Pagar
                                                                     </button>
@@ -323,16 +316,15 @@ export default function CommissionsPage() {
                                                             </div>
                                                         </div>
 
-                                                        {/* Bottom details for Admin */}
                                                         {user?.role !== 'PROFESSIONAL' && (
-                                                            <div className="mt-6 pt-6 border-t border-white/5 flex items-center justify-start gap-12">
+                                                            <div style={{ marginTop: 14, paddingTop: 14, borderTop: '1px solid var(--border)', display: 'flex', gap: 32 }}>
                                                                 <div>
-                                                                    <p className="text-[8px] font-black text-slate-600 uppercase tracking-widest mb-1">Total do Serviço</p>
-                                                                    <p className="text-sm font-bold text-slate-400">R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                                                    <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Total do Serviço</p>
+                                                                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>R$ {total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                                                                 </div>
                                                                 <div>
-                                                                    <p className="text-[8px] font-black text-slate-600 uppercase tracking-widest mb-1">Manteve na Casa</p>
-                                                                    <p className="text-sm font-bold text-slate-400">R$ {(total - c.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
+                                                                    <p style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 4 }}>Retido (Salão)</p>
+                                                                    <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-secondary)' }}>R$ {(total - c.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
                                                                 </div>
                                                             </div>
                                                         )}

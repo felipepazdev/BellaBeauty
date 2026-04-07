@@ -702,7 +702,7 @@ export class AppointmentsService {
       await tx.financialTransaction.create({
         data: {
           salonId,
-          type: 'INCOME',
+          type: 'ENTRADA',
           category: 'SERVICE',
           description: `Agendamento: ${appointment.service.name} com profissional ${appointment.professional.name} (Cliente: ${appointment.client?.name || 'Local'})`,
           amount: appointment.service.price,
@@ -710,8 +710,11 @@ export class AppointmentsService {
         },
       });
 
+      // Respeita contractType: RENT = profissional paga aluguel (fica com 100% do servico)
       const commissionAmount =
-        (appointment.service.price * appointment.professional.commission) / 100;
+        appointment.professional.contractType === 'RENT'
+          ? appointment.service.price
+          : (appointment.service.price * appointment.professional.commission) / 100;
 
       const commission = await tx.commission.create({
         data: {

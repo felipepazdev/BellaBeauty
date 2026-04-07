@@ -64,7 +64,7 @@ export default function ClientsPage() {
                         {clients.length} clientes cadastrados
                     </p>
                 </div>
-                <button className="btn-gold flex items-center gap-2 !rounded-xl"
+                <button className="btn-cyan flex items-center gap-2 !rounded-xl"
                     onClick={() => { setShowForm(true); setError(''); }}>
                     <Plus size={16} /> Novo Cliente
                 </button>
@@ -102,7 +102,7 @@ export default function ClientsPage() {
                                     style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
                                     Cancelar
                                 </button>
-                                 <button onClick={handleSave} disabled={saving} className="btn-gold flex-1 flex items-center justify-center gap-2 !rounded-xl">
+                                 <button onClick={handleSave} disabled={saving} className="btn-cyan flex-1 flex items-center justify-center gap-2 !rounded-xl">
                                     {saving ? <span className="spinner" /> : null}
                                     {saving ? 'Salvando...' : 'Salvar'}
                                 </button>
@@ -127,7 +127,7 @@ export default function ClientsPage() {
                     {filtered.map((c) => (
                         <div key={c.id} className="card flex items-center gap-4 py-3 px-4">
                             <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0"
-                                style={{ background: 'var(--accent-gold-glow)', color: 'var(--accent-gold)', border: '1px solid var(--accent-gold-glow)' }}>
+                                style={{ background: 'var(--accent-cyan-glow)', color: 'var(--accent-cyan)', border: '1px solid var(--accent-cyan-glow)' }}>
                                 {c.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">

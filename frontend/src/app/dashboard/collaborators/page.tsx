@@ -40,7 +40,7 @@ const ROLE_LABELS: Record<string, string> = {
     PROFESSIONAL: 'Profissional',
 };
 const ROLE_CLS: Record<string, string> = {
-    ADMIN: 'bg-[var(--accent-gold)]/10 text-[var(--accent-gold)] border border-[var(--accent-gold)]/20',
+    ADMIN: 'bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] border border-[var(--accent-cyan)]/20',
     MANAGER: 'badge-warning',
     PROFESSIONAL: 'bg-[var(--accent)]/10 text-[var(--accent)] border border-[var(--accent)]/20',
 };
@@ -211,7 +211,7 @@ export default function CollaboratorsPage() {
                         )}
                     </div>
                 </div>
-                <button className="btn-gold px-6 py-2.5 flex items-center gap-2" onClick={openNew}>
+                <button className="btn-cyan px-6 py-2.5 flex items-center gap-2" onClick={openNew}>
                     <Plus size={16} /> Novo Colaborador
                 </button>
             </div>
@@ -280,7 +280,7 @@ export default function CollaboratorsPage() {
                                             {usersOfRole.map((c) => (
                                                 <div key={c.id} onClick={() => { setSelectedCollaborator(c); setActiveTab('PROFILE'); }}
                                                     className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-2xl flex items-center gap-5 p-5 hover:border-[var(--accent)]/30 hover:bg-[var(--bg-card-hover)] transition-all cursor-pointer group">
-                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-gold-deep)] text-[#1a1505] shadow-lg shadow-[var(--accent-gold-glow)] ring-1 ring-white/10">
+                                                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-[14px] shrink-0 bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-cyan-deep)] text-[#1a1505] shadow-lg shadow-[var(--accent-cyan-glow)] ring-1 ring-white/10">
                                                         {c.name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div className="flex-1 min-w-0 flex flex-col justify-center">
@@ -401,7 +401,7 @@ export default function CollaboratorsPage() {
                                                         className={`
                                                             px-4 py-2 rounded-xl text-xs font-bold transition-all
                                                             ${isSelected 
-                                                                ? 'bg-[var(--accent-gold)] text-[#1a1505] shadow-lg shadow-[var(--accent-gold-glow)]' 
+                                                                ? 'bg-[var(--accent-cyan)] text-[#1a1505] shadow-lg shadow-[var(--accent-cyan-glow)]' 
                                                                 : 'bg-white/5 text-white/40 hover:bg-white/10'}
                                                         `}
                                                     >
@@ -452,7 +452,7 @@ export default function CollaboratorsPage() {
                                     Cancelar
                                 </button>
                                 <button onClick={handleSave} disabled={saving} 
-                                    className="flex-[1.5] h-12 btn-gold shadow-[var(--accent-gold-glow)]">
+                                    className="flex-[1.5] h-12 btn-cyan shadow-[var(--accent-cyan-glow)]">
                                     {saving ? 'CRIANDO...' : (isEditing ? 'SALVAR ALTERAÇÕES' : 'CRIAR CONTA')}
                                 </button>
                             </div>
@@ -487,7 +487,7 @@ function CollaboratorProfile({ collaborator, onBack, onEdit, niches }: {
                         <span className="font-bold tracking-tight text-[15px]">Colaborador</span>
                     </button>
                     <button onClick={onEdit} 
-                        className="text-white/40 hover:text-[var(--accent-gold)] transition-colors text-xs font-black tracking-[0.2em] uppercase">
+                        className="text-white/40 hover:text-[var(--accent-cyan)] transition-colors text-xs font-black tracking-[0.2em] uppercase">
                         EDITAR
                     </button>
                 </div>
@@ -707,7 +707,7 @@ function PermissionsTab({ collaborator, onBack }: { collaborator: Collaborator; 
                 <p className="text-[15px] text-white/50">
                     Defina o que <span className="text-white font-medium">{collaborator.name}</span> pode visualizar e gerenciar no sistema.
                     <br />
-                    <span className="text-[12px] mt-2 block text-[var(--accent-gold)] uppercase tracking-wide font-bold">Role: {ROLE_LABELS[collaborator.role]}</span>
+                    <span className="text-[12px] mt-2 block text-[var(--accent-cyan)] uppercase tracking-wide font-bold">Role: {ROLE_LABELS[collaborator.role]}</span>
                 </p>
             </div>
 
@@ -719,7 +719,7 @@ function PermissionsTab({ collaborator, onBack }: { collaborator: Collaborator; 
                             onClick={() => togglePermission(perm.key)}
                             className={`flex items-center justify-between p-5 rounded-2xl border cursor-pointer transition-all duration-300 group ${
                                 active 
-                                ? 'bg-[var(--accent-gold)]/10 border-[var(--accent-gold)]/40 shadow-sm' 
+                                ? 'bg-[var(--accent-cyan)]/10 border-[var(--accent-cyan)]/40 shadow-sm' 
                                 : 'bg-[#15151e] border-white/5 hover:border-white/10 hover:bg-[#1a1a24]'
                             }`}>
                             <div className="flex flex-col">
@@ -728,7 +728,7 @@ function PermissionsTab({ collaborator, onBack }: { collaborator: Collaborator; 
                             </div>
                             
                             {/* Toggle UI */}
-                            <div className={`w-11 h-6 rounded-full p-1 transition-all duration-300 ${active ? 'bg-[var(--accent-gold)]' : 'bg-white/10'}`}>
+                            <div className={`w-11 h-6 rounded-full p-1 transition-all duration-300 ${active ? 'bg-[var(--accent-cyan)]' : 'bg-white/10'}`}>
                                 <div className={`w-4 h-4 rounded-full bg-white transition-all duration-300 transform ${active ? 'translate-x-5' : 'translate-x-0'}`} />
                             </div>
                         </div>
@@ -785,7 +785,7 @@ function ProfessionalServicesSelection({ collaborator, onBack }: { collaborator:
 
     if (loading) return (
         <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <div className="w-10 h-10 border-4 border-[var(--accent-gold)]/20 border-t-[var(--accent-gold)] rounded-full animate-spin" />
+            <div className="w-10 h-10 border-4 border-[var(--accent-cyan)]/20 border-t-[var(--accent-cyan)] rounded-full animate-spin" />
             <p className="text-sm font-bold tracking-widest opacity-40 uppercase">Carregando serviços...</p>
         </div>
     );

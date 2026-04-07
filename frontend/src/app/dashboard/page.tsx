@@ -343,13 +343,13 @@ export default function DashboardPage() {
                                         display: 'flex', flexDirection: 'column', alignItems: 'center',
                                         textAlign: 'center', padding: '14px 10px', borderRadius: 10,
                                         background: i === 0 ? 'linear-gradient(135deg, #fff9e6, #fffdf5)' : '#f8f9fa',
-                                        border: `1px solid ${i === 0 ? 'rgba(212,175,55,0.3)' : '#e9ecef'}`,
+                                        border: `1px solid ${i === 0 ? 'rgba(6, 182, 212,0.3)' : '#e9ecef'}`,
                                     }}>
                                         <div style={{
                                             width: 42, height: 42, borderRadius: '50%', fontSize: 18,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8,
-                                            background: i === 0 ? 'rgba(212,175,55,0.15)' : '#fff',
-                                            border: `1px solid ${i === 0 ? 'rgba(212,175,55,0.3)' : '#e9ecef'}`,
+                                            background: i === 0 ? 'rgba(6, 182, 212,0.15)' : '#fff',
+                                            border: `1px solid ${i === 0 ? 'rgba(6, 182, 212,0.3)' : '#e9ecef'}`,
                                         }}>
                                             {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
                                         </div>

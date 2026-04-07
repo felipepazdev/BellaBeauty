@@ -228,8 +228,8 @@ export default function CashFlowPage() {
                                     className={`
                                         px-6 py-2.5 text-[11px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-500
                                         ${viewMode === m.id
-                                            ? 'bg-gradient-to-br from-[var(--accent-gold)] to-[var(--accent-gold-deep)] text-[#1a1505] shadow-lg shadow-[var(--accent-gold-glow)]'
-                                            : 'text-white/30 hover:text-[var(--accent-gold)] hover:bg-[var(--accent-gold)]/5'}
+                                            ? 'bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-cyan-deep)] text-[#1a1505] shadow-lg shadow-[var(--accent-cyan-glow)]'
+                                            : 'text-white/30 hover:text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/5'}
                                     `}
                                 >
                                     {m.label}
@@ -237,7 +237,7 @@ export default function CashFlowPage() {
                             ))}
                         </div>
 
-                        <button className="btn-gold h-11 px-8 !rounded-xl text-xs uppercase tracking-widest transition-all">
+                        <button className="btn-cyan h-11 px-8 !rounded-xl text-xs uppercase tracking-widest transition-all">
                             Nova Entrada
                         </button>
                     </div>
@@ -387,25 +387,25 @@ function Card({ title, value, green, red, highlight, gold, icon }: { title: stri
         <div className={`
             relative overflow-hidden p-8 rounded-3xl border transition-all duration-500 group
             ${gold 
-                ? 'bg-gradient-to-br from-[#1a1505] to-[#0c0c10] border-[var(--accent-gold)]/30 shadow-lg shadow-[var(--accent-gold-glow)]' 
+                ? 'bg-gradient-to-br from-[#1a1505] to-[#0c0c10] border-[var(--accent-cyan)]/30 shadow-lg shadow-[var(--accent-cyan-glow)]' 
                 : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10'}
             flex flex-col items-center justify-center text-center gap-3 min-h-[180px]
         `}>
             {/* BACKGROUND ICON DECORATION */}
-            <div className={`absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 ${gold ? 'text-[var(--accent-gold)]' : 'text-white'}`}>
+            <div className={`absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 ${gold ? 'text-[var(--accent-cyan)]' : 'text-white'}`}>
                 {icon ? <div className="scale-[4]">{icon}</div> : null}
             </div>
 
             <div className="flex flex-col items-center gap-1.5 relative z-10">
-                <span className={`text-[13px] font-medium uppercase tracking-[0.15em] ${gold ? 'text-[var(--accent-gold)]/50' : 'text-white/40'}`}>
+                <span className={`text-[13px] font-medium uppercase tracking-[0.15em] ${gold ? 'text-[var(--accent-cyan)]/50' : 'text-white/40'}`}>
                     {title}
                 </span>
-                <h3 className={`text-[36px] font-black tracking-tighter leading-none ${gold ? 'text-[var(--accent-gold)]' : highlight ? 'text-white' : (value >= 0 && !red) ? 'text-white' : 'text-[#ef4444]'}`}>
+                <h3 className={`text-[36px] font-black tracking-tighter leading-none ${gold ? 'text-[var(--accent-cyan)]' : highlight ? 'text-white' : (value >= 0 && !red) ? 'text-white' : 'text-[#ef4444]'}`}>
                     {value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </h3>
             </div>
 
-            <div className={`h-1.5 w-10 rounded-full transition-all duration-500 group-hover:w-16 ${gold ? 'bg-[var(--accent-gold)]/20' : green ? 'bg-[#22c55e]' : red ? 'bg-[#ef4444]' : 'bg-white/10'}`} />
+            <div className={`h-1.5 w-10 rounded-full transition-all duration-500 group-hover:w-16 ${gold ? 'bg-[var(--accent-cyan)]/20' : green ? 'bg-[#22c55e]' : red ? 'bg-[#ef4444]' : 'bg-white/10'}`} />
         </div>
     );
 }

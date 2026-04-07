@@ -24,14 +24,14 @@ interface DashboardData {
 const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-// Gradientes do roxo escuro ao rosa — igual à referência
+// Gradientes em ciano — azul escuro → ciano → turquesa → verde-água
 const KPI_GRADIENTS = [
-    'linear-gradient(135deg, #4a1d96 0%, #6d28d9 100%)',
-    'linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%)',
-    'linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)',
-    'linear-gradient(135deg, #9333ea 0%, #c026d3 100%)',
-    'linear-gradient(135deg, #c026d3 0%, #db2777 100%)',
-    'linear-gradient(135deg, #db2777 0%, #f43f5e 100%)',
+    'linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%)',
+    'linear-gradient(135deg, #0369a1 0%, #0284c7 100%)',
+    'linear-gradient(135deg, #0284c7 0%, #06b6d4 100%)',
+    'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
+    'linear-gradient(135deg, #0891b2 0%, #0e7490 100%)',
+    'linear-gradient(135deg, #0e7490 0%, #0f766e 100%)',
 ];
 
 const BAR_COLORS = ['#1971c2', '#1971c2', '#1971c2', '#1971c2', '#1971c2'];

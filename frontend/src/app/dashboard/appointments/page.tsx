@@ -1063,7 +1063,7 @@ export default function AppointmentsPage() {
                                                             background: isUnavailable ? 'rgba(0,0,0,0.03)' : 'transparent'
                                                         }}
                                                         onMouseEnter={e => {
-                                                            if (canClick) (e.currentTarget as HTMLElement).style.background = 'var(--accent-cyan-glow)';
+                                                            if (canClick) (e.currentTarget as HTMLElement).style.background = 'rgba(0,0,0,0.04)';
                                                         }}
                                                         onMouseLeave={e => {
                                                             (e.currentTarget as HTMLElement).style.background = 'transparent';
@@ -1079,7 +1079,7 @@ export default function AppointmentsPage() {
                                                                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
                                                                 onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '0'; }}
                                                             >
-                                                                <span style={{ fontSize: 11, color: 'var(--accent-cyan)', fontWeight: 600 }}>+ agendar</span>
+                                                                <span style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 600 }}>+ agendar</span>
                                                             </div>
                                                         )}
 
@@ -1089,13 +1089,13 @@ export default function AppointmentsPage() {
                                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                                 opacity: canScheduleOutside ? 0.6 : 0.2,
                                                             background: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.025) 10px, rgba(0,0,0,0.025) 20px)',
-                                                                border: (isUnavailable && canScheduleOutside) ? '1px dashed var(--accent-cyan)' : 'none',
+                                                                border: (isUnavailable && canScheduleOutside) ? '1px dashed var(--text-muted)' : 'none',
                                                                 transition: 'opacity 0.2s'
                                                             }}
                                                             title={canScheduleOutside ? 'Fora do horário de trabalho' : 'Indisponível'}>
                                                                 <span style={{ 
                                                                     fontSize: 8, 
-                                                                    color: canScheduleOutside ? 'var(--accent-cyan)' : 'var(--text-muted)', 
+                                                                    color: canScheduleOutside ? 'var(--text-secondary)' : 'var(--text-muted)', 
                                                                     fontWeight: 800, 
                                                                     textTransform: 'uppercase', 
                                                                     letterSpacing: '0.1em' 

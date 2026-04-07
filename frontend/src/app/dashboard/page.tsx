@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/store/auth.store';
 import api from '@/lib/api';
 import {
-    Scissors, Award, BarChart2, Star, DollarSign, Users,
-    ChevronLeft, ChevronRight, CalendarDays, TrendingUp, Package
+    Scissors, Award, DollarSign, Users,
+    ChevronLeft, ChevronRight, CalendarDays,
+    TrendingDown, Percent, BarChart2, Star
 } from 'lucide-react';
 import {
-    BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
-    Cell
+    BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
+    CartesianGrid, Cell, PieChart, Pie
 } from 'recharts';
 
 interface DashboardData {
@@ -23,102 +24,111 @@ interface DashboardData {
 const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-/* ── KPI Card com gradiente (igual à imagem de referência) ── */
-function KpiCard({
-    icon: Icon,
-    label,
-    value,
-    sub,
-    gradient,
-    iconBg,
-}: {
-    icon: React.ElementType;
-    label: string;
-    value: string | number;
-    sub?: string;
-    gradient: string;
-    iconBg?: string;
+// Gradientes do roxo escuro ao rosa — igual à referência
+const KPI_GRADIENTS = [
+    'linear-gradient(135deg, #4a1d96 0%, #6d28d9 100%)',
+    'linear-gradient(135deg, #6d28d9 0%, #7c3aed 100%)',
+    'linear-gradient(135deg, #7c3aed 0%, #9333ea 100%)',
+    'linear-gradient(135deg, #9333ea 0%, #c026d3 100%)',
+    'linear-gradient(135deg, #c026d3 0%, #db2777 100%)',
+    'linear-gradient(135deg, #db2777 0%, #f43f5e 100%)',
+];
+
+const BAR_COLORS = ['#1971c2', '#1971c2', '#1971c2', '#1971c2', '#1971c2'];
+const DONUT_COLORS_1 = ['#1971c2', '#74c0fc', '#e9c46a', '#f4a261'];
+const DONUT_COLORS_2 = ['#1971c2', '#e9c46a', '#2f9e44', '#e03131'];
+const DONUT_COLORS_3 = ['#1971c2', '#74c0fc'];
+
+/* ── KPI Card compacto ── */
+function KpiCard({ icon: Icon, label, value, gradient, sub }: {
+    icon: React.ElementType; label: string; value: string | number;
+    gradient: string; sub?: string;
 }) {
     return (
-        <div
-            className="relative overflow-hidden rounded-2xl p-5 flex flex-col justify-between group transition-transform duration-200 hover:-translate-y-0.5"
-            style={{
-                background: gradient,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.12)',
-                minHeight: 110,
-            }}
-        >
-            {/* Círculo decorativo de fundo */}
-            <div
-                className="absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-20"
-                style={{ background: 'rgba(255,255,255,0.3)' }}
-            />
-            <div
-                className="absolute -right-1 -bottom-6 w-16 h-16 rounded-full opacity-10"
-                style={{ background: 'rgba(255,255,255,0.5)' }}
-            />
-
-            <div className="flex items-start justify-between relative z-10">
-                <div>
-                    <p className="text-[11px] font-bold tracking-widest uppercase mb-1.5 opacity-80" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                        {label}
-                    </p>
-                    <p className="text-2xl font-bold leading-none" style={{ color: '#fff' }}>
-                        {value}
-                    </p>
-                    {sub && (
-                        <p className="text-[11px] mt-1.5 font-medium opacity-75" style={{ color: 'rgba(255,255,255,0.85)' }}>
-                            {sub}
-                        </p>
-                    )}
-                </div>
-                <div
-                    className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
-                    style={{ background: iconBg ?? 'rgba(255,255,255,0.22)' }}
-                >
-                    <Icon size={22} color="#fff" strokeWidth={2} />
-                </div>
+        <div style={{
+            background: gradient, borderRadius: 8, padding: '12px 14px',
+            display: 'flex', flexDirection: 'column', gap: 4,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.18)', position: 'relative', overflow: 'hidden',
+        }}>
+            <div style={{ position: 'absolute', right: -10, top: -10, width: 56, height: 56, borderRadius: '50%', background: 'rgba(255,255,255,0.12)' }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <Icon size={15} color="rgba(255,255,255,0.9)" strokeWidth={2} />
+                <span style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.9)', textTransform: 'uppercase', letterSpacing: '0.05em', lineHeight: 1 }}>
+                    {label}
+                </span>
             </div>
+            <p style={{ fontSize: 18, fontWeight: 700, color: '#fff', lineHeight: 1.1, letterSpacing: '-0.01em' }}>
+                {value}
+            </p>
+            {sub && <p style={{ fontSize: 9, color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>{sub}</p>}
         </div>
     );
 }
 
-/* ── Chart Card Container ── */
-function ChartCard({ title, icon: Icon, iconColor, children }: {
-    title: string;
-    icon: React.ElementType;
-    iconColor: string;
-    children: React.ReactNode;
+/* ── Card branco com título ── */
+function WhiteCard({ title, children, style }: {
+    title: string; children: React.ReactNode; style?: React.CSSProperties;
 }) {
     return (
-        <div
-            className="rounded-2xl p-5"
-            style={{
-                background: '#ffffff',
-                border: '1px solid #e5e7eb',
-                boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
-            }}
-        >
-            <div className="flex items-center gap-2.5 mb-5">
-                <div
-                    className="w-7 h-7 rounded-lg flex items-center justify-center"
-                    style={{ background: `${iconColor}18`, color: iconColor }}
-                >
-                    <Icon size={15} strokeWidth={2.5} />
-                </div>
-                <h2 className="text-sm font-bold" style={{ color: '#111827', fontFamily: 'Inter, sans-serif' }}>
-                    {title}
-                </h2>
-            </div>
+        <div style={{
+            background: '#fff', borderRadius: 12,
+            border: '1px solid #e9ecef', padding: '16px 18px',
+            boxShadow: '0 1px 4px rgba(0,0,0,0.06)', ...style,
+        }}>
+            <p style={{ fontSize: 12, fontWeight: 600, color: '#495057', marginBottom: 14, fontFamily: 'Inter, sans-serif' }}>
+                {title}
+            </p>
             {children}
         </div>
     );
 }
 
-const BAR_COLORS = ['#7c3aed', '#a78bfa', '#818cf8', '#6366f1', '#4f46e5'];
-const CLIENT_COLORS = ['#7c3aed', '#0284c7', '#059669', '#d97706', '#dc2626'];
+/* ── Empty state ── */
+function Empty({ icon: Icon, text }: { icon: React.ElementType; text: string }) {
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: 180, gap: 8 }}>
+            <Icon size={26} color="#dee2e6" />
+            <p style={{ fontSize: 12, color: '#adb5bd' }}>{text}</p>
+        </div>
+    );
+}
 
-/* ── Página ─────────────────────────────────────────── */
+/* ── Donut chart reutilizável ── */
+function DonutChart({ data, colors, formatLabel }: {
+    data: { name: string; value: number }[]; colors: string[];
+    formatLabel?: (v: number) => string;
+}) {
+    const total = data.reduce((a, d) => a + d.value, 0);
+    if (!total) return <Empty icon={BarChart2} text="Sem dados" />;
+    return (
+        <div>
+            <ResponsiveContainer width="100%" height={150}>
+                <PieChart>
+                    <Pie data={data} cx="50%" cy="50%" innerRadius={40} outerRadius={65}
+                        paddingAngle={2} dataKey="value" startAngle={90} endAngle={-270}>
+                        {data.map((_, i) => <Cell key={i} fill={colors[i % colors.length]} />)}
+                    </Pie>
+                    <Tooltip
+                        contentStyle={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 8, fontSize: 11 }}
+                        formatter={(v) => [formatLabel ? formatLabel(Number(v)) : `${v}`, '']}
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px 10px', justifyContent: 'center', marginTop: 4 }}>
+                {data.map((d, i) => (
+                    <div key={d.name} style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                        <div style={{ width: 8, height: 8, borderRadius: '50%', background: colors[i % colors.length], flexShrink: 0 }} />
+                        <span style={{ fontSize: 10, color: '#6c757d', textTransform: 'capitalize' }}>
+                            {d.name.toLowerCase()} {total > 0 ? `${((d.value / total) * 100).toFixed(0)}%` : ''}
+                        </span>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+/* ── Página ── */
 export default function DashboardPage() {
     const { user, hydrate } = useAuthStore();
     const now = new Date();
@@ -128,7 +138,6 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => { hydrate(); }, []);
-
     useEffect(() => {
         setLoading(true);
         api.get(`/dashboard?month=${month}&year=${year}`)
@@ -138,8 +147,7 @@ export default function DashboardPage() {
     }, [month, year]);
 
     const changeMonth = (dir: number) => {
-        let m = month + dir;
-        let y = year;
+        let m = month + dir, y = year;
         if (m > 12) { m = 1; y++; }
         if (m < 1) { m = 12; y--; }
         setMonth(m); setYear(y);
@@ -151,183 +159,104 @@ export default function DashboardPage() {
 
     const greeting = () => {
         const h = new Date().getHours();
-        if (h < 12) return 'Bom dia';
-        if (h < 18) return 'Boa tarde';
-        return 'Boa noite';
+        return h < 12 ? 'Bom dia' : h < 18 ? 'Boa tarde' : 'Boa noite';
     };
 
     const totalRevenue = data?.totalRevenue ?? 0;
     const totalExpenses = data?.totalExpenses ?? 0;
     const totalServices = data?.topServices.reduce((a, s) => a + s.count, 0) ?? 0;
     const lucro = totalRevenue - totalExpenses;
+    const margem = totalRevenue > 0 ? (lucro / totalRevenue) * 100 : 0;
+    const fmt = (v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
+
+    const adminKpis = [
+        { icon: DollarSign, label: 'Total de Vendas', value: fmt(totalRevenue), gradient: KPI_GRADIENTS[0] },
+        { icon: Scissors, label: 'Qtde. Serviços', value: totalServices, gradient: KPI_GRADIENTS[1] },
+        { icon: Users, label: 'Clientes', value: data?.topClients.length ?? 0, gradient: KPI_GRADIENTS[2], sub: 'top clientes' },
+        { icon: TrendingDown, label: 'Custo', value: fmt(totalExpenses), gradient: KPI_GRADIENTS[3] },
+        { icon: Percent, label: 'Margem', value: `${margem.toFixed(2)}%`, gradient: KPI_GRADIENTS[4] },
+        { icon: Award, label: 'Lucro', value: fmt(lucro), gradient: KPI_GRADIENTS[5] },
+    ];
+    const managerKpis = [
+        { icon: Scissors, label: 'Serviços', value: totalServices, gradient: KPI_GRADIENTS[0] },
+        { icon: Users, label: 'Clientes', value: data?.topClients.length ?? 0, gradient: KPI_GRADIENTS[2] },
+        { icon: Award, label: 'Colaboradores', value: data?.topProfessionals.length ?? 0, gradient: KPI_GRADIENTS[4] },
+    ];
+    const professionalKpis = [
+        { icon: Scissors, label: 'Meus Serviços', value: totalServices, gradient: KPI_GRADIENTS[0] },
+        { icon: Users, label: 'Meus Clientes', value: data?.topClients.length ?? 0, gradient: KPI_GRADIENTS[3] },
+    ];
+    const kpis = isAdmin ? adminKpis : isManager ? managerKpis : professionalKpis;
+
+    const clientsDonut = (data?.topClients ?? []).map(c => ({ name: c.name.split(' ')[0], value: c.spent }));
+    const profDonut = (data?.topProfessionals ?? []).map(p => ({ name: p.professional.split(' ')[0], value: p.count }));
+    const revenueDonut = [{ name: 'Faturamento', value: totalRevenue }, { name: 'Despesas', value: totalExpenses }];
 
     return (
-        <div
-            className="animate-fade-in min-h-screen"
-            style={{ width: '100%', background: '#f5f6fa' }}
-        >
-            {/* ── Cabeçalho ── */}
-            <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
+        <div className="animate-fade-in" style={{ width: '100%', background: '#f8f9fa', minHeight: '100vh' }}>
+
+            {/* ── Header ── */}
+            <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 16 }}>
                 <div>
-                    <h1 className="text-xl font-bold tracking-tight mb-0.5" style={{ color: '#111827', fontFamily: 'Inter, sans-serif' }}>
+                    <h1 style={{ fontSize: 19, fontWeight: 700, color: '#212529', marginBottom: 2 }}>
                         {greeting()}, {user?.name?.split(' ')[0]} 👋
                     </h1>
-                    <p className="text-sm" style={{ color: '#6b7280' }}>
-                        {user?.role === 'ADMIN' ? 'Visão geral da operação' : 'Seu resumo de atividades'}
+                    <p style={{ fontSize: 13, color: '#6c757d' }}>
+                        {isAdmin ? 'Visão geral da operação' : 'Resumo de atividades'}
                     </p>
                 </div>
-
-                {/* Seletor de mês */}
-                <div
-                    className="flex items-center gap-1 rounded-xl p-1"
-                    style={{ background: '#ffffff', border: '1px solid #e5e7eb', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}
-                >
-                    <button
-                        onClick={() => changeMonth(-1)}
-                        className="p-1.5 rounded-lg transition-all hover:bg-gray-100"
-                        style={{ color: '#6b7280' }}
-                    >
-                        <ChevronLeft size={16} />
+                <div style={{ display: 'flex', alignItems: 'center', gap: 2, background: '#fff', border: '1px solid #dee2e6', borderRadius: 8, padding: '5px 8px' }}>
+                    <button onClick={() => changeMonth(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6c757d', display: 'flex', padding: '2px 4px' }}>
+                        <ChevronLeft size={15} />
                     </button>
-
-                    <div className="flex items-center gap-2 px-3 min-w-[150px] justify-center">
-                        <CalendarDays size={14} style={{ color: '#7c3aed' }} />
-                        <span className="text-sm font-semibold" style={{ color: '#111827' }}>
-                            {MONTHS[month - 1]} {year}
-                        </span>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 8px', minWidth: 140, justifyContent: 'center' }}>
+                        <CalendarDays size={13} color="#7c3aed" />
+                        <span style={{ fontSize: 12, fontWeight: 600, color: '#212529' }}>{MONTHS[month - 1]} {year}</span>
                     </div>
-
-                    <button
-                        onClick={() => changeMonth(1)}
-                        className="p-1.5 rounded-lg transition-all hover:bg-gray-100"
-                        style={{ color: '#6b7280' }}
-                    >
-                        <ChevronRight size={16} />
+                    <button onClick={() => changeMonth(1)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6c757d', display: 'flex', padding: '2px 4px' }}>
+                        <ChevronRight size={15} />
                     </button>
                 </div>
             </div>
 
             {loading ? (
-                <div className="flex items-center justify-center" style={{ height: 200 }}>
-                    <span className="spinner" style={{ width: 32, height: 32, borderTopColor: '#7c3aed' }} />
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}>
+                    <span className="spinner" style={{ width: 30, height: 30, borderTopColor: '#7c3aed' }} />
                 </div>
             ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
 
-                    {/* ── KPIs coloridos ── */}
-                    {(isAdmin || isManager) && (
-                        <div className="kpi-grid">
-                            <KpiCard
-                                icon={Scissors}
-                                label="Serviços Realizados"
-                                value={totalServices}
-                                sub="neste período"
-                                gradient="linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)"
-                            />
-                            <KpiCard
-                                icon={Users}
-                                label="Clientes Atendidos"
-                                value={data?.topClients.length ?? 0}
-                                sub="top clientes"
-                                gradient="linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)"
-                            />
-                            <KpiCard
-                                icon={Award}
-                                label="Colaboradores Ativos"
-                                value={data?.topProfessionals.length ?? 0}
-                                gradient="linear-gradient(135deg, #059669 0%, #10b981 100%)"
-                            />
-                            {isAdmin && (
-                                <KpiCard
-                                    icon={DollarSign}
-                                    label="Faturamento Bruto"
-                                    value={`R$ ${totalRevenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-                                    sub="receita total"
-                                    gradient="linear-gradient(135deg, #d97706 0%, #f59e0b 100%)"
-                                />
-                            )}
-                        </div>
-                    )}
+                    {/* ── KPI Row — uma linha, gradiente roxo→rosa ── */}
+                    <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(${kpis.length}, 1fr)`,
+                        gap: 8,
+                    }}>
+                        {kpis.map((k, i) => <KpiCard key={i} {...k} />)}
+                    </div>
 
-                    {/* KPIs extras para Admin (Despesas e Lucro) */}
-                    {isAdmin && (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                            <KpiCard
-                                icon={TrendingUp}
-                                label="Despesas do Período"
-                                value={`R$ ${totalExpenses.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-                                gradient="linear-gradient(135deg, #dc2626 0%, #ef4444 100%)"
-                            />
-                            <KpiCard
-                                icon={Package}
-                                label="Lucro Líquido"
-                                value={`R$ ${lucro.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`}
-                                gradient={lucro >= 0
-                                    ? "linear-gradient(135deg, #0f766e 0%, #14b8a6 100%)"
-                                    : "linear-gradient(135deg, #991b1b 0%, #dc2626 100%)"
-                                }
-                            />
-                        </div>
-                    )}
+                    {/* ── Gráficos principais ── */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
 
-                    {isProfessional && (
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                            <KpiCard
-                                icon={Users}
-                                label="Meus Clientes"
-                                value={data?.topClients.length ?? 0}
-                                gradient="linear-gradient(135deg, #2563eb 0%, #3b82f6 100%)"
-                            />
-                            <KpiCard
-                                icon={Scissors}
-                                label="Meus Serviços"
-                                value={totalServices}
-                                gradient="linear-gradient(135deg, #7c3aed 0%, #a855f7 100%)"
-                            />
-                        </div>
-                    )}
-
-                    {/* ── Gráficos ── */}
-                    <div className="charts-grid mt-1">
-
-                        {/* Top Serviços — Barras horizontais */}
-                        <ChartCard
-                            title={isProfessional ? 'Serviços Prestados' : 'Top 5 — Serviços'}
-                            icon={BarChart2}
-                            iconColor="#7c3aed"
-                        >
+                        {/* Top 5 Serviços — barra horizontal */}
+                        <WhiteCard title="Top 5 — Serviços por quantidade">
                             {!data?.topServices.length ? (
-                                <div className="flex flex-col items-center justify-center gap-2" style={{ height: 220 }}>
-                                    <BarChart2 size={28} style={{ color: '#d1d5db' }} />
-                                    <p className="text-sm" style={{ color: '#9ca3af' }}>Sem dados no período</p>
-                                </div>
+                                <Empty icon={BarChart2} text="Sem dados no período" />
                             ) : (
-                                <ResponsiveContainer width="100%" height={220}>
-                                    <BarChart data={data.topServices.slice(0, 5)} layout="vertical" margin={{ top: 0, right: 24, bottom: 0, left: 8 }}>
-                                        <CartesianGrid strokeDasharray="4 4" stroke="#f3f4f6" horizontal={false} />
+                                <ResponsiveContainer width="100%" height={200}>
+                                    <BarChart data={data.topServices.slice(0, 5)} layout="vertical"
+                                        margin={{ top: 0, right: 28, bottom: 0, left: 8 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#f1f3f5" horizontal={false} />
                                         <XAxis type="number" hide />
-                                        <YAxis
-                                            dataKey="service"
-                                            type="category"
-                                            tick={{ fill: '#374151', fontSize: 11, fontWeight: 500 }}
-                                            width={110}
-                                            axisLine={false}
-                                            tickLine={false}
-                                        />
+                                        <YAxis dataKey="service" type="category"
+                                            tick={{ fill: '#495057', fontSize: 11 }} width={115}
+                                            axisLine={false} tickLine={false} />
                                         <Tooltip
-                                            cursor={{ fill: '#f9fafb' }}
-                                            contentStyle={{
-                                                background: '#ffffff',
-                                                border: '1px solid #e5e7eb',
-                                                borderRadius: '10px',
-                                                color: '#111827',
-                                                boxShadow: '0 4px 16px rgba(0,0,0,0.08)',
-                                                fontSize: 12,
-                                            }}
-                                            itemStyle={{ color: '#7c3aed', fontWeight: 600 }}
+                                            cursor={{ fill: '#f8f9fa' }}
+                                            contentStyle={{ background: '#fff', border: '1px solid #dee2e6', borderRadius: 8, fontSize: 11 }}
                                             formatter={(v) => [`${v} serviço(s)`, '']}
                                         />
-                                        <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={20}>
+                                        <Bar dataKey="count" radius={[0, 5, 5, 0]} barSize={20}>
                                             {data.topServices.slice(0, 5).map((_, i) => (
                                                 <Cell key={i} fill={BAR_COLORS[i % BAR_COLORS.length]} />
                                             ))}
@@ -335,134 +264,113 @@ export default function DashboardPage() {
                                     </BarChart>
                                 </ResponsiveContainer>
                             )}
-                        </ChartCard>
+                        </WhiteCard>
 
                         {/* Top Clientes */}
-                        <ChartCard
-                            title={isProfessional ? 'Fidelidade de Clientes' : 'Melhores Clientes do Mês'}
-                            icon={Star}
-                            iconColor="#0284c7"
-                        >
+                        <WhiteCard title="Melhores Clientes do Mês">
                             {!data?.topClients.length ? (
-                                <div className="flex flex-col items-center justify-center gap-2" style={{ height: 220 }}>
-                                    <Users size={28} style={{ color: '#d1d5db' }} />
-                                    <p className="text-sm" style={{ color: '#9ca3af' }}>Sem movimentação</p>
-                                </div>
+                                <Empty icon={Users} text="Sem movimentação" />
                             ) : (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                                    {data.topClients.map((c, i) => (
-                                        <div
-                                            key={c.name}
-                                            className="flex items-center gap-3 p-3 rounded-xl transition-all duration-200 hover:shadow-sm"
-                                            style={{
-                                                background: '#f9fafb',
-                                                border: '1px solid #f3f4f6',
-                                            }}
-                                        >
-                                            {/* Rank badge */}
-                                            <div
-                                                className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0"
-                                                style={{
-                                                    background: `${CLIENT_COLORS[i]}15`,
-                                                    border: `1.5px solid ${CLIENT_COLORS[i]}35`,
-                                                    color: CLIENT_COLORS[i],
-                                                }}
-                                            >
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                                    {data.topClients.slice(0, 5).map((c, i) => (
+                                        <div key={c.name} style={{
+                                            display: 'flex', alignItems: 'center', gap: 10,
+                                            padding: '8px 10px', borderRadius: 8,
+                                            background: '#f8f9fa', border: '1px solid #f1f3f5',
+                                        }}>
+                                            <div style={{
+                                                width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+                                                background: `${BAR_COLORS[0]}18`, border: `1.5px solid ${BAR_COLORS[0]}40`,
+                                                color: BAR_COLORS[0], display: 'flex', alignItems: 'center',
+                                                justifyContent: 'center', fontSize: 9, fontWeight: 700,
+                                            }}>
                                                 {String(i + 1).padStart(2, '0')}
                                             </div>
-
-                                            {/* Barra de progresso proporcional */}
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-[12px] font-semibold truncate capitalize mb-1" style={{ color: '#111827' }}>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <p style={{ fontSize: 12, fontWeight: 600, color: '#212529', textTransform: 'capitalize', marginBottom: 3 }}>
                                                     {c.name.toLowerCase()}
                                                 </p>
-                                                <div style={{ background: '#e5e7eb', borderRadius: 4, height: 4 }}>
+                                                <div style={{ background: '#e9ecef', borderRadius: 3, height: 3 }}>
                                                     <div style={{
                                                         width: `${Math.min(100, (c.spent / (data.topClients[0]?.spent || 1)) * 100)}%`,
-                                                        background: CLIENT_COLORS[i],
-                                                        height: '100%',
-                                                        borderRadius: 4,
+                                                        background: BAR_COLORS[0], height: '100%', borderRadius: 3,
                                                     }} />
                                                 </div>
                                             </div>
-
-                                            <p className="text-sm font-bold flex-shrink-0" style={{ color: '#059669' }}>
-                                                R$ {c.spent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                            <p style={{ fontSize: 12, fontWeight: 700, color: '#2f9e44', flexShrink: 0 }}>
+                                                {fmt(c.spent)}
                                             </p>
                                         </div>
                                     ))}
                                 </div>
                             )}
-                        </ChartCard>
+                        </WhiteCard>
                     </div>
 
-                    {/* ── Ranking de Profissionais ── */}
-                    {!isProfessional && data?.topProfessionals && data.topProfessionals.length > 0 && (
-                        <div
-                            className="rounded-2xl p-5 mt-1"
-                            style={{
-                                background: '#ffffff',
-                                border: '1px solid #e5e7eb',
-                                boxShadow: '0 1px 6px rgba(0,0,0,0.05)',
-                            }}
-                        >
-                            <div className="flex items-center justify-between mb-5">
-                                <div className="flex items-center gap-2.5">
-                                    <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-                                        style={{ background: 'rgba(212,175,55,0.15)', color: '#b48c26' }}>
-                                        <Award size={15} strokeWidth={2.5} />
-                                    </div>
-                                    <h2 className="text-sm font-bold" style={{ color: '#111827', fontFamily: 'Inter, sans-serif' }}>
-                                        🏆 Desempenho por Colaborador
-                                    </h2>
-                                </div>
-                                <span className="text-[10px] font-bold tracking-widest uppercase" style={{ color: '#9ca3af' }}>
-                                    {isAdmin ? 'Venda / Serviço' : 'Atendimentos'}
-                                </span>
-                            </div>
+                    {/* ── 3 Donuts ── */}
+                    {isAdmin && (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12 }}>
+                            <WhiteCard title="Faturamento vs Despesas">
+                                <DonutChart
+                                    data={revenueDonut}
+                                    colors={DONUT_COLORS_2}
+                                    formatLabel={fmt}
+                                />
+                            </WhiteCard>
+                            <WhiteCard title="Distribuição de Clientes">
+                                <DonutChart
+                                    data={clientsDonut}
+                                    colors={DONUT_COLORS_1}
+                                    formatLabel={fmt}
+                                />
+                            </WhiteCard>
+                            <WhiteCard title="Profissionais — Atendimentos">
+                                <DonutChart
+                                    data={profDonut}
+                                    colors={DONUT_COLORS_3}
+                                    formatLabel={(v) => `${v} atend.`}
+                                />
+                            </WhiteCard>
+                        </div>
+                    )}
 
+                    {/* ── Ranking profissionais ── */}
+                    {!isProfessional && data?.topProfessionals && data.topProfessionals.length > 0 && (
+                        <WhiteCard title="🏆 Desempenho por Colaborador">
                             <div className="ranking-grid">
                                 {data.topProfessionals.map((p, i) => (
-                                    <div
-                                        key={p.professional}
-                                        className="flex flex-col items-center text-center p-4 rounded-2xl border transition-all duration-200 hover:shadow-md hover:-translate-y-0.5"
-                                        style={{
-                                            background: i === 0
-                                                ? 'linear-gradient(135deg, #fffde7 0%, #fff9e6 100%)'
-                                                : '#f9fafb',
-                                            border: `1px solid ${i === 0 ? 'rgba(212,175,55,0.35)' : '#e5e7eb'}`,
-                                        }}
-                                    >
-                                        <div
-                                            className="w-12 h-12 rounded-full flex items-center justify-center text-xl mb-3"
-                                            style={{
-                                                background: i === 0 ? 'rgba(212,175,55,0.18)' : '#ffffff',
-                                                border: `1px solid ${i === 0 ? 'rgba(212,175,55,0.3)' : '#e5e7eb'}`,
-                                            }}
-                                        >
+                                    <div key={p.professional} style={{
+                                        display: 'flex', flexDirection: 'column', alignItems: 'center',
+                                        textAlign: 'center', padding: '14px 10px', borderRadius: 10,
+                                        background: i === 0 ? 'linear-gradient(135deg, #fff9e6, #fffdf5)' : '#f8f9fa',
+                                        border: `1px solid ${i === 0 ? 'rgba(212,175,55,0.3)' : '#e9ecef'}`,
+                                    }}>
+                                        <div style={{
+                                            width: 42, height: 42, borderRadius: '50%', fontSize: 18,
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8,
+                                            background: i === 0 ? 'rgba(212,175,55,0.15)' : '#fff',
+                                            border: `1px solid ${i === 0 ? 'rgba(212,175,55,0.3)' : '#e9ecef'}`,
+                                        }}>
                                             {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
                                         </div>
-                                        <p className="text-sm font-semibold mb-1 capitalize leading-tight" style={{ color: '#111827' }}>
+                                        <p style={{ fontSize: 12, fontWeight: 600, color: '#212529', textTransform: 'capitalize', marginBottom: 3 }}>
                                             {p.professional.toLowerCase()}
                                         </p>
-                                        <div className="flex items-center gap-1.5 mb-2">
-                                            <div className="w-1.5 h-1.5 rounded-full" style={{ background: '#059669' }} />
-                                            <p className="text-[10px] font-bold uppercase tracking-tight" style={{ color: '#6b7280' }}>
-                                                {p.count} atendimentos
-                                            </p>
-                                        </div>
+                                        <p style={{ fontSize: 10, color: '#6c757d', fontWeight: 600, textTransform: 'uppercase' }}>
+                                            {p.count} atend.
+                                        </p>
                                         {isAdmin && p.revenue !== undefined && (
-                                            <div className="pt-3 mt-auto border-t w-full" style={{ borderColor: '#e5e7eb' }}>
-                                                <p className="text-[10px] mb-0.5" style={{ color: '#9ca3af' }}>Faturamento</p>
-                                                <p className="text-sm font-bold" style={{ color: '#111827' }}>
-                                                    R$ {p.revenue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                                            <div style={{ marginTop: 8, paddingTop: 8, borderTop: '1px solid #e9ecef', width: '100%' }}>
+                                                <p style={{ fontSize: 10, color: '#adb5bd' }}>Faturamento</p>
+                                                <p style={{ fontSize: 12, fontWeight: 700, color: '#212529' }}>
+                                                    {fmt(p.revenue)}
                                                 </p>
                                             </div>
                                         )}
                                     </div>
                                 ))}
                             </div>
-                        </div>
+                        </WhiteCard>
                     )}
 
                 </div>

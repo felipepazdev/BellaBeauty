@@ -5,8 +5,7 @@ import api from '@/lib/api';
 import {
     ChevronLeft, ChevronRight, ChevronDown, ChevronUp,
     TrendingUp, TrendingDown, Wallet, ArrowRight,
-    Calendar, LayoutGrid, List, Filter, Search,
-    ArrowUpRight, ArrowDownLeft
+    LayoutGrid
 } from 'lucide-react';
 import {
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -14,8 +13,8 @@ import {
 import {
     startOfMonth, endOfMonth, startOfYear, endOfYear,
     eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, eachYearOfInterval,
-    isWithinInterval, format, startOfToday, subDays,
-    addMonths, subMonths, addYears, subYears, isSameMonth, isSameYear,
+    format,
+    addMonths, subMonths, addYears, subYears,
     startOfWeek, endOfWeek, parseISO, isSameDay
 } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -60,18 +59,15 @@ export default function CashFlowPage() {
         if (viewMode === 'MONTHLY') {
             return { start: startOfYear(date), end: endOfYear(date) };
         }
-        // ANNUAL: mostra 5 anos (2 antes, atual, 2 depois)
         return { start: subYears(startOfYear(date), 2), end: addYears(endOfYear(date), 2) };
     }, [viewMode, date]);
 
     const fetchData = async () => {
         setLoading(true);
         try {
-            // 1. Busca saldo histórico antes do início do período
             const balanceRes = await api.get(`/finance/summary?endDate=${periodRange.start.toISOString()}`);
             setInitialBalance(balanceRes.data.netBalance || 0);
 
-            // 2. Busca todas as transações do período
             const transRes = await api.get(`/finance/transactions?startDate=${periodRange.start.toISOString()}&endDate=${periodRange.end.toISOString()}`);
             setTransactions(transRes.data);
         } catch (e) {
@@ -96,7 +92,7 @@ export default function CashFlowPage() {
         let currentRunningBalance = initialBalance;
         const rows: AggregatedRow[] = [];
 
-        intervals.forEach((intervalStart, idx) => {
+        intervals.forEach((intervalStart) => {
             let intervalEnd: Date;
             let label: string;
 
@@ -119,13 +115,18 @@ export default function CashFlowPage() {
                 return tDate >= intervalStart && tDate <= intervalEnd;
             });
 
-            const income = inPeriod.reduce((acc, t) => (t.type === 'ENTRADA' ? acc + t.amount : acc), 0);
-            const expense = inPeriod.reduce((acc, t) => (t.type === 'SAIDA' ? acc + t.amount : acc), 0);
+            const income = inPeriod.reduce((acc, t) => {
+                const tp = t.type?.toUpperCase();
+                return (tp === 'ENTRADA' || tp === 'INCOME' || tp === 'RECEITA') ? acc + t.amount : acc;
+            }, 0);
+            const expense = inPeriod.reduce((acc, t) => {
+                const tp = t.type?.toUpperCase();
+                return (tp === 'SAIDA' || tp === 'EXPENSE' || tp === 'DESPESA') ? acc + t.amount : acc;
+            }, 0);
             const netResult = income - expense;
             const startBal = currentRunningBalance;
             currentRunningBalance += netResult;
 
-            // Filtro para não mostrar linhas vazias no futuro se for diário/semanal
             const isFuture = intervalStart > new Date() && (viewMode === 'DAILY' || viewMode === 'WEEKLY');
             if (isFuture && income === 0 && expense === 0) return;
 
@@ -142,12 +143,18 @@ export default function CashFlowPage() {
             });
         });
 
-        return rows.reverse(); // Mais recente primeiro na tabela
+        return rows.reverse();
     }, [transactions, viewMode, initialBalance, periodRange]);
 
     const totals = useMemo(() => {
-        const income = transactions.reduce((acc, t) => (t.type === 'ENTRADA' ? acc + t.amount : acc), 0);
-        const expense = transactions.reduce((acc, t) => (t.type === 'SAIDA' ? acc + t.amount : acc), 0);
+        const income = transactions.reduce((acc, t) => {
+            const tp = t.type?.toUpperCase();
+            return (tp === 'ENTRADA' || tp === 'INCOME' || tp === 'RECEITA') ? acc + t.amount : acc;
+        }, 0);
+        const expense = transactions.reduce((acc, t) => {
+            const tp = t.type?.toUpperCase();
+            return (tp === 'SAIDA' || tp === 'EXPENSE' || tp === 'DESPESA') ? acc + t.amount : acc;
+        }, 0);
         return {
             initial: initialBalance,
             income,
@@ -159,7 +166,7 @@ export default function CashFlowPage() {
 
     const chartData = useMemo(() => {
         return [...aggregatedData].reverse().map(row => ({
-            name: row.label.split(' de ')[0], // Compacto para o gráfico
+            name: row.label.split(' de ')[0],
             Receitas: row.income,
             Despesas: row.expense,
         }));
@@ -175,27 +182,26 @@ export default function CashFlowPage() {
         }
     };
 
-    // --- VIEW CONFIGURATION ---
     const VIEW_CONFIG = {
         DAILY: {
             title: format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR }),
             subtitle: "Fluxo Diário Consolidado",
-            chartLabel: "COMPARATIVO DO DIA"
+            chartLabel: "COMPARATIVO DIÁRIO"
         },
         WEEKLY: {
             title: `Semana de ${format(startOfWeek(date, { weekStartsOn: 1 }), "d 'de' MMM", { locale: ptBR })}`,
             subtitle: "Resultados Semanais",
-            chartLabel: "COMPARATIVO DA SEMANA"
+            chartLabel: "COMPARATIVO SEMANAL"
         },
         MONTHLY: {
             title: format(date, 'MMMM yyyy', { locale: ptBR }),
             subtitle: "Performance Mensal",
-            chartLabel: "COMPARATIVO DO MÊS"
+            chartLabel: "COMPARATIVO MENSAL"
         },
         ANNUAL: {
             title: "Visão Multianual",
             subtitle: "Performance Anual",
-            chartLabel: "COMPARATIVO DO ANO"
+            chartLabel: "COMPARATIVO ANUAL"
         }
     };
 
@@ -203,19 +209,23 @@ export default function CashFlowPage() {
         val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
     return (
-        <div style={{ width: '100%', minHeight: '100vh', background: 'var(--bg-main)', color: 'var(--text-primary)' }}>
-            <div style={{ maxWidth: 1280, margin: '0 auto', padding: '40px 32px', display: 'flex', flexDirection: 'column', gap: 32 }}>
+        <div style={{ width: '100%', background: 'var(--bg-main)', color: 'var(--text-primary)', minHeight: '100%' }}>
+            <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 0 40px 0', display: 'flex', flexDirection: 'column', gap: 28 }}>
 
                 {/* HEADER & CONTROLS */}
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: 20 }}>
                     <div>
-                        <h1 className="text-4xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Fluxo de Caixa</h1>
-                        <p className="text-xs uppercase font-bold tracking-widest mt-1" style={{ color: 'var(--text-muted)' }}>{VIEW_CONFIG[viewMode].subtitle}</p>
+                        <h1 style={{ fontSize: 28, fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginBottom: 4 }}>
+                            Fluxo de Caixa
+                        </h1>
+                        <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                            {VIEW_CONFIG[viewMode].subtitle}
+                        </p>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         {/* VIEW SELECTOR */}
-                        <div className="flex items-center bg-white/[0.03] border border-white/10 rounded-2xl p-1.5 gap-2">
+                        <div style={{ display: 'flex', alignItems: 'center', background: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 16, padding: 6, gap: 4 }}>
                             {[
                                 { id: 'DAILY', label: 'Diária' },
                                 { id: 'WEEKLY', label: 'Semanal' },
@@ -225,155 +235,223 @@ export default function CashFlowPage() {
                                 <button
                                     key={m.id}
                                     onClick={() => setViewMode(m.id as ViewMode)}
-                                    className={`
-                                        px-6 py-2.5 text-[11px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-500
-                                        ${viewMode === m.id
-                                            ? 'bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-cyan-deep)] text-[#1a1505] shadow-lg shadow-[var(--accent-cyan-glow)]'
-                                            : 'text-white/30 hover:text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan)]/5'}
-                                    `}
+                                    style={{
+                                        padding: '8px 18px',
+                                        fontSize: 11,
+                                        fontWeight: 700,
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.1em',
+                                        borderRadius: 10,
+                                        border: 'none',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        background: viewMode === m.id ? 'var(--accent)' : 'transparent',
+                                        color: viewMode === m.id ? '#fff' : 'var(--text-muted)',
+                                    }}
                                 >
                                     {m.label}
                                 </button>
                             ))}
                         </div>
 
-                        <button className="btn-cyan h-11 px-8 !rounded-xl text-xs uppercase tracking-widest transition-all">
+                        <button className="btn-primary" style={{ height: 42, padding: '0 24px', fontSize: 12 }}>
                             Nova Entrada
                         </button>
                     </div>
                 </div>
 
                 {/* PERIOD NAVIGATION */}
-                <div className="flex items-center justify-between bg-white/[0.03] p-3 rounded-2xl border border-white/5">
-                    <button onClick={() => navigate(-1)} className="p-3 hover:bg-white/10 rounded-xl transition-colors text-white/40">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-card)', padding: '10px 16px', borderRadius: 16, border: '1px solid var(--border)' }}>
+                    <button
+                        onClick={() => navigate(-1)}
+                        style={{ padding: 10, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', borderRadius: 10, display: 'flex', alignItems: 'center' }}
+                    >
                         <ChevronLeft size={20} />
                     </button>
-                    <div className="text-center flex flex-col items-center">
-                        <div className="flex items-center gap-2">
+                    <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             {isSameDay(date, new Date()) && viewMode === 'DAILY' && (
-                                <span className="px-2 py-0.5 bg-[#22c55e]/10 text-[#22c55e] text-[8px] font-black uppercase rounded-full border border-[#22c55e]/20">HOJE</span>
+                                <span style={{ padding: '2px 8px', background: 'rgba(16,185,129,0.1)', color: '#10b981', fontSize: 9, fontWeight: 800, textTransform: 'uppercase', borderRadius: 20, border: '1px solid rgba(16,185,129,0.2)' }}>
+                                    HOJE
+                                </span>
                             )}
-                            <span className="text-lg font-black tracking-tighter text-white/90 first-letter:uppercase">
+                            <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', textTransform: 'capitalize' }}>
                                 {VIEW_CONFIG[viewMode].title}
                             </span>
                         </div>
-                        <span className="text-[10px] font-bold uppercase text-white/20 tracking-[0.3em]">
+                        <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
                             {VIEW_CONFIG[viewMode].subtitle}
                         </span>
                     </div>
-                    <button onClick={() => navigate(1)} className="p-3 hover:bg-white/10 rounded-xl transition-colors text-white/40">
+                    <button
+                        onClick={() => navigate(1)}
+                        style={{ padding: 10, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', borderRadius: 10, display: 'flex', alignItems: 'center' }}
+                    >
                         <ChevronRight size={20} />
                     </button>
                 </div>
 
-                {/* SUMMARY CARDS (5 Indicators) */}
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 h-auto">
-                    <Card title="Saldo Inicial" value={totals.initial} icon={<Wallet size={16} />} />
-                    <Card title="Receitas (+)" value={totals.income} green icon={<TrendingUp size={16} />} />
-                    <Card title="Despesas (-)" value={totals.expense} red icon={<TrendingDown size={16} />} />
-                    <Card title="Resultado (=)" value={totals.net} highlight icon={<ArrowRight size={16} />} />
-                    <Card title="Saldo Final" value={totals.final} gold icon={<LayoutGrid size={16} />} />
+                {/* SUMMARY CARDS */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 14 }}>
+                    <SummaryCard title="Saldo Inicial" value={totals.initial} icon={<Wallet size={18} />} />
+                    <SummaryCard title="Receitas (+)" value={totals.income} color="#10b981" icon={<TrendingUp size={18} />} />
+                    <SummaryCard title="Despesas (-)" value={totals.expense} color="#ef4444" icon={<TrendingDown size={18} />} />
+                    <SummaryCard title="Resultado (=)" value={totals.net} highlight icon={<ArrowRight size={18} />} />
+                    <SummaryCard title="Saldo Final" value={totals.final} accent icon={<LayoutGrid size={18} />} />
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-[1fr] gap-8">
-                    {/* CHART */}
-                    <div className="bg-white/[0.02] border border-white/5 p-6 rounded-2xl h-[380px] flex flex-col">
-                        <div className="flex items-center justify-between mb-8">
-                            <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-                                {VIEW_CONFIG[viewMode].chartLabel}
-                            </h2>
-                            <div className="flex gap-4">
-                                <LegendItem color="#22c55e" label="ENTRADAS" />
-                                <LegendItem color="#ef4444" label="SAÍDAS" />
-                            </div>
-                        </div>
-                        <div className="flex-1 w-full min-h-0">
-                            <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={chartData}>
-                                    <defs>
-                                        <linearGradient id="colorInc" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#22c55e" stopOpacity={0.1} /><stop offset="95%" stopColor="#22c55e" stopOpacity={0} /></linearGradient>
-                                        <linearGradient id="colorExp" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor="#ef4444" stopOpacity={0.1} /><stop offset="95%" stopColor="#ef4444" stopOpacity={0} /></linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.02)" vertical={false} />
-                                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.2)', fontSize: 9, fontWeight: 700 }} dy={10} />
-                                    <YAxis axisLine={false} tickLine={false} tick={{ fill: 'rgba(255,255,255,0.2)', fontSize: 9, fontWeight: 700 }} />
-                                    <Tooltip contentStyle={{ backgroundColor: '#111116', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }} labelStyle={{ color: 'rgba(255,255,255,1)', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase' }} />
-                                    <Area type="monotone" dataKey="Receitas" stroke="#22c55e" strokeWidth={2} fillOpacity={1} fill="url(#colorInc)" />
-                                    <Area type="monotone" dataKey="Despesas" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorExp)" />
-                                </AreaChart>
-                            </ResponsiveContainer>
-                        </div>
-                    </div>
-
-                    {/* TABLE */}
-                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl overflow-hidden min-h-[400px]">
-                        <div className="p-8 border-b border-white/5 flex flex-col items-center justify-center text-center gap-2 bg-white/[0.01]">
-                            <h3 className="text-[16px] font-black uppercase tracking-[0.3em] text-white/90">Detalhes dos Lançamentos</h3>
-                            <span className="text-[12px] font-bold text-white/20 uppercase tracking-widest">{aggregatedData.length} registros encontrados</span>
-                        </div>
-
-                        {loading ? (
-                            <div className="flex flex-col items-center justify-center py-40 gap-4 opacity-50">
-                                <div className="w-10 h-10 border-4 border-white/5 border-t-white rounded-full animate-spin" />
-                                <p className="text-[10px] font-black uppercase tracking-widest">Processando Balanço...</p>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr className="bg-white/[0.01] border-b border-white/5">
-                                                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-white/30">Período</th>
-                                                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-white/30">S. Inicial</th>
-                                                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-[#22c55e]/50">Entradas (+)</th>
-                                                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-[#ef4444]/50">Saídas (-)</th>
-                                                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-white/30">Resultado</th>
-                                                <th className="px-6 py-4 text-[9px] font-black uppercase tracking-widest text-white/30">S. Final</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody className="divide-y divide-white/5">
-                                            {aggregatedData.slice(0, showAllRows ? undefined : 7).map(row => (
-                                                <tr key={row.id} className="hover:bg-white/[0.03] transition-colors group">
-                                                    <td className="px-10 py-5">
-                                                        <div className="flex flex-col justify-center gap-1.5">
-                                                            <p className="text-[14px] font-black text-white leading-none">{row.label}</p>
-                                                            <span className="text-[11px] font-bold text-white/30 uppercase tracking-widest">{row.transactions.length} transações</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-6 py-5 text-[12px] font-medium text-white/40">{formatCurrency(row.initialBalance)}</td>
-                                                    <td className="px-6 py-5 text-[13px] font-black text-[#22c55e]">{formatCurrency(row.income)}</td>
-                                                    <td className="px-6 py-5 text-[13px] font-black text-[#ef4444]">{formatCurrency(row.expense)}</td>
-                                                    <td className={`px-6 py-5 text-[13px] font-black ${row.netResult >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'}`}>
-                                                        {row.netResult > 0 ? '+' : ''} {formatCurrency(row.netResult)}
-                                                    </td>
-                                                    <td className="px-6 py-5">
-                                                        <span className={`px-3 py-1.5 rounded-lg text-[12px] font-black ${row.finalBalance >= 0 ? 'bg-[#22c55e]/10 text-[#22c55e]' : 'bg-[#ef4444]/10 text-[#ef4444]'}`}>
-                                                            {formatCurrency(row.finalBalance)}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                {/* CHART */}
+                <div className="card" style={{ height: 320, display: 'flex', flexDirection: 'column' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+                        <h2 style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+                            {VIEW_CONFIG[viewMode].chartLabel}
+                        </h2>
+                        <div style={{ display: 'flex', gap: 20 }}>
+                            {[{ color: '#10b981', label: 'ENTRADAS' }, { color: '#ef4444', label: 'SAÍDAS' }].map(l => (
+                                <div key={l.label} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                    <div style={{ width: 8, height: 8, borderRadius: '50%', background: l.color }} />
+                                    <span style={{ fontSize: 9, fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '0.1em' }}>{l.label}</span>
                                 </div>
-
-                                {aggregatedData.length > 7 && (
-                                    <div className="p-4 border-t border-white/5 flex justify-center bg-white/[0.01]">
-                                        <button
-                                            onClick={() => setShowAllRows(!showAllRows)}
-                                            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white hover:bg-white/5 transition-all active:scale-[0.98]"
-                                        >
-                                            {showAllRows ? (
-                                                <>Ver menos registros <ChevronUp size={14} /></>
-                                            ) : (
-                                                <>Ver todos os registros ({aggregatedData.length}) <ChevronDown size={14} /></>
-                                            )}
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+                            ))}
+                        </div>
                     </div>
+                    <div style={{ flex: 1, minHeight: 0 }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={chartData}>
+                                <defs>
+                                    <linearGradient id="colorInc" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.15} />
+                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+                                    </linearGradient>
+                                    <linearGradient id="colorExp" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.15} />
+                                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" vertical={false} />
+                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 10, fontWeight: 600 }} dy={8} />
+                                <YAxis axisLine={false} tickLine={false} tick={{ fill: 'var(--text-muted)', fontSize: 10, fontWeight: 600 }} />
+                                <Tooltip
+                                    contentStyle={{ background: 'var(--bg-card)', borderRadius: 12, border: '1px solid var(--border)', color: 'var(--text-primary)' }}
+                                    labelStyle={{ color: 'var(--text-primary)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase' }}
+                                />
+                                <Area type="monotone" dataKey="Receitas" stroke="#10b981" strokeWidth={2} fillOpacity={1} fill="url(#colorInc)" />
+                                <Area type="monotone" dataKey="Despesas" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorExp)" />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
+
+                {/* TABLE */}
+                <div className="card" style={{ overflow: 'hidden', padding: 0 }}>
+                    <div style={{ padding: '20px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <h3 style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                            Detalhes dos Lançamentos
+                        </h3>
+                        <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>
+                            {aggregatedData.length} registros encontrados
+                        </span>
+                    </div>
+
+                    {loading ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '80px 0', gap: 16 }}>
+                            <div className="spinner" style={{ width: 36, height: 36 }} />
+                            <p style={{ fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                                Processando Balanço...
+                            </p>
+                        </div>
+                    ) : (
+                        <div>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                                    <thead>
+                                        <tr style={{ background: 'var(--bg-surface)', borderBottom: '1px solid var(--border)' }}>
+                                            {['Período', 'S. Inicial', 'Entradas (+)', 'Saídas (-)', 'Resultado', 'S. Final'].map((h, i) => (
+                                                <th key={h} style={{
+                                                    padding: '12px 20px',
+                                                    fontSize: 10,
+                                                    fontWeight: 700,
+                                                    textTransform: 'uppercase',
+                                                    letterSpacing: '0.08em',
+                                                    color: i === 2 ? '#10b981' : i === 3 ? '#ef4444' : 'var(--text-muted)',
+                                                    whiteSpace: 'nowrap'
+                                                }}>
+                                                    {h}
+                                                </th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {aggregatedData.slice(0, showAllRows ? undefined : 7).map(row => (
+                                            <tr
+                                                key={row.id}
+                                                style={{ borderBottom: '1px solid var(--border)', transition: 'background 0.15s' }}
+                                                onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-surface)')}
+                                                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                                            >
+                                                <td style={{ padding: '14px 20px' }}>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                                                        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', lineHeight: 1 }}>
+                                                            {row.label}
+                                                        </p>
+                                                        <span style={{ fontSize: 11, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                                            {row.transactions.length} transações
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td style={{ padding: '14px 20px', fontSize: 13, color: 'var(--text-secondary)' }}>
+                                                    {formatCurrency(row.initialBalance)}
+                                                </td>
+                                                <td style={{ padding: '14px 20px', fontSize: 13, fontWeight: 700, color: '#10b981' }}>
+                                                    {formatCurrency(row.income)}
+                                                </td>
+                                                <td style={{ padding: '14px 20px', fontSize: 13, fontWeight: 700, color: '#ef4444' }}>
+                                                    {formatCurrency(row.expense)}
+                                                </td>
+                                                <td style={{ padding: '14px 20px', fontSize: 13, fontWeight: 700, color: row.netResult >= 0 ? '#10b981' : '#ef4444' }}>
+                                                    {row.netResult > 0 ? '+' : ''}{formatCurrency(row.netResult)}
+                                                </td>
+                                                <td style={{ padding: '14px 20px' }}>
+                                                    <span style={{
+                                                        padding: '4px 12px',
+                                                        borderRadius: 8,
+                                                        fontSize: 12,
+                                                        fontWeight: 700,
+                                                        background: row.finalBalance >= 0 ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+                                                        color: row.finalBalance >= 0 ? '#10b981' : '#ef4444',
+                                                    }}>
+                                                        {formatCurrency(row.finalBalance)}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {aggregatedData.length > 7 && (
+                                <div style={{ padding: '14px 24px', borderTop: '1px solid var(--border)', display: 'flex', justifyContent: 'center' }}>
+                                    <button
+                                        onClick={() => setShowAllRows(!showAllRows)}
+                                        style={{
+                                            display: 'flex', alignItems: 'center', gap: 8,
+                                            padding: '8px 20px', borderRadius: 10,
+                                            background: 'transparent', border: '1px solid var(--border)',
+                                            cursor: 'pointer', fontSize: 11, fontWeight: 700,
+                                            textTransform: 'uppercase', letterSpacing: '0.08em',
+                                            color: 'var(--text-muted)', transition: 'all 0.2s'
+                                        }}
+                                    >
+                                        {showAllRows ? (
+                                            <>Ver menos <ChevronUp size={14} /></>
+                                        ) : (
+                                            <>Ver todos os registros ({aggregatedData.length}) <ChevronDown size={14} /></>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -382,39 +460,44 @@ export default function CashFlowPage() {
 
 // --- SUBCOMPONENTS ---
 
-function Card({ title, value, green, red, highlight, gold, icon }: { title: string, value: number, green?: boolean, red?: boolean, highlight?: boolean, gold?: boolean, icon?: React.ReactNode }) {
-    return (
-        <div className={`
-            relative overflow-hidden p-8 rounded-3xl border transition-all duration-500 group
-            ${gold 
-                ? 'bg-gradient-to-br from-[#1a1505] to-[#0c0c10] border-[var(--accent-cyan)]/30 shadow-lg shadow-[var(--accent-cyan-glow)]' 
-                : 'bg-white/[0.02] border-white/5 hover:bg-white/[0.04] hover:border-white/10'}
-            flex flex-col items-center justify-center text-center gap-3 min-h-[180px]
-        `}>
-            {/* BACKGROUND ICON DECORATION */}
-            <div className={`absolute -right-4 -bottom-4 opacity-[0.03] group-hover:opacity-[0.06] transition-opacity duration-500 ${gold ? 'text-[var(--accent-cyan)]' : 'text-white'}`}>
-                {icon ? <div className="scale-[4]">{icon}</div> : null}
-            </div>
+function SummaryCard({ title, value, icon, color, highlight, accent }: {
+    title: string;
+    value: number;
+    icon?: React.ReactNode;
+    color?: string;
+    highlight?: boolean;
+    accent?: boolean;
+}) {
+    const displayColor = accent
+        ? 'var(--accent)'
+        : color
+        ? color
+        : highlight
+        ? (value >= 0 ? '#10b981' : '#ef4444')
+        : 'var(--text-secondary)';
 
-            <div className="flex flex-col items-center gap-1.5 relative z-10">
-                <span className={`text-[13px] font-medium uppercase tracking-[0.15em] ${gold ? 'text-[var(--accent-cyan)]/50' : 'text-white/40'}`}>
+    return (
+        <div className="card" style={{
+            display: 'flex', flexDirection: 'column', gap: 14, padding: '20px 22px',
+            ...(accent ? { borderColor: 'var(--accent)', boxShadow: '0 0 0 1px var(--accent)' } : {})
+        }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <div style={{
+                    width: 36, height: 36, borderRadius: 10,
+                    background: `${displayColor}15`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: displayColor, flexShrink: 0
+                }}>
+                    {icon}
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', lineHeight: 1.3 }}>
                     {title}
                 </span>
-                <h3 className={`text-[36px] font-black tracking-tighter leading-none ${gold ? 'text-[var(--accent-cyan)]' : highlight ? 'text-white' : (value >= 0 && !red) ? 'text-white' : 'text-[#ef4444]'}`}>
-                    {value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
-                </h3>
             </div>
-
-            <div className={`h-1.5 w-10 rounded-full transition-all duration-500 group-hover:w-16 ${gold ? 'bg-[var(--accent-cyan)]/20' : green ? 'bg-[#22c55e]' : red ? 'bg-[#ef4444]' : 'bg-white/10'}`} />
-        </div>
-    );
-}
-
-function LegendItem({ color, label }: { color: string, label: string }) {
-    return (
-        <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }} />
-            <span className="text-[8px] font-black text-white/30 tracking-widest">{label}</span>
+            <p style={{ fontSize: 22, fontWeight: 800, color: displayColor, letterSpacing: '-0.02em', lineHeight: 1 }}>
+                {value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </p>
+            <div style={{ height: 3, borderRadius: 4, background: `${displayColor}30`, width: '100%' }} />
         </div>
     );
 }

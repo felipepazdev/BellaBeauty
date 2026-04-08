@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
 import { ChevronLeft, Download, PieChart } from 'lucide-react';
 
 interface ServiceRecord {

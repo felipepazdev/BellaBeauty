@@ -458,5 +458,115 @@ export class FinanceService {
         orderId: app.order?.id.substring(0, 5).toUpperCase() || '-',
       }))
     };
+    };
+  }
+
+  async getCollaboratorsReport(salonId: string, startDate: string, endDate: string) {
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T23:59:59`);
+
+    const professionals = await this.prisma.professional.findMany({
+      where: { salonId, isActive: true },
+      include: {
+        appointments: {
+          where: {
+            status: 'COMPLETED',
+            date: { gte: start, lte: end },
+          },
+          include: { service: true, commission: true },
+        },
+      },
+    });
+
+    return professionals.map((p) => {
+      const activeDays = new Set(
+        p.appointments.map((a) => a.date.toISOString().substring(0, 10))
+      );
+      const totalVendas = p.appointments.reduce((acc, a) => acc + (a.service?.price || 0), 0);
+      const remuneracao = p.appointments.reduce((acc, a) => acc + (a.commission?.amount || 0), 0);
+
+      return {
+        id: p.id,
+        name: p.name,
+        daysCount: activeDays.size,
+        salesCount: p.appointments.length,
+        totalSales: totalVendas,
+        commission: remuneracao,
+      };
+    });
+  }
+
+  async getCollaboratorDetailsReport(salonId: string, professionalId: string, startDate: string, endDate: string) {
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T23:59:59`);
+
+    const prof = await this.prisma.professional.findUnique({
+      where: { id: professionalId },
+    });
+
+    if (!prof || prof.salonId !== salonId) {
+      throw new Error('Profissional não encontrado');
+    }
+
+    const appointments = await this.prisma.appointment.findMany({
+      where: {
+        professionalId,
+        status: 'COMPLETED',
+        date: { gte: start, lte: end },
+      },
+      include: { service: true, commission: true },
+    });
+
+    const advances = await this.prisma.professionalAdvance.findMany({
+      where: {
+        professionalId,
+        date: { gte: start, lte: end },
+      },
+    });
+
+    const totalRevenue = appointments.reduce((acc, a) => acc + (a.service?.price || 0), 0);
+    const totalCommissions = appointments.reduce((acc, a) => acc + (a.commission?.amount || 0), 0);
+    const receivedCommissions = appointments
+      .filter((a) => a.commission?.status === 'PAID')
+      .reduce((acc, a) => acc + (a.commission?.amount || 0), 0);
+    const totalAdvances = advances.reduce((acc, a) => acc + a.amount, 0);
+
+    const activeDays = new Set(appointments.map((a) => a.date.toISOString().substring(0, 10)));
+
+    return {
+      name: prof.name,
+      metrics: {
+        atendimento: {
+          count: appointments.length,
+          total: totalRevenue,
+          packageCount: 0, // Mock
+        },
+        productSales: {
+          count: 0, // Mock
+          total: 0, // Mock
+        },
+        packageSales: {
+          count: 0, // Mock
+          total: 0, // Mock
+        },
+        creditsSold: {
+          count: 0, // Mock
+          total: 0, // Mock
+        },
+        commissions: {
+          total: totalCommissions,
+          received: receivedCommissions,
+        },
+        tips: {
+          total: 0, // Mock
+          received: 0, // Mock
+        },
+        advances: {
+          total: totalAdvances,
+        },
+        activeDays: activeDays.size,
+        productCost: 0, // Mock
+      },
+    };
   }
 }

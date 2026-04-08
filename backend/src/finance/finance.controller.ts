@@ -127,6 +127,29 @@ export class FinanceController {
   ) {
     return this.financeService.getAppointmentsReport(req.user.salonId, startDate, endDate);
   }
+
+  @Roles('ADMIN', 'MANAGER')
+  @ApiOperation({ summary: 'Obter relatório resumido de colaboradores' })
+  @Get('report/collaborators')
+  async getCollaboratorsReport(
+    @Req() req,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.financeService.getCollaboratorsReport(req.user.salonId, startDate, endDate);
+  }
+
+  @Roles('ADMIN', 'MANAGER')
+  @ApiOperation({ summary: 'Obter detalhes de relatório de um colaborador específico' })
+  @Get('report/collaborators/:id')
+  async getCollaboratorDetailsReport(
+    @Req() req,
+    @Param('id') id: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.financeService.getCollaboratorDetailsReport(req.user.salonId, id, startDate, endDate);
+  }
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Realizar sangria (retirada manual de caixa)' })
   @Post('withdraw')

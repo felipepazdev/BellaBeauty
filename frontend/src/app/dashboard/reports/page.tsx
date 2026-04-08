@@ -39,6 +39,7 @@ export default function ReportsPage() {
             title: 'Colaboradores',
             description: 'Confira os colaboradores mais rentáveis para seu negócio.',
             icon: <Users size={20} />,
+            isNew: true,
             path: '/dashboard/reports/collaborators'
         },
         {

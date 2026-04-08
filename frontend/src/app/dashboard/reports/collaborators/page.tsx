@@ -162,6 +162,5 @@ export default function CollaboratorsReport() {
                 )}
             </div>
         </main>
-        </div>
     );
 }

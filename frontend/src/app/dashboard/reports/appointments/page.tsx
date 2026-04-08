@@ -236,6 +236,5 @@ export default function AppointmentsReport() {
                 )}
             </div>
         </main>
-        </div>
     );
 }

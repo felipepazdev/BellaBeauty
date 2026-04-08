@@ -157,6 +157,5 @@ export default function CustomersReport() {
                 )}
             </div>
         </main>
-        </div>
     );
 }

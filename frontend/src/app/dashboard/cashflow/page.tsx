@@ -12,8 +12,10 @@ import {
 } from 'recharts';
 import {
     startOfMonth, endOfMonth, startOfYear, endOfYear,
+    startOfDay, endOfDay,
     eachDayOfInterval, eachWeekOfInterval, eachMonthOfInterval, eachYearOfInterval,
     format,
+    addDays, subDays, addWeeks, subWeeks,
     addMonths, subMonths, addYears, subYears,
     startOfWeek, endOfWeek, parseISO, isSameDay
 } from 'date-fns';
@@ -53,13 +55,20 @@ export default function CashFlowPage() {
     const [loading, setLoading] = useState(true);
 
     const periodRange = useMemo(() => {
-        if (viewMode === 'DAILY' || viewMode === 'WEEKLY') {
-            return { start: startOfMonth(date), end: endOfMonth(date) };
+        if (viewMode === 'DAILY') {
+            return { start: startOfDay(date), end: endOfDay(date) };
+        }
+        if (viewMode === 'WEEKLY') {
+            return {
+                start: startOfWeek(date, { weekStartsOn: 1 }),
+                end: endOfWeek(date, { weekStartsOn: 1 })
+            };
         }
         if (viewMode === 'MONTHLY') {
-            return { start: startOfYear(date), end: endOfYear(date) };
+            return { start: startOfMonth(date), end: endOfMonth(date) };
         }
-        return { start: subYears(startOfYear(date), 2), end: addYears(endOfYear(date), 2) };
+        // ANNUAL
+        return { start: startOfYear(date), end: endOfYear(date) };
     }, [viewMode, date]);
 
     const fetchData = async () => {
@@ -172,24 +181,35 @@ export default function CashFlowPage() {
         }));
     }, [aggregatedData]);
 
-    const navigate = (dir: number) => {
-        if (viewMode === 'DAILY' || viewMode === 'WEEKLY') {
-            setDate(dir > 0 ? addMonths(date, 1) : subMonths(date, 1));
-        } else if (viewMode === 'MONTHLY') {
-            setDate(dir > 0 ? addYears(date, 1) : subYears(date, 1));
-        } else {
-            setDate(dir > 0 ? addYears(date, 5) : subYears(date, 5));
-        }
+    const navigatePeriod = (direction: 'next' | 'prev', mode: ViewMode) => {
+        setDate((prev) => {
+            if (mode === 'DAILY') {
+                return direction === 'next' ? addDays(prev, 1) : subDays(prev, 1);
+            } else if (mode === 'WEEKLY') {
+                return direction === 'next' ? addWeeks(prev, 1) : subWeeks(prev, 1);
+            } else if (mode === 'MONTHLY') {
+                return direction === 'next' ? addMonths(prev, 1) : subMonths(prev, 1);
+            } else {
+                return direction === 'next' ? addYears(prev, 1) : subYears(prev, 1);
+            }
+        });
     };
+
+    const startWeek = startOfWeek(date, { weekStartsOn: 1 });
+    const endWeek = endOfWeek(date, { weekStartsOn: 1 });
+    const isSameMonthWeek = startWeek.getMonth() === endWeek.getMonth();
+    const weeklyTitle = isSameMonthWeek 
+        ? `${format(startWeek, 'dd')} – ${format(endWeek, "dd MMM", { locale: ptBR })}`
+        : `${format(startWeek, "dd MMM", { locale: ptBR })} – ${format(endWeek, "dd MMM", { locale: ptBR })}`;
 
     const VIEW_CONFIG = {
         DAILY: {
-            title: format(date, "d 'de' MMMM 'de' yyyy", { locale: ptBR }),
+            title: format(date, "dd 'de' MMMM 'de' yyyy", { locale: ptBR }),
             subtitle: "Fluxo Diário Consolidado",
             chartLabel: "COMPARATIVO DIÁRIO"
         },
         WEEKLY: {
-            title: `Semana de ${format(startOfWeek(date, { weekStartsOn: 1 }), "d 'de' MMM", { locale: ptBR })}`,
+            title: weeklyTitle,
             subtitle: "Resultados Semanais",
             chartLabel: "COMPARATIVO SEMANAL"
         },
@@ -199,7 +219,7 @@ export default function CashFlowPage() {
             chartLabel: "COMPARATIVO MENSAL"
         },
         ANNUAL: {
-            title: "Visão Multianual",
+            title: format(date, 'yyyy'),
             subtitle: "Performance Anual",
             chartLabel: "COMPARATIVO ANUAL"
         }
@@ -263,7 +283,7 @@ export default function CashFlowPage() {
                 {/* PERIOD NAVIGATION */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--bg-card)', padding: '10px 16px', borderRadius: 16, border: '1px solid var(--border)' }}>
                     <button
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigatePeriod('prev', viewMode)}
                         style={{ padding: 10, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', borderRadius: 10, display: 'flex', alignItems: 'center' }}
                     >
                         <ChevronLeft size={20} />
@@ -284,7 +304,7 @@ export default function CashFlowPage() {
                         </span>
                     </div>
                     <button
-                        onClick={() => navigate(1)}
+                        onClick={() => navigatePeriod('next', viewMode)}
                         style={{ padding: 10, background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', borderRadius: 10, display: 'flex', alignItems: 'center' }}
                     >
                         <ChevronRight size={20} />

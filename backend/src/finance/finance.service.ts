@@ -417,7 +417,9 @@ export class FinanceService {
       },
       include: {
         client: true,
-        service: true,
+        service: {
+          include: { category: true },
+        },
         order: true,
       },
       orderBy: { date: 'desc' },
@@ -450,7 +452,7 @@ export class FinanceService {
         id: app.id,
         date: app.date,
         clientName: app.client?.name || 'Cliente Local',
-        category: (app.service as any)?.category || 'Serviço',
+        category: app.service?.category?.name || 'Serviço',
         serviceName: app.service?.name || 'N/A',
         value: app.service?.price || 0,
         orderId: app.order?.id.substring(0, 5).toUpperCase() || '-',

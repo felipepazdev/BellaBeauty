@@ -30,6 +30,7 @@ interface AppointmentReport {
         avgProduct: number;
         avgPackage: number;
     };
+    topServices: { name: string; revenue: number }[];
     appointments: AppointmentReportItem[];
 }
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
 import { ChevronLeft, Download, ShoppingBag } from 'lucide-react';
 
 interface PackageRecord {
@@ -18,15 +19,39 @@ export default function PackagesReport() {
     const [monthYear, setMonthYear] = useState('');
 
     useEffect(() => {
-        setLoading(true);
-        setTimeout(() => {
-            setRecords([
-                { id: '1', name: 'Pacote Noiva Premium', quantitySold: 3, value: 4500 },
-                { id: '2', name: 'Cronograma Capilar (4 sessões)', quantitySold: 12, value: 3600 },
-                { id: '3', name: 'Spa Day Completo', quantitySold: 5, value: 1750 }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                let year = new Date().getFullYear();
+                let month = new Date().getMonth() + 1;
+
+                if (monthYear) {
+                    const [y, m] = monthYear.split('-').map(Number);
+                    year = y;
+                    month = m;
+                }
+
+                const res = await api.get('/finance/report/monthly', {
+                    params: { year, month }
+                });
+
+                const stats = res.data.packagesStats || {};
+                const mapped: PackageRecord[] = Object.entries(stats).map(([name, data]: [string, any], idx) => ({
+                    id: String(idx),
+                    name,
+                    quantitySold: data.count,
+                    value: data.revenue
+                }));
+
+                setRecords(mapped.sort((a, b) => b.value - a.value));
+            } catch (e) {
+                console.error('Erro ao buscar estatísticas de pacotes:', e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [monthYear]);
 
     const formatCurrency = (val: number) => 

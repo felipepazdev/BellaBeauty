@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import api from '@/lib/api';
 import { ChevronLeft, Download, Package } from 'lucide-react';
 
 interface ProductRecord {
@@ -18,15 +19,39 @@ export default function ProductsReport() {
     const [monthYear, setMonthYear] = useState('');
 
     useEffect(() => {
-        setLoading(true);
-        setTimeout(() => {
-            setRecords([
-                { id: '1', name: 'Shampoo L\'Oreal Absolut Repair', quantitySold: 12, value: 1800 },
-                { id: '2', name: 'Condicionador Kérastase', quantitySold: 8, value: 1360 },
-                { id: '3', name: 'Óleo Reparador Wella', quantitySold: 25, value: 2500 }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                let year = new Date().getFullYear();
+                let month = new Date().getMonth() + 1;
+
+                if (monthYear) {
+                    const [y, m] = monthYear.split('-').map(Number);
+                    year = y;
+                    month = m;
+                }
+
+                const res = await api.get('/finance/report/monthly', {
+                    params: { year, month }
+                });
+
+                const stats = res.data.productsStats || {};
+                const mapped: ProductRecord[] = Object.entries(stats).map(([name, data]: [string, any], idx) => ({
+                    id: String(idx),
+                    name,
+                    quantitySold: data.count,
+                    value: data.revenue
+                }));
+
+                setRecords(mapped.sort((a, b) => b.value - a.value));
+            } catch (e) {
+                console.error('Erro ao buscar estatísticas de produtos:', e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [monthYear]);
 
     const formatCurrency = (val: number) => 

@@ -390,6 +390,46 @@ export class FinanceService {
       {} as Record<string, { count: number; revenue: number }>,
     );
 
+    const orders = await this.prisma.order.findMany({
+      where: {
+        salonId,
+        status: 'COMPLETED',
+        createdAt: { gte: start, lte: end },
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+            package: true,
+          },
+        },
+      },
+    });
+
+    const productsStats = orders.reduce((acc, order) => {
+      order.items.forEach((item) => {
+        if (item.product) {
+          const name = item.product.name;
+          if (!acc[name]) acc[name] = { count: 0, revenue: 0 };
+          acc[name].count += item.quantity;
+          acc[name].revenue += Number(item.totalPrice);
+        }
+      });
+      return acc;
+    }, {} as Record<string, { count: number; revenue: number }>);
+
+    const packagesStats = orders.reduce((acc, order) => {
+      order.items.forEach((item) => {
+        if (item.package) {
+          const name = item.package.name;
+          if (!acc[name]) acc[name] = { count: 0, revenue: 0 };
+          acc[name].count += item.quantity;
+          acc[name].revenue += Number(item.totalPrice);
+        }
+      });
+      return acc;
+    }, {} as Record<string, { count: number; revenue: number }>);
+
     return {
       period: startDate && endDate ? `${startDate} a ${endDate}` : `${year}-${month.toString().padStart(2, '0')}`,
       summary: {
@@ -401,6 +441,8 @@ export class FinanceService {
       },
       expensesByCategory: expenses.groupedByCategory,
       servicesStats,
+      productsStats,
+      packagesStats,
       dailyCashFlow,
     };
   }

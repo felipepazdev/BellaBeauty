@@ -13,6 +13,7 @@ interface Service {
     id: string;
     name: string;
     price: number;
+    costPrice?: number;
     duration: number;
     bufferTime: number;
     categoryId: string;
@@ -47,7 +48,7 @@ export default function ServicesPage() {
     
     const [showForm, setShowForm] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [form, setForm] = useState({ id: '', name: '', price: '', duration: '', bufferTime: '0', categoryId: '' });
+    const [form, setForm] = useState({ id: '', name: '', price: '', costPrice: '0', duration: '', bufferTime: '0', categoryId: '' });
     
     const [showNicheForm, setShowNicheForm] = useState(false);
     const [isEditingNiche, setIsEditingNiche] = useState(false);
@@ -128,7 +129,7 @@ export default function ServicesPage() {
 
     // SERVICE CRUD
     const openNewService = (catId: string) => {
-        setForm({ id: '', name: '', price: '', duration: '', bufferTime: '0', categoryId: catId });
+        setForm({ id: '', name: '', price: '', costPrice: '0', duration: '', bufferTime: '0', categoryId: catId });
         setIsEditing(false);
         setShowForm(true);
         setError('');
@@ -139,6 +140,7 @@ export default function ServicesPage() {
             id: s.id,
             name: s.name,
             price: s.price.toString(),
+            costPrice: (s.costPrice || 0).toString(),
             duration: s.duration.toString(),
             bufferTime: s.bufferTime.toString(),
             categoryId: s.categoryId || '',
@@ -165,7 +167,7 @@ export default function ServicesPage() {
         }
         try {
             setSaving(true); setError('');
-            const payload = { ...form, price: Number(form.price), duration: Number(form.duration), bufferTime: Number(form.bufferTime) };
+            const payload = { ...form, price: Number(form.price), costPrice: Number(form.costPrice), duration: Number(form.duration), bufferTime: Number(form.bufferTime) };
             if (isEditing) await api.put(`/services/${form.id}`, payload);
             else await api.post('/services', payload);
             setShowForm(false);
@@ -386,6 +388,11 @@ export default function ServicesPage() {
                                                                                         <span className="text-base font-black text-emerald-400 font-mono">
                                                                                             {s.price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                                                                                         </span>
+                                                                                        {s.costPrice && s.costPrice > 0 ? (
+                                                                                            <span className="text-[10px] text-red-400 mt-1" title="Custo de Material">
+                                                                                                - {s.costPrice.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                                                                            </span>
+                                                                                        ) : null}
                                                                                     </div>
                                                                                     <div className="w-px h-6 bg-white/5" />
                                                                                     <div className="flex flex-col">
@@ -474,6 +481,19 @@ export default function ServicesPage() {
                                             </div>
                                         </div>
                                         <div className="flex flex-col gap-2">
+                                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Custo de Material (R$)</label>
+                                            <div className="relative">
+                                                <input 
+                                                    type="number" 
+                                                    value={form.costPrice} 
+                                                    onChange={e => setForm({...form, costPrice: e.target.value})} 
+                                                    className="h-14 w-full bg-white/5 border border-red-500/20 rounded-2xl pl-12 pr-5 text-white focus:border-red-500/50 transition-all outline-none font-mono font-bold" 
+                                                    placeholder="0.00" 
+                                                />
+                                                <DollarSign size={16} className="absolute left-5 top-1/2 -translate-y-1/2 text-red-500/50" />
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
                                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1">Duração (min)</label>
                                             <div className="relative">
                                                 <input 
@@ -487,6 +507,7 @@ export default function ServicesPage() {
                                             </div>
                                         </div>
                                     </div>
+                                    <p className="text-xs text-slate-500 font-medium italic mt-2 ml-1">O custo de material é subtraído do preço antes do cálculo de comissão.</p>
                                 </div>
                             )}
 

@@ -164,4 +164,36 @@ export class FinanceController {
       data.description,
     );
   }
+
+  @Roles('ADMIN', 'MANAGER')
+  @ApiOperation({ summary: 'Lançar um vale/adiantamento para profissional' })
+  @Post('collaborators/:id/advances')
+  async createAdvance(
+    @Req() req,
+    @Param('id') id: string,
+    @Body() data: { amount: number; description: string; date?: string },
+  ) {
+    return this.financeService.createAdvance(
+      req.user.salonId,
+      id,
+      data.amount,
+      data.description,
+      data.date
+    );
+  }
+
+  @Roles('ADMIN', 'MANAGER')
+  @ApiOperation({ summary: 'Registrar pagamento e fechamento de comissões' })
+  @Post('collaborators/:id/payout')
+  async payoutCommissions(
+    @Req() req,
+    @Param('id') id: string,
+    @Body() data: { endDate: string; netPayout: number },
+  ) {
+    return this.financeService.payoutCommissions(
+      req.user.salonId,
+      id,
+      data
+    );
+  }
 }

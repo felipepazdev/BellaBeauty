@@ -109,8 +109,22 @@ model Client {
   appointments Appointment[]
   salon        Salon         @relation(fields: [salonId], references: [id])
   orders       Order[]
+  records      ClientRecord[]
 
   @@index([salonId])
+}
+
+model ClientRecord {
+  id        String   @id @default(uuid())
+  clientId  String
+  /// ANAMNESIS | NOTE
+  type      String   @default("NOTE")
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  client    Client   @relation(fields: [clientId], references: [id])
+
+  @@index([clientId])
 }
 
 model ServiceNicho {
@@ -148,6 +162,7 @@ model Service {
   id                 String              @id @default(uuid())
   name               String
   price              Float
+  costPrice          Float               @default(0) // Custo de material para deduzir antes da comissão
   duration           Int
   bufferTime         Int                 @default(0)
   salonId            String
@@ -217,6 +232,7 @@ model Payment {
   salonId               String
   appointmentId         String?                @unique
   orderId               String?
+  fee                   Float                  @default(0)
   createdAt             DateTime               @default(now())
   financialTransactions FinancialTransaction[]
   order                 Order?                 @relation(fields: [orderId], references: [id])
@@ -268,6 +284,7 @@ model FinancialTransaction {
   referenceId   String?  // ID do registro de origem (Expense, Order, etc)
   referenceType String?  // Tipo da referência (EXPENSE, ORDER, etc)
   paymentId     String?
+  fee           Float    @default(0)
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   payment       Payment? @relation(fields: [paymentId], references: [id])

@@ -43,4 +43,13 @@ export class ClientsController {
   remove(@Param('id') id: string, @Req() req) {
     return this.clientsService.remove(id, req.user.salonId);
   }
+
+  @Post(':id/records')
+  addRecord(
+    @Param('id') id: string,
+    @Body() data: { type: string; content: string },
+    @Req() req,
+  ) {
+    return this.clientsService.addRecord(id, req.user.salonId, data);
+  }
 }

@@ -18,6 +18,12 @@ export class SplitPaymentDto {
   @IsNumber()
   @Min(0)
   amount: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  fee?: number;
 }
 
 export class CheckoutOrderDto {

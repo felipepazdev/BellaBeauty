@@ -674,14 +674,14 @@ export class AppointmentsService {
     });
   }
 
-  async complete(appointmentId: string, salonId: string) {
+  async complete(appointmentId: string, salonId: string, paymentData?: { method: string; fee?: number }) {
     return this.prisma.$transaction(async (tx) => {
       const appointment = await tx.appointment.findFirst({
         where: { id: appointmentId, salonId },
         include: {
           service: true,
           professional: true,
-          client: true, // incluído cliente pro histórico financeiro
+          client: true,
         },
       });
 
@@ -689,32 +689,41 @@ export class AppointmentsService {
         throw new NotFoundException('Agendamento não encontrado');
       }
 
+      const price = appointment.service.price;
+      const fee = paymentData?.fee || 0;
+      const costPrice = appointment.service.costPrice || 0;
+      const netValue = Math.max(0, price - fee - costPrice); // Preço líquido descontando taxa do cartão e custo do material
+
       const payment = await tx.payment.create({
         data: {
           salonId,
           appointmentId: appointment.id,
-          amount: appointment.service.price,
-          method: 'LOCAL',
+          amount: price,
+          method: paymentData?.method || 'LOCAL',
+          fee: fee,
         },
       });
 
-      // NOVA EVOLUÇÃO (Registrando na tabela central financeira)
+      // REGISTRO FINANCEIRO
       await tx.financialTransaction.create({
         data: {
           salonId,
           type: 'ENTRADA',
           category: 'SERVICE',
-          description: `Agendamento: ${appointment.service.name} com profissional ${appointment.professional.name} (Cliente: ${appointment.client?.name || 'Local'})`,
-          amount: appointment.service.price,
+          description: `Agendamento: ${appointment.service.name} (Cliente: ${appointment.client?.name || 'Local'}) - Pagamento via ${paymentData?.method || 'Dinheiro'}`,
+          amount: price,
+          fee: fee,
           paymentId: payment.id,
         },
       });
 
-      // Respeita contractType: RENT = profissional paga aluguel (fica com 100% do servico)
+      // CÁLCULO DE COMISSÃO (Valor Líquido - Taxas)
+      // Se for RENT (Aluguel), o profissional fica com 100% do líquido.
+      // Se for COMMISSION, aplica a % sobre o líquido.
       const commissionAmount =
         appointment.professional.contractType === 'RENT'
-          ? appointment.service.price
-          : (appointment.service.price * appointment.professional.commission) / 100;
+          ? netValue
+          : (netValue * appointment.professional.commission) / 100;
 
       const commission = await tx.commission.create({
         data: {
@@ -734,6 +743,7 @@ export class AppointmentsService {
         appointment: updatedAppointment,
         payment,
         commission,
+        netValue,
       };
     });
   }

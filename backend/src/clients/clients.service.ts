@@ -72,6 +72,11 @@ export class ClientsService {
             date: 'desc',
           },
         },
+        records: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
       },
     });
 
@@ -114,6 +119,24 @@ export class ClientsService {
 
     return this.prisma.client.delete({
       where: { id },
+    });
+  }
+
+  async addRecord(id: string, salonId: string, data: { type: string; content: string }) {
+    const client = await this.prisma.client.findFirst({
+      where: { id, salonId },
+    });
+
+    if (!client) {
+      throw new NotFoundException('Cliente não encontrado');
+    }
+
+    return this.prisma.clientRecord.create({
+      data: {
+        clientId: client.id,
+        type: data.type,
+        content: data.content,
+      },
     });
   }
 }

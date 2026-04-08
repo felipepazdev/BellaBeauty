@@ -473,6 +473,11 @@ export class FinanceService {
           },
           include: { service: true, commission: true },
         },
+        advances: {
+          where: {
+            date: { gte: start, lte: end },
+          },
+        },
       },
     });
 
@@ -481,7 +486,9 @@ export class FinanceService {
         p.appointments.map((a) => a.date.toISOString().substring(0, 10))
       );
       const totalVendas = p.appointments.reduce((acc, a) => acc + (a.service?.price || 0), 0);
-      const remuneracao = p.appointments.reduce((acc, a) => acc + (a.commission?.amount || 0), 0);
+      const remuneracaoBruta = p.appointments.reduce((acc, a) => acc + (a.commission?.amount || 0), 0);
+      const totalVales = p.advances.reduce((acc, a) => acc + a.amount, 0);
+      const remuneracaoLiquida = remuneracaoBruta - totalVales;
 
       return {
         id: p.id,
@@ -489,7 +496,8 @@ export class FinanceService {
         daysCount: activeDays.size,
         salesCount: p.appointments.length,
         totalSales: totalVendas,
-        commission: remuneracao,
+        commission: remuneracaoLiquida, // Remuneração já descontando vales
+        totalAdvances: totalVales,
       };
     });
   }
@@ -515,6 +523,24 @@ export class FinanceService {
       include: { service: true, commission: true },
     });
 
+    // Buscar Vendas de Produtos deste profissional (via orders)
+    const productSales = await this.prisma.orderProduct.findMany({
+      where: {
+        order: {
+          salonId,
+          status: 'CLOSED',
+          createdAt: { gte: start, lte: end },
+          appointments: {
+            some: { professionalId }
+          }
+        }
+      },
+      include: { product: true }
+    });
+
+    const totalProductSales = productSales.reduce((acc, p) => acc + (p.unitPrice * p.quantity), 0);
+    const productSalesCount = productSales.length;
+
     const advances = await this.prisma.professionalAdvance.findMany({
       where: {
         professionalId,
@@ -537,34 +563,119 @@ export class FinanceService {
         atendimento: {
           count: appointments.length,
           total: totalRevenue,
-          packageCount: 0, // Mock
+          packageCount: 0,
         },
         productSales: {
-          count: 0, // Mock
-          total: 0, // Mock
+          count: productSalesCount,
+          total: totalProductSales,
         },
         packageSales: {
-          count: 0, // Mock
-          total: 0, // Mock
+          count: 0,
+          total: 0,
         },
         creditsSold: {
-          count: 0, // Mock
-          total: 0, // Mock
+          count: 0,
+          total: 0,
         },
         commissions: {
           total: totalCommissions,
           received: receivedCommissions,
         },
         tips: {
-          total: 0, // Mock
-          received: 0, // Mock
+          total: 0,
+          received: 0,
         },
         advances: {
           total: totalAdvances,
         },
         activeDays: activeDays.size,
-        productCost: 0, // Mock
+        productCost: 0,
       },
     };
+  }
+
+  async createAdvance(salonId: string, professionalId: string, amount: number, description: string, date?: string) {
+    const advanceDate = date ? new Date(date) : new Date();
+
+    return this.prisma.$transaction(async (tx) => {
+      const advance = await tx.professionalAdvance.create({
+        data: {
+          salonId,
+          professionalId,
+          amount,
+          description,
+          date: advanceDate,
+        }
+      });
+
+      await tx.financialTransaction.create({
+        data: {
+          salonId,
+          type: 'SAIDA',
+          category: 'Remunerações',
+          description: `Vale/Adiantamento: ${description}`,
+          amount,
+          method: 'DINHEIRO',
+          referenceId: advance.id,
+          referenceType: 'ADVANCE'
+        }
+      });
+
+      return advance;
+    });
+  }
+
+  async payoutCommissions(salonId: string, professionalId: string, data: { endDate: string, netPayout: number }) {
+    const end = new Date(data.endDate);
+    end.setHours(23, 59, 59, 999);
+
+    return this.prisma.$transaction(async (tx) => {
+      // 1. Marca as comissões pendentes como pagas
+      const updated = await tx.commission.updateMany({
+        where: {
+          professionalId,
+          professional: { salonId },
+          status: 'PENDING',
+          createdAt: { lte: end }
+        },
+        data: { status: 'PAID' }
+      });
+
+      // 2. Marca os vales pendentes (que não foram totalmente deduzidos) como deduzidos neste pagamento
+      const pendingAdvances = await tx.professionalAdvance.findMany({
+        where: {
+          professionalId,
+          salonId,
+          amount: { gt: 0 },
+        }
+      });
+
+      for (const adv of pendingAdvances) {
+        if (adv.amount > adv.deductedAmount) {
+           await tx.professionalAdvance.update({
+             where: { id: adv.id },
+             data: { deductedAmount: adv.amount }
+           });
+        }
+      }
+
+      // 3. Lança a saída no fluxo de caixa pelo valor líquido real pago
+      if (data.netPayout > 0) {
+        await tx.financialTransaction.create({
+          data: {
+            salonId,
+            type: 'SAIDA',
+            category: 'Remunerações',
+            description: `Pagamento de Comissões (Fechamento até ${data.endDate.substring(0, 10)})`,
+            amount: data.netPayout,
+            method: 'TRANSFERENCIA',
+            referenceId: professionalId,
+            referenceType: 'PAYOUT'
+          }
+        });
+      }
+
+      return { success: true, count: updated.count };
+    });
   }
 }

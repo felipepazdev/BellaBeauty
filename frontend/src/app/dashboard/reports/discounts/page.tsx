@@ -2,32 +2,28 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import api from '@/lib/api';
-import { ChevronLeft, Download, Trophy } from 'lucide-react';
+import { ChevronLeft, Download, Tag } from 'lucide-react';
 
-interface CollaboratorRecord {
+interface DiscountRecord {
     id: string;
     name: string;
-    avatarInitials: string;
-    daysWorked: number;
-    totalSalesQty: number;
-    totalSalesValue: number;
-    remuneration: number;
+    quantity: number;
+    totalDiscounted: number;
 }
 
-export default function CollaboratorsReport() {
+export default function DiscountsReport() {
     const router = useRouter();
-    const [records, setRecords] = useState<CollaboratorRecord[]>([]);
+    const [records, setRecords] = useState<DiscountRecord[]>([]);
     const [loading, setLoading] = useState(true);
     const [monthYear, setMonthYear] = useState('');
 
     useEffect(() => {
         setLoading(true);
-        // MOCK DATA PARA ATENDER A MESMA ESTRUTURA DO RANKING
         setTimeout(() => {
             setRecords([
-                { id: '1', name: 'Nayara Paz', avatarInitials: 'NP', daysWorked: 22, totalSalesQty: 85, totalSalesValue: 12500, remuneration: 6250 },
-                { id: '2', name: 'Maria Silva', avatarInitials: 'MS', daysWorked: 20, totalSalesQty: 42, totalSalesValue: 4800, remuneration: 2400 }
+                { id: '1', name: 'Desconto Fidelidade (10%)', quantity: 15, totalDiscounted: 450 },
+                { id: '2', name: 'Promoção Mês da Mulher', quantity: 30, totalDiscounted: 1200 },
+                { id: '3', name: 'Cortesia Pessoal', quantity: 2, totalDiscounted: 100 }
             ]);
             setLoading(false);
         }, 800);
@@ -44,6 +40,8 @@ export default function CollaboratorsReport() {
         );
     }
 
+    const overallDiscount = records.reduce((acc, r) => acc + r.totalDiscounted, 0);
+
     return (
         <div className="animate-fade-in w-full pb-20">
             <div className="mb-6 mt-2 flex items-center justify-between">
@@ -51,7 +49,7 @@ export default function CollaboratorsReport() {
                     <button onClick={() => router.back()} className="text-gray-500 hover:text-[#111827] transition-colors p-1">
                         <ChevronLeft size={28} strokeWidth={2.5} />
                     </button>
-                    <h1 className="text-[32px] font-serif font-extrabold tracking-tight text-[#111827]">Colaboradores</h1>
+                    <h1 className="text-[32px] font-serif font-extrabold tracking-tight text-[#111827]">Descontos</h1>
                 </div>
                 <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-[8px] text-[13px] font-extrabold hover:bg-gray-50 transition-colors shadow-sm tracking-wide">
                     <Download size={16} strokeWidth={2.5}/>
@@ -72,39 +70,37 @@ export default function CollaboratorsReport() {
             </div>
 
             <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                <div className="p-5 border-b border-gray-200 flex items-center gap-2 text-[#111827]">
-                    <Trophy size={20} className="text-amber-500" />
-                    <h2 className="font-extrabold text-[16px]">Ranking de Performance</h2>
+                <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-white">
+                    <div className="flex items-center gap-2">
+                        <Tag size={18} className="text-[#5a79f2]"/>
+                        <h2 className="font-extrabold text-[16px] text-[#111827]">Histórico de Descontos Concedidos</h2>
+                    </div>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-gray-200 bg-[#f8f9fa] text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
-                                <th className="p-4 w-12 text-center">Pos</th>
-                                <th className="p-4">Colaborador</th>
-                                <th className="p-4 text-center">Dias c/ Atendimentos</th>
-                                <th className="p-4 text-center">Qtd. Vendas</th>
-                                <th className="p-4 text-right">Total Vendas</th>
-                                <th className="p-4 text-right">Remuneração</th>
+                                <th className="p-4">Desconto (Campanha / Motivo)</th>
+                                <th className="p-4 text-center">Quantidade Aplicada</th>
+                                <th className="p-4 text-right">Valor Descontado (R$)</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
-                            {records.map((record, idx) => (
+                            {records.map(record => (
                                 <tr key={record.id} className="hover:bg-[#f8f9fa] transition-colors cursor-pointer group">
-                                    <td className="p-4 text-center font-black text-gray-400">{idx + 1}º</td>
-                                    <td className="p-4 flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-full bg-[#f8f9fa] border border-gray-200 text-gray-600 flex items-center justify-center font-bold text-xs">
-                                            {record.avatarInitials}
-                                        </div>
-                                        <span className="font-extrabold text-[#111827] text-[14px] group-hover:text-[#5a79f2] transition-colors">{record.name}</span>
-                                    </td>
-                                    <td className="p-4 text-[13px] font-bold text-gray-700 text-center">{record.daysWorked}</td>
-                                    <td className="p-4 text-[13px] font-bold text-gray-700 text-center">{record.totalSalesQty}</td>
-                                    <td className="p-4 text-[14px] font-extrabold text-[#111827] text-right">{formatCurrency(record.totalSalesValue)}</td>
-                                    <td className="p-4 text-[14px] font-extrabold text-emerald-600 text-right">{formatCurrency(record.remuneration)}</td>
+                                    <td className="p-4 font-extrabold text-[#111827] text-[14px] group-hover:text-[#5a79f2] transition-colors">{record.name}</td>
+                                    <td className="p-4 text-[13px] font-bold text-gray-700 text-center">{record.quantity}</td>
+                                    <td className="p-4 text-[14px] font-extrabold text-rose-500 text-right">- {formatCurrency(record.totalDiscounted)}</td>
                                 </tr>
                             ))}
                         </tbody>
+                        <tfoot className="bg-[#f8f9fa] border-t border-gray-200">
+                            <tr>
+                                <td className="p-4 font-extrabold text-gray-500 text-[14px] uppercase tracking-wider">Total Geral Concedido</td>
+                                <td className="p-4"></td>
+                                <td className="p-4 text-[16px] font-black text-[#111827] text-right">- {formatCurrency(overallDiscount)}</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

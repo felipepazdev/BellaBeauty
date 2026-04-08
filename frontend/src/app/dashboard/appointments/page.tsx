@@ -615,7 +615,11 @@ function AppointmentDetailsModal({ ap, professionals, onClose, onSaved, onEdit }
             await api.post(`/orders/${orderId}/checkout`, { 
                 discount: Number(discount) || 0,
                 discountType,
-                payments: payments.map(p => ({ method: p.method, amount: Number(p.amount) }))
+                payments: payments.map(p => ({ 
+                    method: p.method, 
+                    amount: Number(p.amount),
+                    fee: Number((p as any).fee) || 0 
+                }))
             });
             onSaved();
         } catch(e: any) { 
@@ -754,6 +758,14 @@ function AppointmentDetailsModal({ ap, professionals, onClose, onSaved, onEdit }
                                             <Input className="pl-8" value={p.amount} onChange={e => {
                                                 const newP = [...payments];
                                                 newP[i].amount = e.target.value;
+                                                setPayments(newP);
+                                            }} />
+                                        </div>
+                                        <div className="relative" style={{ flex: 0.8 }}>
+                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[10px] text-[var(--danger)] font-bold mt-[1px]">Taxa</span>
+                                            <Input className="pl-10 text-[var(--danger)] text-right" placeholder="0.00" value={(p as any).fee || ''} onChange={e => {
+                                                const newP = [...payments];
+                                                (newP[i] as any).fee = e.target.value;
                                                 setPayments(newP);
                                             }} />
                                         </div>

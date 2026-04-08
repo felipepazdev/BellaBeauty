@@ -22,6 +22,7 @@ export class ServicesService {
     data: {
       name: string;
       price: number;
+      costPrice?: number;
       duration: number;
       bufferTime?: number;
       categoryId: string;
@@ -31,6 +32,7 @@ export class ServicesService {
       data: {
         name: data.name,
         price: Number(data.price),
+        costPrice: Number(data.costPrice || 0),
         duration: Number(data.duration),
         bufferTime: Number(data.bufferTime || 0),
         salonId,
@@ -45,6 +47,7 @@ export class ServicesService {
     data: {
       name?: string;
       price?: number;
+      costPrice?: number;
       duration?: number;
       bufferTime?: number;
       categoryId?: string;
@@ -53,6 +56,8 @@ export class ServicesService {
     const updateData: any = { ...data };
     if (updateData.price !== undefined)
       updateData.price = Number(updateData.price);
+    if (updateData.costPrice !== undefined)
+      updateData.costPrice = Number(updateData.costPrice);
     if (updateData.duration !== undefined)
       updateData.duration = Number(updateData.duration);
     if (updateData.bufferTime !== undefined)

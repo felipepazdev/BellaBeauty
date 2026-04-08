@@ -97,13 +97,21 @@ export class DashboardService {
 
     let realTotalRevenue = 0;
     let realTotalExpenses = 0;
+    let commissionPaid = 0;
+    let materialCost = 0;
 
     financialTransactions.forEach((t) => {
       const type = t.type.toUpperCase();
+      const cat = t.category?.toUpperCase() || '';
       if (['ENTRADA', 'INCOME', 'RECEITA'].includes(type)) {
         realTotalRevenue += t.amount;
       } else if (['SAIDA', 'EXPENSE', 'DESPESA'].includes(type)) {
         realTotalExpenses += t.amount;
+        if (cat.includes('COMIS') || cat.includes('COMISS')) {
+          commissionPaid += t.amount;
+        } else if (cat.includes('MERCADORIA') || cat.includes('PRODUTO') || cat.includes('MATERIAL') || cat.includes('ESTOQUE') || cat.includes('CUSTO')) {
+          materialCost += t.amount;
+        }
       }
     });
 
@@ -113,6 +121,8 @@ export class DashboardService {
       topProfessionals,
       totalRevenue: realTotalRevenue,
       totalExpenses: realTotalExpenses,
+      commissionPaid,
+      materialCost,
     };
   }
 }

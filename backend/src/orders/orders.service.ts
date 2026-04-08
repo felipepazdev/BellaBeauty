@@ -285,18 +285,21 @@ export class OrdersService {
 
       // 1) Registrar novos pagamentos e gerar Entrada no Fluxo de Caixa
       for (const p of newPayments) {
+        const fee = p.fee || 0;
         await tx.payment.create({
           data: {
             salonId,
             orderId,
             method: p.method,
             amount: p.amount,
+            fee: fee,
             financialTransactions: {
               create: {
                 salonId,
                 type: 'ENTRADA',
                 category: 'COMANDA',
                 amount: p.amount,
+                fee: fee,
                 method: p.method,
                 referenceId: orderId,
                 description: `Pagamento Comanda #${orderId.slice(0, 6)} (${p.method})`,
@@ -323,6 +326,11 @@ export class OrdersService {
 
       // 3) Se fechou totalmente, processa agendamentos e comissões
       if (isFullyPaid) {
+        // Cálculo da taxa total proporcional para abater das comissões
+        const totalPayments = await tx.payment.findMany({ where: { orderId } });
+        const totalFees = totalPayments.reduce((acc, p) => acc + p.fee, 0);
+        const feeRatio = totalAmount > 0 ? (totalFees / totalAmount) : 0;
+
         await tx.appointment.updateMany({
           where: { orderId: orderId },
           data: { status: 'COMPLETED' },
@@ -333,10 +341,13 @@ export class OrdersService {
             where: { id: app.professionalId },
           });
           if (professional) {
+            // Abatendo a taxa proporcional e o custo de material do serviço
+            const netServicePrice = Math.max(0, (app.service.price * (1 - feeRatio)) - (app.service.costPrice || 0));
+
             const profAmount =
               professional.contractType === 'RENT'
-                ? app.service.price
-                : app.service.price * (professional.commission / 100);
+                ? netServicePrice
+                : netServicePrice * (professional.commission / 100);
 
             // Evitar comissões duplicadas
             const existingCommission = await tx.commission.findUnique({

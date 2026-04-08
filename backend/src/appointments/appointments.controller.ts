@@ -100,9 +100,14 @@ export class AppointmentsController {
     return this.appointmentsService.checkIn(id, req.user.salonId);
   }
 
-  @Patch(':id/complete')
-  complete(@Param('id') id: string, @Req() req) {
-    return this.appointmentsService.complete(id, req.user.salonId);
+  @Permissions('appointments_manage')
+  @Post(':id/complete')
+  complete(
+    @Param('id') id: string,
+    @Body() data: { method: string; fee?: number },
+    @Req() req,
+  ) {
+    return this.appointmentsService.complete(id, req.user.salonId, data);
   }
 
   @Patch(':id/no-show')

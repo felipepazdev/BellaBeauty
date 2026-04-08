@@ -35,6 +35,7 @@ export class ServicesController {
     data: {
       name: string;
       price: number;
+      costPrice?: number;
       duration: number;
       bufferTime?: number;
       categoryId: string;
@@ -52,6 +53,7 @@ export class ServicesController {
     data: {
       name?: string;
       price?: number;
+      costPrice?: number;
       duration?: number;
       bufferTime?: number;
       categoryId?: string;

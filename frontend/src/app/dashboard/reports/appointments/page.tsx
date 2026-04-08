@@ -82,66 +82,86 @@ export default function AppointmentsReport() {
     );
 
     return (
-        <div className="animate-fade-in w-full pb-20">
-            <div className="mb-6 mt-2 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <button onClick={() => router.back()} className="text-gray-500 hover:text-[#111827] transition-colors p-1">
-                        <ChevronLeft size={28} strokeWidth={2.5} />
+        <main className="min-h-screen p-4 sm:p-8 animate-fade-in bg-[#0a0a0c]">
+            {/* Header */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
+                <div className="flex items-center gap-4">
+                    <button 
+                        onClick={() => router.back()} 
+                        className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:bg-white/10 transition-all"
+                    >
+                        <ChevronLeft size={24} strokeWidth={2.5} />
                     </button>
-                    <h1 className="text-[32px] font-serif font-extrabold tracking-tight text-[#111827]">Relatório de Atendimentos</h1>
+                    <div>
+                        <h1 className="text-[32px] font-serif font-black text-white tracking-tight">Relatório de Atendimentos</h1>
+                        <p className="text-slate-500 font-medium italic">Análise detalhada de produtividade e serviços</p>
+                    </div>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-[8px] text-[13px] font-extrabold hover:bg-gray-50 transition-colors shadow-sm tracking-wide">
-                    <Download size={16} strokeWidth={2.5}/>
-                    EXPORTAR
+                <button className="bg-[#06b6d4] hover:bg-[#0891b2] text-white px-8 py-3.5 rounded-2xl font-black text-[13px] flex items-center gap-2 transition-all shadow-[0_0_20px_rgba(6,182,212,0.3)] uppercase tracking-widest">
+                    <Download size={18} strokeWidth={3}/>
+                    Exportar PDF
                 </button>
             </div>
 
-            {/* Resumo */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
-                    <span className="text-[12px] font-extrabold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-2">
-                        Total de vendas
+            {/* Resumo - Dashboard de Indicadores */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 p-6 rounded-[30px] shadow-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-blue-500/5 blur-2xl rounded-full" />
+                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        Total de Vendas
                     </span>
-                    <span className="text-2xl font-black text-[#111827]">{totalVendas}</span>
+                    <span className="text-2xl font-black text-white">{totalVendas}</span>
                 </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
-                    <span className="text-[12px] font-extrabold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-2">
+                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 p-6 rounded-[30px] shadow-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-slate-500/5 blur-2xl rounded-full" />
+                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3 flex items-center gap-2">
                         Subtotal
                     </span>
-                    <span className="text-2xl font-black text-[#111827]">{formatCurrency(subtotal)}</span>
+                    <span className="text-2xl font-black text-white">{formatCurrency(subtotal)}</span>
                 </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
-                    <span className="text-[12px] font-extrabold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-2">
+                <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 p-6 rounded-[30px] shadow-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-rose-500/5 blur-2xl rounded-full" />
+                    <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest mb-3 flex items-center gap-2">
                         Descontos
                     </span>
                     <span className="text-2xl font-black text-rose-500">{formatCurrency(0)}</span>
                 </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
-                    <span className="text-[12px] font-extrabold text-[#5a79f2] uppercase tracking-widest mb-1 flex items-center gap-2">
-                        <DollarSign size={14} className="text-[#5a79f2]"/>
-                        Total
+                <div className="bg-gradient-to-br from-cyan-900/20 to-slate-900/40 backdrop-blur-xl border border-[#06b6d4]/20 p-6 rounded-[30px] shadow-2xl relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-20 h-20 bg-[#06b6d4]/10 blur-2xl rounded-full animate-pulse" />
+                    <span className="text-[10px] font-black text-[#06b6d4] uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <DollarSign size={14} className="text-[#06b6d4]"/>
+                        Total Geral
                     </span>
-                    <span className="text-2xl font-black text-[#111827]">{formatCurrency(total)}</span>
+                    <span className="text-2xl font-black text-white tracking-tight">{formatCurrency(total)}</span>
                 </div>
             </div>
 
-            <div className="mb-6 flex gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm items-end flex-wrap">
-                <div className="flex flex-col gap-1 w-40">
-                    <label className="text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">De</label>
-                    <input type="date" className="border border-gray-300 rounded-lg p-2 text-[14px] font-medium focus:border-[#5a79f2] outline-none" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+            {/* Filtros */}
+            <div className="flex flex-col lg:flex-row gap-5 bg-white/[0.03] p-6 rounded-[30px] border border-white/10 mb-10 items-end shadow-inner">
+                <div className="flex-1 grid grid-cols-2 lg:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest px-1 ml-1">De</label>
+                        <div className="relative">
+                            <Scissors className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={16} />
+                            <input type="date" className="w-full h-12 bg-black/40 border border-white/5 rounded-xl pl-11 pr-4 text-white text-sm focus:border-[#06b6d4]/50 outline-none transition-all" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
+                        </div>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest px-1 ml-1">Até</label>
+                        <div className="relative">
+                            <Scissors className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={16} />
+                            <input type="date" className="w-full h-12 bg-black/40 border border-white/5 rounded-xl pl-11 pr-4 text-white text-sm focus:border-[#06b6d4]/50 outline-none transition-all" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
+                        </div>
+                    </div>
                 </div>
-                <div className="flex flex-col gap-1 w-40">
-                    <label className="text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">Até</label>
-                    <input type="date" className="border border-gray-300 rounded-lg p-2 text-[14px] font-medium focus:border-[#5a79f2] outline-none" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
-                </div>
-                <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-                    <label className="text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">Buscar</label>
+                <div className="space-y-2 w-full lg:max-w-md">
+                    <label className="text-[10px] font-black text-slate-600 uppercase tracking-widest px-1 ml-1">Pesquisar</label>
                     <div className="relative">
-                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={16} />
                         <input 
                             type="text" 
                             placeholder="Buscar cliente, item..."
-                            className="w-full border border-gray-300 rounded-lg p-2 pl-10 text-[14px] font-medium focus:border-[#5a79f2] outline-none"
+                            className="w-full h-12 bg-black/40 border border-white/5 rounded-xl pl-11 pr-4 text-white text-sm focus:border-[#06b6d4]/50 outline-none transition-all"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -149,53 +169,73 @@ export default function AppointmentsReport() {
                 </div>
             </div>
 
-            {/* Abas simuladas conforme descrito */}
-            <div className="flex border-b border-gray-200 mb-6 space-x-8">
-                <button className="py-3 px-1 text-[13px] font-extrabold border-b-2 border-[#5a79f2] text-[#5a79f2] uppercase tracking-wide">
+            {/* Abas */}
+            <div className="flex border-b border-white/5 mb-8 space-x-10 px-4">
+                <button className="py-4 text-[11px] font-black text-[#06b6d4] border-b-2 border-[#06b6d4] uppercase tracking-[0.2em]">
                     Serviços & Produtos
                 </button>
-                <button className="py-3 px-1 text-[13px] font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-900 uppercase tracking-wide">
+                <button className="py-4 text-[11px] font-black text-slate-600 border-b-2 border-transparent hover:text-white transition-colors uppercase tracking-[0.2em]">
                     Pacotes Vendidos
                 </button>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+            {/* Tabela */}
+            <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-[35px] overflow-hidden shadow-2xl group">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
                         <thead>
-                            <tr className="border-b border-gray-200 bg-[#f8f9fa] text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
-                                <th className="p-4">Venda</th>
-                                <th className="p-4">Data/Hora</th>
-                                <th className="p-4">Cliente</th>
-                                <th className="p-4">Serviços / Itens</th>
-                                <th className="p-4">Colaborador(es)</th>
-                                <th className="p-4 text-right">Valor Total</th>
+                            <tr className="border-b border-white/5 bg-black/20 text-[10px] font-black text-slate-600 uppercase tracking-[0.2em]">
+                                <th className="p-6">Venda</th>
+                                <th className="p-6">Data/Hora</th>
+                                <th className="p-6">Cliente</th>
+                                <th className="p-6">Serviços / Itens</th>
+                                <th className="p-6">Colaborador(es)</th>
+                                <th className="p-6 text-right">Valor Total</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y divide-white/5">
                             {filteredRecords.map(record => (
-                                <tr key={record.id} className="hover:bg-[#f8f9fa] transition-colors cursor-pointer">
-                                    <td className="p-4 flex items-center gap-2">
-                                        {record.type === 'Comanda' ? <Scissors size={16} className="text-gray-400"/> : <DollarSign size={16} className="text-gray-400"/>}
-                                        <span className="font-extrabold text-[#5a79f2] text-[14px]">{record.saleId}</span>
+                                <tr key={record.id} className="hover:bg-white/[0.03] transition-all cursor-pointer group/row">
+                                    <td className="p-6 flex items-center gap-3">
+                                        <div className="p-2 rounded-lg bg-[#06b6d4]/10 text-[#06b6d4]">
+                                            {record.type === 'Comanda' ? <Scissors size={14}/> : <DollarSign size={14}/>}
+                                        </div>
+                                        <span className="font-black text-[#06b6d4] text-[13px]">{record.saleId}</span>
                                     </td>
-                                    <td className="p-4 text-[13px] font-medium text-gray-600">{format(new Date(record.date), 'dd/MM/yyyy HH:mm')}</td>
-                                    <td className="p-4 text-[14px] font-bold text-[#111827]">{record.clientName}</td>
-                                    <td className="p-4 text-[13px] font-medium text-gray-600">
-                                        <div className="flex flex-col gap-1">
+                                    <td className="p-6 text-[13px] font-medium text-slate-400">
+                                        {format(new Date(record.date), 'dd/MM/yyyy')} 
+                                        <span className="text-slate-600 ml-2">{format(new Date(record.date), 'HH:mm')}</span>
+                                    </td>
+                                    <td className="p-6 text-[14px] font-bold text-white group-hover/row:text-[#06b6d4] transition-colors">
+                                        {record.clientName}
+                                    </td>
+                                    <td className="p-6">
+                                        <div className="flex flex-wrap gap-2">
                                             {record.items.map((item, i) => (
-                                                <span key={i} className="bg-gray-100 px-2 py-0.5 rounded text-gray-700 max-w-fit">{item}</span>
+                                                <span key={i} className="bg-white/5 px-3 py-1 rounded-lg text-slate-300 text-[11px] font-bold border border-white/5 group-hover/row:border-[#06b6d4]/20 transition-all">
+                                                    {item}
+                                                </span>
                                             ))}
                                         </div>
                                     </td>
-                                    <td className="p-4 text-[13px] font-bold text-gray-700">{record.collaborators.join(', ')}</td>
-                                    <td className="p-4 text-[14px] font-extrabold text-[#111827] text-right">{formatCurrency(record.total)}</td>
+                                    <td className="p-6 text-[13px] font-bold text-slate-400">
+                                        {record.collaborators.length > 0 ? record.collaborators.join(', ') : 'N/A'}
+                                    </td>
+                                    <td className="p-6 text-[15px] font-black text-white text-right">
+                                        {formatCurrency(record.total)}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+                {filteredRecords.length === 0 && (
+                    <div className="py-20 text-center text-slate-600 font-medium italic">
+                        Nenhum atendimento encontrado para os critérios selecionados.
+                    </div>
+                )}
             </div>
+        </main>
         </div>
     );
 }

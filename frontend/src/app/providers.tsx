@@ -7,20 +7,20 @@ export function Providers({ children }: { children: React.ReactNode }) {
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        // Garante que o tema light seja aplicado, sobrescrevendo qualquer dark salvo
+        // Garante que o tema dark (Vapor Clinic) seja o padrão
         const saved = localStorage.getItem('theme');
-        if (!saved || saved === 'dark') {
-            localStorage.setItem('theme', 'light');
+        if (!saved || saved === 'light') {
+            localStorage.setItem('theme', 'dark');
         }
         setMounted(true);
     }, []);
 
     if (!mounted) {
-        return <>{children}</>;
+        return <div className="dark">{children}</div>;
     }
 
     return (
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} storageKey="theme">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false} storageKey="theme">
             {children}
         </ThemeProvider>
     );

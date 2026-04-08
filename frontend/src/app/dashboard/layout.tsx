@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     }, [user, pathname]);
 
     return (
-        <div className="flex h-screen overflow-hidden" style={{ background: '#f5f6fa' }}>
+        <div className="flex h-screen overflow-hidden bg-[#0a0a0c]">
             <Sidebar />
             {/* Área de conteúdo — no mobile tem padding-top por causa da top bar */}
             <main className="flex-1 overflow-y-auto pt-0 lg:pt-0 flex flex-col">

@@ -404,4 +404,47 @@ export class FinanceService {
       dailyCashFlow,
     };
   }
+
+  async getAppointmentsReport(salonId: string, startDate: string, endDate: string) {
+    const start = new Date(`${startDate}T00:00:00`);
+    const end = new Date(`${endDate}T23:59:59`);
+
+    const appointments = await this.prisma.appointment.findMany({
+      where: {
+        salonId,
+        status: 'COMPLETED',
+        date: { gte: start, lte: end },
+      },
+      include: {
+        client: true,
+        service: true,
+        order: true,
+      },
+      orderBy: { date: 'desc' },
+    });
+
+    const totalRevenue = appointments.reduce((acc, app) => acc + (app.service?.price || 0), 0);
+    const serviceAppointments = appointments.filter(a => a.service);
+    // Mocking averages for products/packages since they might be in separate models or order items
+    // In a real scenario, we'd fetch order items linked to these appointments or professional
+    
+    return {
+      summary: {
+        totalRevenue,
+        count: appointments.length,
+        avgService: serviceAppointments.length > 0 ? totalRevenue / serviceAppointments.length : 0,
+        avgProduct: 0, // Mock
+        avgPackage: 0, // Mock
+      },
+      appointments: appointments.map(app => ({
+        id: app.id,
+        date: app.date,
+        clientName: app.client?.name || 'Cliente Local',
+        category: (app.service as any)?.category || 'Serviço',
+        serviceName: app.service?.name || 'N/A',
+        value: app.service?.price || 0,
+        orderId: app.order?.id.substring(0, 5).toUpperCase() || '-',
+      }))
+    };
+  }
 }

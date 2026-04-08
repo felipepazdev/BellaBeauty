@@ -116,6 +116,17 @@ export class FinanceController {
       endDate,
     );
   }
+  
+  @Roles('ADMIN', 'MANAGER')
+  @ApiOperation({ summary: 'Obter relatório detalhado de atendimentos' })
+  @Get('report/appointments')
+  async getAppointmentsReport(
+    @Req() req,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.financeService.getAppointmentsReport(req.user.salonId, startDate, endDate);
+  }
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Realizar sangria (retirada manual de caixa)' })
   @Post('withdraw')

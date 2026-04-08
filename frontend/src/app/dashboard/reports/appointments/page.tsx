@@ -24,17 +24,41 @@ export default function AppointmentsReport() {
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
     const [searchQuery, setSearchQuery] = useState('');
+    const [summary, setSummary] = useState<any>(null);
 
     useEffect(() => {
-        setLoading(true);
-        // MOCK DATA PARA ATENDER A MESMA ESTRUTURA
-        setTimeout(() => {
-            setRecords([
-                { id: '1', saleId: '#10024', date: new Date().toISOString(), clientName: 'Nayara Paz', items: ['Corte de Cabelo', 'Hidratação'], collaborators: ['Felipe'], total: 150, type: 'Comanda' },
-                { id: '2', saleId: '#10025', date: new Date().toISOString(), clientName: 'Cliente Avulso', items: ['Shampoo L\'Oreal'], collaborators: ['Recepção'], total: 50, type: 'Venda Direta' }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const params = {
+                    startDate: dateFrom || undefined,
+                    endDate: dateTo || undefined
+                };
+                
+                const res = await api.get('/finance/report/appointments', { params });
+                
+                // Map records to the UI model
+                const mapped: AppointmentRecord[] = res.data.appointments.map((a: any) => ({
+                    id: a.id,
+                    saleId: a.orderId,
+                    date: a.date,
+                    clientName: a.clientName,
+                    items: [a.serviceName],
+                    collaborators: [], // Backend doesn't return collaborators in this summary yet
+                    total: a.value,
+                    type: 'Comanda'
+                }));
+
+                setRecords(mapped);
+                setSummary(res.data.summary);
+            } catch (e) {
+                console.error('Erro ao buscar atendimentos:', e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [dateFrom, dateTo]);
 
     const formatCurrency = (val: number) => 
@@ -48,8 +72,8 @@ export default function AppointmentsReport() {
         );
     }
 
-    const totalVendas = records.length;
-    const subtotal = records.reduce((acc, r) => acc + r.total, 0);
+    const totalVendas = summary?.count || 0;
+    const subtotal = summary?.totalRevenue || 0;
     const total = subtotal; // Simulado sem descontos no exemplo
 
     const filteredRecords = records.filter(r => 

@@ -10,13 +10,24 @@ interface Client {
     name: string;
     phone?: string;
     createdAt: string;
+}
+
+export default function ClientsPage() {
+    const [clients, setClients] = useState<Client[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [search, setSearch] = useState('');
+    const [showForm, setShowForm] = useState(false);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
+    const [form, setForm] = useState({ name: '', phone: '' });
+
     const [selectedClient, setSelectedClient] = useState<any>(null);
     const [clientDetails, setClientDetails] = useState<any>(null);
     const [loadingDetails, setLoadingDetails] = useState(false);
     const [activeTab, setActiveTab] = useState<'H' | 'F'>('H'); // Historico ou Fichas
     const [newRecord, setNewRecord] = useState('');
 
-    useEffect(() => { hydrate(); }, []);
+    const hydrate = useAuthStore(state => state.hydrate);
 
     const fetchClients = () => {
         setLoading(true);
@@ -26,7 +37,10 @@ interface Client {
             .finally(() => setLoading(false));
     };
 
-    useEffect(() => { fetchClients(); }, []);
+    useEffect(() => { 
+        hydrate();
+        fetchClients();
+    }, [hydrate]);
 
     const fetchClientDetails = async (id: string) => {
         setLoadingDetails(true);

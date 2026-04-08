@@ -22,15 +22,42 @@ export default function CollaboratorsReport() {
     const [monthYear, setMonthYear] = useState('');
 
     useEffect(() => {
-        setLoading(true);
-        // MOCK DATA PARA ATENDER A MESMA ESTRUTURA DO RANKING
-        setTimeout(() => {
-            setRecords([
-                { id: '1', name: 'Nayara Paz', avatarInitials: 'NP', daysWorked: 22, totalSalesQty: 85, totalSalesValue: 12500, remuneration: 6250 },
-                { id: '2', name: 'Maria Silva', avatarInitials: 'MS', daysWorked: 20, totalSalesQty: 42, totalSalesValue: 4800, remuneration: 2400 }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                let startDate: string | undefined;
+                let endDate: string | undefined;
+
+                if (monthYear) {
+                    const [year, month] = monthYear.split('-').map(Number);
+                    startDate = new Date(year, month - 1, 1).toISOString().split('T')[0];
+                    endDate = new Date(year, month, 0).toISOString().split('T')[0];
+                }
+
+                const res = await api.get('/finance/report/collaborators', {
+                    params: { startDate, endDate }
+                });
+
+                const rawData = res.data || [];
+                const mapped: CollaboratorRecord[] = rawData.map((p: any) => ({
+                    id: p.id,
+                    name: p.name,
+                    avatarInitials: p.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase(),
+                    daysWorked: p.daysCount || 0,
+                    totalSalesQty: p.salesCount || 0,
+                    totalSalesValue: p.totalSales || 0,
+                    remuneration: p.commission || 0
+                }));
+
+                setRecords(mapped.sort((a, b) => b.totalSalesValue - a.totalSalesValue));
+            } catch (e) {
+                console.error('Erro ao buscar relatório de colaboradores:', e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [monthYear]);
 
     const formatCurrency = (val: number) => 

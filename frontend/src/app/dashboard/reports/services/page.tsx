@@ -18,16 +18,39 @@ export default function ServicesReport() {
     const [monthYear, setMonthYear] = useState('');
 
     useEffect(() => {
-        setLoading(true);
-        setTimeout(() => {
-            setRecords([
-                { id: '1', name: 'Corte Feminino', quantity: 45, value: 3150 },
-                { id: '2', name: 'Coloração Completa', quantity: 20, value: 4000 },
-                { id: '3', name: 'Manicure', quantity: 80, value: 2400 },
-                { id: '4', name: 'Design de Sobrancelha', quantity: 60, value: 2100 }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                let year = new Date().getFullYear();
+                let month = new Date().getMonth() + 1;
+
+                if (monthYear) {
+                    const [y, m] = monthYear.split('-').map(Number);
+                    year = y;
+                    month = m;
+                }
+
+                const res = await api.get('/finance/report/monthly', {
+                    params: { year, month }
+                });
+
+                const stats = res.data.servicesStats || {};
+                const mapped: ServiceRecord[] = Object.entries(stats).map(([name, data]: [string, any], idx) => ({
+                    id: String(idx),
+                    name,
+                    quantity: data.count,
+                    value: data.revenue
+                }));
+
+                setRecords(mapped.sort((a, b) => b.value - a.value));
+            } catch (e) {
+                console.error('Erro ao buscar estatísticas de serviços:', e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [monthYear]);
 
     const formatCurrency = (val: number) => 

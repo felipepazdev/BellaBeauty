@@ -14,6 +14,21 @@ interface Product {
     description?: string;
 }
 
+export default function ProductsPage() {
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
+    const [showForm, setShowForm] = useState(false);
+    const [form, setForm] = useState({ 
+        name: '', 
+        price: '', 
+        costPrice: '', 
+        stock: '0', 
+        minStock: '0', 
+        description: '' 
+    });
+
     const [selectedProduct, setSelectedProduct] = useState<any>(null);
     const [productDetails, setProductDetails] = useState<any>(null);
     const [loadingDetails, setLoadingDetails] = useState(false);

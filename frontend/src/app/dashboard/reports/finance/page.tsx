@@ -24,17 +24,45 @@ export default function FinanceReport() {
     const [loading, setLoading] = useState(true);
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
+    const [summary, setSummary] = useState<any>(null);
 
     useEffect(() => {
-        setLoading(true);
-        // MOCK DATA PARA ATENDER A MESMA ESTRUTURA
-        setTimeout(() => {
-            setRecords([
-                { id: '1', saleId: '#10024', date: new Date().toISOString(), clientName: 'Nayara Paz', grossValue: 150, fee: 3.5, netValue: 146.5, paymentMethod: 'Cartão de Crédito', status: 'Conciliado' },
-                { id: '2', saleId: '#10025', date: new Date().toISOString(), clientName: 'Felipe Paz', grossValue: 50, fee: 0, netValue: 50, paymentMethod: 'Pix', status: 'Conciliado' }
-            ]);
-            setLoading(false);
-        }, 800);
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const params = {
+                    startDate: dateFrom || undefined,
+                    endDate: dateTo || undefined
+                };
+                
+                const [transactionsRes, summaryRes] = await Promise.all([
+                    api.get('/finance/transactions', { params }),
+                    api.get('/finance/summary', { params })
+                ]);
+
+                // Map transactions to the UI model
+                const mapped: FinancialRecord[] = transactionsRes.data.map((t: any) => ({
+                    id: t.id,
+                    saleId: t.payment?.order?.id.substring(0, 5).toUpperCase() || (t.type === 'SAIDA' ? 'DESPESA' : 'AVULSO'),
+                    date: t.createdAt,
+                    clientName: t.payment?.order?.client?.name || t.description || 'N/A',
+                    grossValue: t.amount,
+                    fee: 0, // Backend might not calculate fee per transaction yet in this endpoint
+                    netValue: t.amount,
+                    paymentMethod: t.method === 'CREDIT_CARD' ? 'Cartão' : t.method === 'PIX' ? 'Pix' : 'Dinheiro',
+                    status: 'Conciliado'
+                }));
+
+                setRecords(mapped);
+                setSummary(summaryRes.data);
+            } catch (e) {
+                console.error('Erro ao carregar financeiro:', e);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
     }, [dateFrom, dateTo]);
 
     const formatCurrency = (val: number) => 
@@ -48,9 +76,9 @@ export default function FinanceReport() {
         );
     }
 
-    const totalRecebido = records.reduce((acc, r) => acc + r.grossValue, 0);
-    const taxas = records.reduce((acc, r) => acc + r.fee, 0);
-    const lucroLiquido = totalRecebido - taxas; // Simplificado
+    const totalRecebido = summary?.totalIncome || 0;
+    const despesas = summary?.totalExpense || 0;
+    const lucroLiquido = summary?.netBalance || 0;
 
     return (
         <div className="animate-fade-in w-full pb-20">
@@ -81,7 +109,7 @@ export default function FinanceReport() {
                         <TrendingDown size={14} className="text-rose-500"/>
                         Despesas Pagas
                     </span>
-                    <span className="text-2xl font-black text-[#111827]">{formatCurrency(0)}</span>
+                    <span className="text-2xl font-black text-[#111827]">{formatCurrency(despesas)}</span>
                 </div>
                 <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
                     <span className="text-[12px] font-extrabold text-[#5a79f2] uppercase tracking-widest mb-1 flex items-center gap-2">

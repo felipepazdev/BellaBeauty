@@ -130,5 +130,6 @@ export default function PackagesReport() {
                 </div>
             </div>
         </div>
+        </div>
     );
 }

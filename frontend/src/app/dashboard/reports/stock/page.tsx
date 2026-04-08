@@ -101,5 +101,6 @@ export default function StockReport() {
                 </div>
             </div>
         </div>
+        </div>
     );
 }

@@ -131,5 +131,6 @@ export default function ActiveCustomersReport() {
                 </div>
             </div>
         </div>
+        </div>
     );
 }

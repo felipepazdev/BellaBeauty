@@ -140,5 +140,6 @@ export default function MissingCustomersReport() {
                 </div>
             </div>
         </div>
+        </div>
     );
 }

@@ -50,7 +50,6 @@ export default function CustomersReport() {
     const avgTicket = totalClients > 0 ? records.reduce((acc, c) => acc + c.totalSpent, 0) / records.reduce((acc, c) => acc + (c.totalAppointments || 1), 0) : 0;
 
     return (
-    return (
         <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
             <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 0 40px 0' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>

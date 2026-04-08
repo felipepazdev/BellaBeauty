@@ -130,5 +130,6 @@ export default function ProductsReport() {
                 </div>
             </div>
         </div>
+        </div>
     );
 }

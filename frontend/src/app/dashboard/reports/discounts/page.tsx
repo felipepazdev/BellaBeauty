@@ -106,5 +106,6 @@ export default function DiscountsReport() {
                 </div>
             </div>
         </div>
+        </div>
     );
 }

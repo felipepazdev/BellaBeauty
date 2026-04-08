@@ -1,0 +1,1 @@
+const { PrismaClient } = require('@prisma/client'); const prisma = new PrismaClient(); async function main() { const count = await prisma.appointment.count(); const apps = await prisma.appointment.findMany({ select: { date: true, status: true }, take: 5, orderBy: { date: 'desc' } }); console.log('Total:', count, 'Recent:', apps); } main().finally(() => prisma.$disconnect());

@@ -458,9 +458,7 @@ export class FinanceService {
         orderId: app.order?.id.substring(0, 5).toUpperCase() || '-',
       }))
     };
-    };
   }
-
   async getCollaboratorsReport(salonId: string, startDate: string, endDate: string) {
     const start = new Date(`${startDate}T00:00:00`);
     const end = new Date(`${endDate}T23:59:59`);

@@ -143,11 +143,13 @@ export default function AppointmentsReportPage() {
                         title="Valor total dos atendimentos" 
                         value={data?.summary.totalRevenue ?? 0}
                         subValue={`${data?.summary.count ?? 0} atendimentos`}
+                        items={data?.topServices ?? []}
                     />
                     <SummaryCard 
                         title="Valor médio por serviço" 
                         value={data?.summary.avgService ?? 0}
-                        subValue="10 serviços" // Mocked based on structure
+                        subValue={`${data?.summary.count ?? 0} serviços`}
+                        items={data?.topServices ?? []}
                     />
                     <SummaryCard 
                         title="Valor médio por produto" 
@@ -279,17 +281,48 @@ const TD_STYLE: React.CSSProperties = {
     color: 'var(--text-secondary)'
 };
 
-function SummaryCard({ title, value, subValue }: any) {
+function SummaryCard({ title, value, subValue, items = [] }: any) {
+    const [expanded, setExpanded] = useState(false);
+
     return (
-        <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{title}</span>
-                <div style={{ padding: 4, border: '1.5px solid #3B82F6', color: '#3B82F6', borderRadius: 4 }}>
-                    <ChevronRight size={12} style={{ transform: 'rotate(90deg)' }} />
+        <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12, height: 'fit-content', transition: 'all 0.3s' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{title}</span>
                 </div>
+                <h2 style={{ fontSize: 24, fontWeight: 800 }}>{value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h2>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{subValue}</p>
             </div>
-            <h2 style={{ fontSize: 22, fontWeight: 800 }}>{value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h2>
-            <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{subValue}</p>
+
+            {expanded && items.length > 0 && (
+                <div style={{ marginTop: 8, borderTop: '1px solid var(--border)', paddingTop: 16 }}>
+                    <p style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', marginBottom: 12 }}>Mais vendidos</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        {items.map((item: any, i: number) => (
+                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.name}</span>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)' }}>
+                                    {item.revenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 4 }}>
+                <button 
+                    onClick={() => setExpanded(!expanded)}
+                    style={{ 
+                        padding: 4, border: '1.5px solid #3B82F6', color: '#3B82F6', 
+                        borderRadius: 4, background: 'transparent', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'all 0.2s'
+                    }}
+                >
+                    <ChevronRight size={12} style={{ transform: expanded ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 0.2s' }} />
+                </button>
+            </div>
         </div>
     );
 }

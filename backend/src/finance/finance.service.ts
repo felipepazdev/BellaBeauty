@@ -425,9 +425,18 @@ export class FinanceService {
 
     const totalRevenue = appointments.reduce((acc, app) => acc + (app.service?.price || 0), 0);
     const serviceAppointments = appointments.filter(a => a.service);
-    // Mocking averages for products/packages since they might be in separate models or order items
-    // In a real scenario, we'd fetch order items linked to these appointments or professional
     
+    const serviceStatsMap = new Map<string, { name: string; revenue: number }>();
+    serviceAppointments.forEach(app => {
+      const existing = serviceStatsMap.get(app.serviceId) || { name: app.service.name, revenue: 0 };
+      existing.revenue += app.service.price;
+      serviceStatsMap.set(app.serviceId, existing);
+    });
+
+    const topServices = Array.from(serviceStatsMap.values())
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5);
+
     return {
       summary: {
         totalRevenue,
@@ -436,6 +445,7 @@ export class FinanceService {
         avgProduct: 0, // Mock
         avgPackage: 0, // Mock
       },
+      topServices,
       appointments: appointments.map(app => ({
         id: app.id,
         date: app.date,

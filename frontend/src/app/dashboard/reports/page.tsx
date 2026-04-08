@@ -1,189 +1,184 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import api from '@/lib/api';
 import {
-    BarChart2, TrendingUp, TrendingDown, DollarSign, Scissors, ChevronLeft, ChevronRight
+    Users, UserCircle, MinusCircle, Smile, 
+    ShoppingBag, ClipboardList, Package, Tag, 
+    List, ChevronRight, BarChart3
 } from 'lucide-react';
-import {
-    PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend,
-    BarChart, Bar, XAxis, YAxis, CartesianGrid
-} from 'recharts';
+import { useRouter } from 'next/navigation';
 
-interface MonthlyReport {
-    period: string;
-    summary: {
-        totalIncome: number;
-        totalExpense: number;
-        totalCommissionsPaid: number;
-        realProfit: number;
-        profitMarginPercent: number;
-    };
-    expensesByCategory: Record<string, number>;
-    servicesStats: Record<string, { count: number; revenue: number }>;
-    dailyCashFlow: { date: string; income: number; expense: number; balance: number }[];
+interface ReportCategory {
+    id: string;
+    title: string;
+    description: string;
+    icon?: React.ReactNode;
+    isNew?: boolean;
+    path: string;
 }
 
-const COLORS = ['#7c3aed', '#38bdf8', '#22c55e', '#f59e0b', '#ef4444', '#a78bfa'];
-const CAT_LABELS: Record<string, string> = {
-    RENT: 'Aluguel', MATERIAL: 'Materiais', SALARY: 'Salários',
-    PRO_LABORE: 'Pró-labore', PRODUCT: 'Produtos', OTHER: 'Outros',
-    SERVICE: 'Serviços', COMANDA: 'Comandas', REMUNERACAO: 'Remunerações',
-    DESPESA: 'Despesas Gerais', SANGRIA: 'Sangria de Caixa', MANUAL: 'Lançamentos Manuais',
-};
-
 export default function ReportsPage() {
-    const now = new Date();
-    const [year, setYear] = useState(now.getFullYear());
-    const [month, setMonth] = useState(now.getMonth() + 1);
-    const [data, setData] = useState<MonthlyReport | null>(null);
-    const [loading, setLoading] = useState(true);
-    const MONTHS = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const router = useRouter();
 
-    useEffect(() => {
-        setLoading(true);
-        api.get(`/finance/report/monthly?year=${year}&month=${month}`)
-            .then((r) => setData(r.data))
-            .catch(console.error)
-            .finally(() => setLoading(false));
-    }, [year, month]);
-
-    const changeMonth = (dir: number) => {
-        let m = month + dir; let y = year;
-        if (m > 12) { m = 1; y++; }
-        if (m < 1) { m = 12; y--; }
-        setMonth(m); setYear(y);
-    };
-
-    const pieData = Object.entries(data?.expensesByCategory ?? {}).map(([k, v]) => ({
-        name: CAT_LABELS[k] ?? k, value: v
-    }));
-
-    const servicesData = Object.entries(data?.servicesStats ?? {}).map(([k, v]) => ({
-        servico: k, Atendimentos: v.count, Faturado: v.revenue
-    })).sort((a, b) => b.Atendimentos - a.Atendimentos).slice(0, 8);
+    const reports: ReportCategory[] = [
+        {
+            id: 'financeiro',
+            title: 'Relatório Financeiro',
+            description: 'Confira valores recebidos, despesas e dados sobre o seu negócio',
+            isNew: true,
+            path: '/dashboard/reports/finance'
+        },
+        {
+            id: 'atendimentos',
+            title: 'Relatório de Atendimentos',
+            description: 'Confira os detalhes dos seus atendimentos, produtos, serviços e pacotes por período',
+            isNew: true,
+            path: '/dashboard/reports/appointments'
+        },
+        {
+            id: 'colaboradores',
+            title: 'Colaboradores',
+            description: 'Confira os colaboradores mais rentáveis para seu negócio.',
+            icon: <Users size={20} />,
+            path: '/dashboard/reports/collaborators'
+        },
+        {
+            id: 'clientes',
+            title: 'Clientes',
+            description: 'Confira os dados de seus clientes, como gasto médio e mais.',
+            icon: <UserCircle size={20} />,
+            path: '/dashboard/reports/customers'
+        },
+        {
+            id: 'clientes-sumidos',
+            title: 'Clientes Sumidos',
+            description: 'Confira os clientes sumidos e o tempo de ausência.',
+            icon: <MinusCircle size={20} />,
+            path: '/dashboard/reports/missing-customers'
+        },
+        {
+            id: 'clientes-ativos',
+            title: 'Clientes Ativos',
+            description: 'Confira os clientes que realizaram compras recentemente.',
+            icon: <Smile size={20} />,
+            path: '/dashboard/reports/active-customers'
+        },
+        {
+            id: 'pacotes',
+            title: 'Pacotes',
+            description: 'Dados sobre pacotes, como pacotes mais vendidos no período, listagens e mais.',
+            icon: <ShoppingBag size={20} />,
+            path: '/dashboard/reports/packages'
+        },
+        {
+            id: 'servicos',
+            title: 'Serviços',
+            description: 'Dados sobre serviços, como serviços mais realizados no período, listagens e mais.',
+            icon: <ClipboardList size={20} />,
+            path: '/dashboard/reports/services'
+        },
+        {
+            id: 'produtos',
+            title: 'Produtos',
+            description: 'Dados sobre produtos, como produtos mais vendidos no período, listagens e mais.',
+            icon: <Package size={20} />,
+            path: '/dashboard/reports/products'
+        },
+        {
+            id: 'descontos',
+            title: 'Descontos',
+            description: 'Listagem de descontos pré-cadastrados, com informações resumidas e detalhadas.',
+            icon: <Tag size={20} />,
+            path: '/dashboard/reports/discounts'
+        },
+        {
+            id: 'movimentacoes',
+            title: 'Movimentações de Estoque',
+            description: 'Dados sobre movimentações de estoque, como entradas e saídas de produtos.',
+            icon: <List size={20} />,
+            path: '/dashboard/reports/stock'
+        }
+    ];
 
     return (
-        <div className="animate-fade-in w-full">
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold">Relatório Financeiro</h1>
-                <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>Visão consolidada do período</p>
-            </div>
+        <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 0 40px 0' }}>
+                <div style={{ marginBottom: 32 }}>
+                    <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+                        Relatórios
+                    </h1>
+                </div>
 
-            {/* Navegador */}
-            <div className="card mb-6 flex items-center gap-4">
-                <button onClick={() => changeMonth(-1)} className="w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer"
-                    style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
-                    <ChevronLeft size={18} />
-                </button>
-                <p className="flex-1 text-center font-semibold">{MONTHS[month - 1]} {year}</p>
-                <button onClick={() => changeMonth(1)} className="w-9 h-9 rounded-lg flex items-center justify-center cursor-pointer"
-                    style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
-                    <ChevronRight size={18} />
-                </button>
-            </div>
-
-            {loading ? (
-                <div className="flex justify-center py-20"><span className="spinner" style={{ width: 40, height: 40 }} /></div>
-            ) : (
-                <div className="flex flex-col gap-6">
-
-                    {/* KPIs */}
-                    <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-                        {[
-                            { label: 'Receita Bruta', val: data?.summary.totalIncome ?? 0, color: '#22c55e', icon: TrendingUp },
-                            { label: 'Despesas', val: data?.summary.totalExpense ?? 0, color: '#ef4444', icon: TrendingDown },
-                            { label: 'Comissões Pagas', val: data?.summary.totalCommissionsPaid ?? 0, color: '#f59e0b', icon: DollarSign },
-                            { label: 'Lucro Real', val: data?.summary.realProfit ?? 0, color: '#a78bfa', icon: BarChart2 },
-                        ].map(({ label, val, color, icon: Icon }) => (
-                            <div key={label} className="card flex items-center gap-3">
-                                <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
-                                    style={{ background: `${color}18` }}>
-                                    <Icon size={20} style={{ color }} />
+                <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(480px, 1fr))', 
+                    gap: 16 
+                }}>
+                    {reports.map((report) => (
+                        <div 
+                            key={report.id}
+                            onClick={() => router.push(report.path)}
+                            style={{
+                                background: 'var(--bg-card)',
+                                border: '1px solid var(--border)',
+                                borderRadius: 16,
+                                padding: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                height: '100%'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = 'var(--accent)';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = '0 10px 20px -5px rgba(0,0,0,0.1)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = 'var(--border)';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'none';
+                            }}
+                        >
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, paddingRight: 20 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                    {report.isNew && (
+                                        <span style={{ 
+                                            background: '#3B82F6', 
+                                            color: '#FFF', 
+                                            fontSize: 10, 
+                                            fontWeight: 800, 
+                                            padding: '4px 8px', 
+                                            borderRadius: 6,
+                                            textTransform: 'uppercase'
+                                        }}>
+                                            Novo
+                                        </span>
+                                    )}
+                                    {report.icon && (
+                                        <div style={{ color: 'var(--text-primary)' }}>
+                                            {report.icon}
+                                        </div>
+                                    )}
                                 </div>
+                                
                                 <div>
-                                    <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>{label}</p>
-                                    <p className="font-bold text-lg" style={{ color }}>
-                                        R$ {val.toFixed(2)}
+                                    <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
+                                        {report.title}
+                                    </h3>
+                                    <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5, maxWidth: '90%' }}>
+                                        {report.description}
                                     </p>
                                 </div>
                             </div>
-                        ))}
-                    </div>
 
-                    {/* Margem */}
-                    <div className="card">
-                        <div className="flex items-center justify-between mb-2">
-                            <p className="text-sm font-semibold">Margem de Lucro</p>
-                            <p className="font-bold" style={{ color: (data?.summary.profitMarginPercent ?? 0) >= 0 ? '#22c55e' : '#ef4444' }}>
-                                {(data?.summary.profitMarginPercent ?? 0).toFixed(1)}%
-                            </p>
-                        </div>
-                        <div className="w-full h-3 rounded-full overflow-hidden" style={{ background: 'var(--bg-surface)' }}>
-                            <div className="h-full rounded-full transition-all duration-700"
-                                style={{
-                                    width: `${Math.min(Math.max(data?.summary.profitMarginPercent ?? 0, 0), 100)}%`,
-                                    background: 'linear-gradient(90deg, #7c3aed, #22c55e)'
-                                }} />
-                        </div>
-                    </div>
-
-                    {/* Gráficos */}
-                    <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-
-                        {/* Despesas por Categoria */}
-                        <div className="card">
-                            <div className="flex items-center gap-2 mb-4">
-                                <TrendingDown size={16} style={{ color: '#ef4444' }} />
-                                <h2 className="font-semibold text-sm">Despesas por Categoria</h2>
+                            <div style={{ color: 'var(--text-muted)' }}>
+                                <ChevronRight size={20} />
                             </div>
-                            {pieData.length === 0 ? (
-                                <p className="text-center py-8" style={{ color: 'var(--text-muted)' }}>Sem despesas no período</p>
-                            ) : (
-                                <ResponsiveContainer width="100%" height={260}>
-                                    <PieChart>
-                                        <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%"
-                                            outerRadius={90} innerRadius={50} paddingAngle={3}>
-                                            {pieData.map((_, i) => (
-                                                <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip
-                                            contentStyle={{ background: '#1a1a24', border: '1px solid #2a2a3a', borderRadius: 8, color: '#f4f4f8' }}
-                                            formatter={(v: any) => `R$ ${Number(v).toFixed(2)}`}
-                                        />
-                                        <Legend wrapperStyle={{ fontSize: 12 }} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            )}
                         </div>
-
-                        {/* Serviços mais realizados */}
-                        <div className="card">
-                            <div className="flex items-center gap-2 mb-4">
-                                <Scissors size={16} style={{ color: 'var(--accent-light)' }} />
-                                <h2 className="font-semibold text-sm">Serviços Realizados</h2>
-                            </div>
-                            {servicesData.length === 0 ? (
-                                <p className="text-center py-8" style={{ color: 'var(--text-muted)' }}>Sem atendimentos no período</p>
-                            ) : (
-                                <ResponsiveContainer width="100%" height={260}>
-                                    <BarChart data={servicesData} layout="vertical"
-                                        margin={{ top: 0, right: 20, bottom: 0, left: 10 }}>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="#2a2a3a" horizontal={false} />
-                                        <XAxis type="number" tick={{ fill: '#9898b0', fontSize: 11 }} axisLine={false} tickLine={false} />
-                                        <YAxis dataKey="servico" type="category" tick={{ fill: '#9898b0', fontSize: 11 }} width={90} axisLine={false} tickLine={false} />
-                                        <Tooltip
-                                            contentStyle={{ background: '#1a1a24', border: '1px solid #2a2a3a', borderRadius: 8, color: '#f4f4f8' }}
-                                        />
-                                        <Bar dataKey="Atendimentos" fill="#7c3aed" radius={[0, 6, 6, 0]} />
-                                    </BarChart>
-                                </ResponsiveContainer>
-                            )}
-                        </div>
-                    </div>
+                    ))}
                 </div>
-            )}
+            </div>
         </div>
     );
 }

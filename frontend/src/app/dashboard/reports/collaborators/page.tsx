@@ -34,14 +34,51 @@ export default function CollaboratorsReportPage() {
     const [selectedStart, setSelectedStart] = useState<Date | null>(new Date(now.getFullYear(), now.getMonth(), 1));
     const [selectedEnd, setSelectedEnd] = useState<Date | null>(new Date(now.getFullYear(), now.getMonth() + 1, 0));
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+    // Layout and Navigation State
+    const [viewMode, setViewMode] = useState<'DAILY' | 'WEEKLY' | 'MONTHLY' | 'CUSTOM'>('MONTHLY');
+    const [baseDate, setBaseDate] = useState(new Date());
+    const [showDropdown, setShowDropdown] = useState(false);
 
-    const fetchData = (start?: string, end?: string) => {
+    useEffect(() => {
+        if (viewMode !== 'CUSTOM') {
+            fetchReportData();
+        }
+    }, [viewMode, baseDate]);
+
+    const getPeriodRange = (mode: string, date: Date) => {
+        const d = new Date(date);
+        let start: Date;
+        let end: Date;
+
+        if (mode === 'DAILY') {
+            start = new Date(d.setHours(0, 0, 0, 0));
+            end = new Date(d.setHours(23, 59, 59, 999));
+        } else if (mode === 'WEEKLY') {
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Start on Monday
+            start = new Date(d.setDate(diff));
+            start.setHours(0, 0, 0, 0);
+            
+            end = new Date(start);
+            end.setDate(start.getDate() + 6);
+            end.setHours(23, 59, 59, 999);
+        } else if (mode === 'MONTHLY') {
+            start = new Date(d.getFullYear(), d.getMonth(), 1);
+            end = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+        } else {
+            // CUSTOM mode
+            start = selectedStart || new Date(d.getFullYear(), d.getMonth(), 1);
+            end = selectedEnd || new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+        }
+        return { start, end };
+    };
+
+    const fetchReportData = () => {
         setLoading(true);
-        const s = start || format(new Date(now.getFullYear(), now.getMonth(), 1), 'yyyy-MM-dd');
-        const e = end || format(new Date(now.getFullYear(), now.getMonth() + 1, 0), 'yyyy-MM-dd');
+        const { start, end } = getPeriodRange(viewMode, baseDate);
+        
+        const s = format(start, 'yyyy-MM-dd');
+        const e = format(end, 'yyyy-MM-dd');
         
         api.get(`/finance/report/collaborators?startDate=${s}&endDate=${e}`)
             .then(r => setData(r.data))
@@ -51,7 +88,8 @@ export default function CollaboratorsReportPage() {
 
     const handleFilter = () => {
         if (selectedStart && selectedEnd) {
-            fetchData(format(selectedStart, 'yyyy-MM-dd'), format(selectedEnd, 'yyyy-MM-dd'));
+            setViewMode('CUSTOM');
+            fetchReportData();
         }
         setShowDatePicker(false);
     };
@@ -61,7 +99,8 @@ export default function CollaboratorsReportPage() {
         const e = new Date(now.getFullYear(), now.getMonth() + 1, 0);
         setSelectedStart(s);
         setSelectedEnd(e);
-        fetchData(format(s, 'yyyy-MM-dd'), format(e, 'yyyy-MM-dd'));
+        setViewMode('MONTHLY');
+        setBaseDate(now);
         setShowDatePicker(false);
     };
 
@@ -99,6 +138,29 @@ export default function CollaboratorsReportPage() {
         return false;
     };
 
+    const navigatePeriod = (direction: 'next' | 'prev') => {
+        const { start } = getPeriodRange(viewMode, baseDate);
+        const d = new Date(start);
+        const modifier = direction === 'next' ? 1 : -1;
+
+        if (viewMode === 'DAILY') {
+            d.setDate(d.getDate() + modifier);
+        } else if (viewMode === 'WEEKLY') {
+            d.setDate(d.getDate() + (7 * modifier));
+        } else if (viewMode === 'MONTHLY') {
+            d.setMonth(d.getMonth() + modifier);
+        }
+        setBaseDate(d);
+    };
+
+    const getPeriodLabel = () => {
+        const { start, end } = getPeriodRange(viewMode, baseDate);
+        if (viewMode === 'DAILY') return format(start, 'dd MMMM yyyy', { locale: ptBR });
+        if (viewMode === 'WEEKLY') return `${format(start, 'dd')} - ${format(end, 'dd MMMM yyyy', { locale: ptBR })}`;
+        if (viewMode === 'MONTHLY') return format(start, 'MMMM/yyyy', { locale: ptBR });
+        return `${format(start, 'dd/MM/yyyy')} - ${format(end, 'dd/MM/yyyy')}`;
+    };
+
     return (
         <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
             <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 32, paddingBottom: 40 }}>
@@ -124,25 +186,71 @@ export default function CollaboratorsReportPage() {
 
                 {/* GENERAL INFO SECTION */}
                 <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
-                    <h2 style={{ fontSize: 28, fontWeight: 600 }}>Informações Gerais</h2>
+                    <h2 style={{ fontSize: 28, fontWeight: 500 }}>Informações Gerais</h2>
                     
                     {/* PERIOD SELECTOR */}
                     <div style={{ position: 'relative' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><ChevronLeft size={20}/></button>
                             <button 
-                                onClick={() => setShowDatePicker(!showDatePicker)}
+                                onClick={() => navigatePeriod('prev')}
+                                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                            >
+                                <ChevronLeft size={20}/>
+                            </button>
+                            
+                            <button 
+                                onClick={() => setShowDropdown(!showDropdown)}
                                 style={{ 
-                                    background: 'transparent', border: 'none', fontSize: 18, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8,
+                                    background: 'transparent', border: 'none', fontSize: 16, fontWeight: 500, display: 'flex', alignItems: 'center', gap: 8,
                                     cursor: 'pointer', color: 'var(--text-primary)'
                                 }}
                             >
-                                {selectedStart ? format(selectedStart, 'dd MMMM yyyy', { locale: ptBR }) : format(now, 'MMMM/yyyy', { locale: ptBR })}
+                                {getPeriodLabel()}
                                 <ChevronDown size={18} />
                             </button>
-                            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><ChevronRight size={20}/></button>
+                            
+                            <button 
+                                onClick={() => navigatePeriod('next')}
+                                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}
+                            >
+                                <ChevronRight size={20}/>
+                            </button>
                         </div>
 
+                        {showDropdown && (
+                            <div style={{ 
+                                position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', width: 220, background: 'white', 
+                                borderRadius: 8, border: '1px solid var(--border)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                                zIndex: 100, overflow: 'hidden', display: 'flex', flexDirection: 'column', marginTop: 8
+                            }}>
+                                {['Dia', 'Semana', 'Mês', 'Personalizado'].map((opt) => (
+                                    <button 
+                                        key={opt}
+                                        onClick={() => {
+                                            if (opt === 'Dia') setViewMode('DAILY');
+                                            if (opt === 'Semana') setViewMode('WEEKLY');
+                                            if (opt === 'Mês') setViewMode('MONTHLY');
+                                            if (opt === 'Personalizado') {
+                                                setShowDropdown(false);
+                                                setShowDatePicker(true);
+                                                return;
+                                            }
+                                            setShowDropdown(false);
+                                        }}
+                                        style={{ 
+                                            padding: '12px 16px', background: 'transparent', border: 'none', textAlign: 'left', 
+                                            fontSize: 14, fontWeight: 400, color: '#000', cursor: 'pointer', borderBottom: opt !== 'Personalizado' ? '1px solid #f1f5f9' : 'none'
+                                        }}
+                                        onMouseEnter={(e) => e.currentTarget.style.background = '#f8fafc'}
+                                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                    >
+                                        {opt}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* CUSTOM DATE PICKER */}
                         {showDatePicker && (
                             <div style={{ 
                                 position: 'absolute', top: '120%', left: '50%', transform: 'translateX(-50%)', width: 320, background: 'white', 
@@ -174,7 +282,7 @@ export default function CollaboratorsReportPage() {
                                 </div>
                                 <div style={{ padding: 12, borderTop: '1px solid var(--border)', display: 'flex', gap: 12 }}>
                                     <button onClick={clearFilter} style={{ flex: 1, padding: '10px', background: 'transparent', border: '1px solid #3B82F6', color: '#3B82F6', borderRadius: 8, fontSize: 12, fontWeight: 700 }}>Limpar filtro</button>
-                                    <button onClick={handleFilter} style={{ flex: 1, padding: '10px', background: '#3B82F6', color: 'white', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 700 }}>Filtrar</button>
+                                    <button onClick={handleFilter} style={{ flex: 1, padding: '10px', background: '#3B82F6', color: 'white', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 700 }}>Aplicar Filtro</button>
                                 </div>
                             </div>
                         )}

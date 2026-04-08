@@ -92,6 +92,9 @@ export default function FinanceReportPage() {
         }));
     }, [data]);
 
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [activeTab, setActiveTab] = useState<'dates' | 'months'>('dates');
+
     if (loading && !data) {
         return (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh' }}>
@@ -124,20 +127,119 @@ export default function FinanceReportPage() {
                         </div>
                     </div>
                     
-                    <div style={{ display: 'flex', gap: 12 }}>
+                    <div style={{ display: 'flex', gap: 12, position: 'relative' }}>
                         <div style={{ 
                             background: '#3B82F6', color: 'white', padding: '8px 16px', 
-                            borderRadius: 8, fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 
+                            borderRadius: 8, fontSize: 12, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8,
+                            height: 40
                         }}>
                             Bella Beauty Studio & Academy
                         </div>
-                        <div style={{ 
-                            background: 'white', border: '1px solid var(--border)', padding: '8px 16px', 
-                            borderRadius: 8, fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8 
-                        }}>
-                            <Calendar size={14} />
-                            {format(new Date(year, month - 1, 1), 'dd MMM yyyy', { locale: ptBR })} - {format(new Date(year, month, 0), 'dd MMM yyyy', { locale: ptBR })}
-                            <ChevronRight size={14} style={{ transform: 'rotate(90deg)' }} />
+                        
+                        {/* CUSTOM DATE PICKER */}
+                        <div style={{ position: 'relative' }}>
+                            <button 
+                                onClick={() => setShowDatePicker(!showDatePicker)}
+                                style={{ 
+                                    background: 'white', border: showDatePicker ? '1.5px solid #3B82F6' : '1px solid var(--border)', 
+                                    padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, 
+                                    display: 'flex', alignItems: 'center', gap: 8, height: 40, cursor: 'pointer',
+                                    color: showDatePicker ? '#3B82F6' : 'var(--text-primary)',
+                                    transition: 'all 0.2s'
+                                }}
+                            >
+                                <Calendar size={14} />
+                                {format(new Date(year, month - 1, 1), 'dd MMMM yyyy', { locale: ptBR })} - {format(new Date(year, month, 0), 'dd MMMM yyyy', { locale: ptBR })}
+                                <ChevronRight size={14} style={{ transform: showDatePicker ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 0.2s' }} />
+                            </button>
+
+                            {showDatePicker && (
+                                <div style={{ 
+                                    position: 'absolute', top: '120%', right: 0, width: 320, background: 'white', 
+                                    borderRadius: 12, border: '1px solid var(--border)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                                    zIndex: 100, overflow: 'hidden'
+                                }}>
+                                    <div style={{ padding: 12, borderBottom: '1px solid var(--border)', display: 'flex', gap: 4 }}>
+                                        <button 
+                                            onClick={() => setActiveTab('dates')}
+                                            style={{ 
+                                                flex: 1, padding: '8px', border: 'none', borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                                                background: activeTab === 'dates' ? '#3B82F6' : 'transparent',
+                                                color: activeTab === 'dates' ? 'white' : 'var(--text-muted)',
+                                                transition: 'all 0.2s'
+                                            }}
+                                        >
+                                            Datas
+                                        </button>
+                                        <button 
+                                            onClick={() => setActiveTab('months')}
+                                            style={{ 
+                                                flex: 1, padding: '8px', background: activeTab === 'months' ? '#3B82F6' : 'transparent', 
+                                                border: activeTab === 'months' ? 'none' : '1px solid var(--border)', borderRadius: 6, 
+                                                fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                                                color: activeTab === 'months' ? 'white' : 'var(--text-muted)',
+                                                transition: 'all 0.2s'
+                                            }}
+                                        >
+                                            Meses
+                                        </button>
+                                    </div>
+
+                                    <div style={{ padding: 16 }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                                            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><ChevronLeft size={16}/></button>
+                                            <span style={{ fontSize: 14, fontWeight: 700 }}>2026</span>
+                                            <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><ChevronRight size={16}/></button>
+                                        </div>
+
+                                        {/* MINI CALENDAR MOCK */}
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, textAlign: 'center' }}>
+                                            {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(d => (
+                                                <span key={d} style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', marginBottom: 8 }}>{d}</span>
+                                            ))}
+                                            {[...Array(30)].map((_, i) => (
+                                                <div 
+                                                    key={i} 
+                                                    style={{ 
+                                                        fontSize: 11, fontWeight: 600, padding: '8px 0', borderRadius: '50%', cursor: 'pointer',
+                                                        background: i+1 === 7 ? '#3B82F6' : i+1 === 1 ? '#3B82F6' : 'transparent',
+                                                        color: (i+1 === 7 || i+1 === 1) ? 'white' : 'var(--text-secondary)'
+                                                    }}
+                                                >
+                                                    {i + 1}
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div style={{ marginTop: 24 }}>
+                                            <p style={{ fontSize: 12, fontWeight: 700, marginBottom: 12 }}>Maio 2026</p>
+                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, textAlign: 'center', opacity: 0.5 }}>
+                                                {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(d => (
+                                                    <span key={d} style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8' }}>{d}</span>
+                                                ))}
+                                                {[...Array(14)].map((_, i) => (
+                                                    <div key={i} style={{ fontSize: 11, fontWeight: 600, padding: '8px 0' }}>{i + 1}</div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ padding: 12, borderTop: '1px solid var(--border)', display: 'flex', gap: 12 }}>
+                                        <button 
+                                            onClick={() => setShowDatePicker(false)}
+                                            style={{ flex: 1, padding: '10px', background: 'transparent', border: '1px solid #3B82F6', color: '#3B82F6', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
+                                        >
+                                            Limpar filtro
+                                        </button>
+                                        <button 
+                                            onClick={() => setShowDatePicker(false)}
+                                            style={{ flex: 1, padding: '10px', background: '#3B82F6', color: 'white', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
+                                        >
+                                            Filtrar
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -170,8 +272,8 @@ export default function FinanceReportPage() {
                     />
                     <SummaryCard 
                         title="Créditos disponíveis" 
-                        value={560.00}
-                        trend="2 clientes com créditos"
+                        value={0}
+                        trend="0 clientes com créditos"
                         isInfo
                     />
                 </div>
@@ -186,12 +288,6 @@ export default function FinanceReportPage() {
                                 <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Valor recebido</p>
                                 <p style={{ fontSize: 20, fontWeight: 800 }}>{formatCurrency(data?.summary.totalIncome ?? 0)}</p>
                             </div>
-                            <button style={{ 
-                                background: 'transparent', border: '1px solid #3B82F6', color: '#3B82F6', 
-                                padding: '4px 12px', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer' 
-                            }}>
-                                ver detalhes <ExternalLink size={12} style={{ marginLeft: 4, display: 'inline' }} />
-                            </button>
                         </div>
                         
                         <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
@@ -241,12 +337,6 @@ export default function FinanceReportPage() {
                                 <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Valor total</p>
                                 <p style={{ fontSize: 20, fontWeight: 800 }}>{formatCurrency(data?.summary.totalExpense ?? 0)}</p>
                             </div>
-                            <button style={{ 
-                                background: 'transparent', border: '1px solid #3B82F6', color: '#3B82F6', 
-                                padding: '4px 12px', borderRadius: 6, fontSize: 11, fontWeight: 700, cursor: 'pointer' 
-                            }}>
-                                ver detalhes <ExternalLink size={12} style={{ marginLeft: 4, display: 'inline' }} />
-                            </button>
                         </div>
 
                         <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>

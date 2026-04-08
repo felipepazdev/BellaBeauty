@@ -306,10 +306,25 @@ export class FinanceService {
     };
   }
 
-  // 5) Relatório Financeiro Mensal
-  async getMonthlyReport(salonId: string, year: number, month: number) {
-    const start = new Date(year, month - 1, 1, 0, 0, 0, 0);
-    const end = new Date(year, month, 0, 23, 59, 59, 999);
+  // 5) Relatório Financeiro Mensal (ou Periódico)
+  async getMonthlyReport(
+    salonId: string,
+    year: number,
+    month: number,
+    startDate?: string,
+    endDate?: string,
+  ) {
+    let start: Date;
+    let end: Date;
+
+    if (startDate && endDate) {
+      start = new Date(`${startDate}T00:00:00`);
+      end = new Date(`${endDate}T23:59:59`);
+    } else {
+      start = new Date(year, month - 1, 1, 0, 0, 0, 0);
+      end = new Date(year, month, 0, 23, 59, 59, 999);
+    }
+
     const startIso = start.toISOString();
     const endIso = end.toISOString();
 
@@ -318,7 +333,40 @@ export class FinanceService {
       endDate: endIso,
     };
 
-    const cashFlow = await this.getMonthlyCashFlow(salonId, year, month);
+    // Calculate daily cash flow for the range
+    const transactions = await this.prisma.financialTransaction.findMany({
+      where: {
+        salonId,
+        createdAt: { gte: start, lte: end },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    const days = new Map<
+      string,
+      { income: number; expense: number; balance: number }
+    >();
+
+    transactions.forEach((tx) => {
+      const dayStr = tx.createdAt.toISOString().substring(0, 10);
+      if (!days.has(dayStr)) {
+        days.set(dayStr, { income: 0, expense: 0, balance: 0 });
+      }
+      const dayData = days.get(dayStr)!;
+      const type = tx.type.toLowerCase();
+      if (type === 'income' || type === 'entrada' || type === 'receita') {
+        dayData.income += tx.amount;
+      } else if (type === 'expense' || type === 'saida' || type === 'despesa') {
+        dayData.expense += tx.amount;
+      }
+      dayData.balance = dayData.income - dayData.expense;
+    });
+
+    const dailyCashFlow = Array.from(days.entries()).map(([date, data]) => ({
+      date,
+      ...data,
+    }));
+
     const profit = await this.getProfit(salonId, filters);
     const expenses = await this.getExpenses(salonId, filters);
 
@@ -343,7 +391,7 @@ export class FinanceService {
     );
 
     return {
-      period: `${year}-${month.toString().padStart(2, '0')}`,
+      period: startDate && endDate ? `${startDate} a ${endDate}` : `${year}-${month.toString().padStart(2, '0')}`,
       summary: {
         totalIncome: profit.totalIncome,
         totalExpense: profit.totalExpense,
@@ -353,7 +401,7 @@ export class FinanceService {
       },
       expensesByCategory: expenses.groupedByCategory,
       servicesStats,
-      dailyCashFlow: cashFlow.dailyBreakdown,
+      dailyCashFlow,
     };
   }
 }

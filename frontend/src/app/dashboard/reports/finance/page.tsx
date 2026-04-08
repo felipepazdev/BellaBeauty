@@ -94,6 +94,97 @@ export default function FinanceReportPage() {
 
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [activeTab, setActiveTab] = useState<'dates' | 'months'>('dates');
+    const [selectedStart, setSelectedStart] = useState<Date | null>(new Date(year, month - 1, 1));
+    const [selectedEnd, setSelectedEnd] = useState<Date | null>(new Date(year, month, 0));
+
+    useEffect(() => {
+        fetchReport();
+    }, [year, month]);
+
+    const fetchReport = (customStart?: string, customEnd?: string) => {
+        setLoading(true);
+        let url = `/finance/report/monthly?year=${year}&month=${month}`;
+        
+        // If the user selects a custom range, we'll try to use it if the backend supports it.
+        // For now, I'll update the backend to support startDate/endDate or just stick to month for summary.
+        // Actually, let's assume I'll update the backend to support it.
+        if (customStart && customEnd) {
+            url = `/finance/report/monthly?startDate=${customStart}&endDate=${customEnd}`;
+        }
+
+        api.get(url)
+            .then((r) => setData(r.data))
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    };
+
+    const handleDayClick = (dayNum: number, currentMonth: number, currentYear: number) => {
+        const d = new Date(currentYear, currentMonth, dayNum);
+        if (!selectedStart || (selectedStart && selectedEnd)) {
+            setSelectedStart(d);
+            setSelectedEnd(null);
+        } else {
+            if (d < selectedStart) {
+                setSelectedStart(d);
+            } else {
+                setSelectedEnd(d);
+            }
+        }
+    };
+
+    const isSelected = (dayNum: number, currentMonth: number, currentYear: number) => {
+        const d = new Date(currentYear, currentMonth, dayNum);
+        if (selectedStart && !selectedEnd) return d.getTime() === selectedStart.getTime();
+        if (selectedStart && selectedEnd) {
+            return d >= selectedStart && d <= selectedEnd;
+        }
+        return false;
+    };
+
+    const isRangeEdge = (dayNum: number, currentMonth: number, currentYear: number) => {
+        const d = new Date(currentYear, currentMonth, dayNum);
+        if (!selectedStart) return false;
+        if (d.getTime() === selectedStart?.getTime()) return 'start';
+        if (d.getTime() === selectedEnd?.getTime()) return 'end';
+        return false;
+    };
+
+    const handleFilter = () => {
+        if (selectedStart && selectedEnd) {
+            fetchReport(format(selectedStart, 'yyyy-MM-dd'), format(selectedEnd, 'yyyy-MM-dd'));
+        } else if (selectedStart) {
+            fetchReport(format(selectedStart, 'yyyy-MM-dd'), format(selectedStart, 'yyyy-MM-dd'));
+        }
+        setShowDatePicker(false);
+    };
+
+    const clearFilter = () => {
+        setSelectedStart(new Date(year, month - 1, 1));
+        setSelectedEnd(new Date(year, month, 0));
+        fetchReport();
+        setShowDatePicker(false);
+    };
+
+    const calendarDays = useMemo(() => {
+        const startOfMonth = new Date(year, month - 1, 1);
+        const endOfMonth = new Date(year, month, 0);
+        const days = [];
+        // Pad with empty days for weekday start
+        for (let i = 0; i < startOfMonth.getDay(); i++) days.push(null);
+        for (let i = 1; i <= endOfMonth.getDate(); i++) days.push(i);
+        return days;
+    }, [year, month]);
+
+    const nextMonthDays = useMemo(() => {
+        const nextM = month === 12 ? 1 : month + 1;
+        const nextY = month === 12 ? year + 1 : year;
+        const startOfNext = new Date(nextY, nextM - 1, 1);
+        const endOfNext = new Date(nextY, nextM, 0);
+        const days = [];
+        for (let i = 0; i < startOfNext.getDay(); i++) days.push(null);
+        for (let i = 1; i <= endOfNext.getDate(); i++) days.push(i);
+        return days.slice(0, 14); // Just first 14 days as in image
+    }, [year, month]);
 
     if (loading && !data) {
         return (
@@ -145,11 +236,12 @@ export default function FinanceReportPage() {
                                     padding: '8px 16px', borderRadius: 8, fontSize: 12, fontWeight: 600, 
                                     display: 'flex', alignItems: 'center', gap: 8, height: 40, cursor: 'pointer',
                                     color: showDatePicker ? '#3B82F6' : 'var(--text-primary)',
-                                    transition: 'all 0.2s'
+                                    transition: 'all 0.2s',
+                                    minWidth: 260
                                 }}
                             >
                                 <Calendar size={14} />
-                                {format(new Date(year, month - 1, 1), 'dd MMMM yyyy', { locale: ptBR })} - {format(new Date(year, month, 0), 'dd MMMM yyyy', { locale: ptBR })}
+                                {selectedStart ? format(selectedStart, 'dd MMMM yyyy', { locale: ptBR }) : '...'} - {selectedEnd ? format(selectedEnd, 'dd MMMM yyyy', { locale: ptBR }) : format(new Date(year, month, 0), 'dd MMMM yyyy', { locale: ptBR })}
                                 <ChevronRight size={14} style={{ transform: showDatePicker ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 0.2s' }} />
                             </button>
 
@@ -188,51 +280,78 @@ export default function FinanceReportPage() {
                                     <div style={{ padding: 16 }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                                             <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><ChevronLeft size={16}/></button>
-                                            <span style={{ fontSize: 14, fontWeight: 700 }}>2026</span>
+                                            <span style={{ fontSize: 14, fontWeight: 700 }}>{year}</span>
                                             <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><ChevronRight size={16}/></button>
                                         </div>
 
-                                        {/* MINI CALENDAR MOCK */}
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, textAlign: 'center' }}>
+                                        {/* CALENDAR VIEW */}
+                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 0, textAlign: 'center' }}>
                                             {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(d => (
                                                 <span key={d} style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', marginBottom: 8 }}>{d}</span>
                                             ))}
-                                            {[...Array(30)].map((_, i) => (
-                                                <div 
-                                                    key={i} 
-                                                    style={{ 
-                                                        fontSize: 11, fontWeight: 600, padding: '8px 0', borderRadius: '50%', cursor: 'pointer',
-                                                        background: i+1 === 7 ? '#3B82F6' : i+1 === 1 ? '#3B82F6' : 'transparent',
-                                                        color: (i+1 === 7 || i+1 === 1) ? 'white' : 'var(--text-secondary)'
-                                                    }}
-                                                >
-                                                    {i + 1}
-                                                </div>
-                                            ))}
+                                            {calendarDays.map((d, i) => {
+                                                if (d === null) return <div key={`pad-${i}`} />;
+                                                const active = isSelected(d, month - 1, year);
+                                                const edge = isRangeEdge(d, month - 1, year);
+                                                return (
+                                                    <div 
+                                                        key={i} 
+                                                        onClick={() => handleDayClick(d, month - 1, year)}
+                                                        style={{ 
+                                                            fontSize: 11, fontWeight: 600, padding: '8px 0', cursor: 'pointer',
+                                                            background: active ? '#3B82F6' : 'transparent',
+                                                            color: active ? 'white' : 'var(--text-secondary)',
+                                                            borderRadius: active ? '50%' : '0',
+                                                            transition: 'all 0.1s'
+                                                        }}
+                                                    >
+                                                        {d}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
 
                                         <div style={{ marginTop: 24 }}>
-                                            <p style={{ fontSize: 12, fontWeight: 700, marginBottom: 12 }}>Maio 2026</p>
-                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 4, textAlign: 'center', opacity: 0.5 }}>
+                                            <p style={{ fontSize: 12, fontWeight: 700, marginBottom: 12 }}>
+                                                {format(new Date(year, month, 1), 'MMMM yyyy', { locale: ptBR })}
+                                            </p>
+                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 0, textAlign: 'center' }}>
                                                 {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(d => (
                                                     <span key={d} style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8' }}>{d}</span>
                                                 ))}
-                                                {[...Array(14)].map((_, i) => (
-                                                    <div key={i} style={{ fontSize: 11, fontWeight: 600, padding: '8px 0' }}>{i + 1}</div>
-                                                ))}
+                                                {nextMonthDays.map((d, i) => {
+                                                    if (d === null) return <div key={`pad-next-${i}`} />;
+                                                    const nextM = month === 12 ? 0 : month;
+                                                    const nextY = month === 12 ? year + 1 : year;
+                                                    const active = isSelected(d, nextM, nextY);
+                                                    return (
+                                                        <div 
+                                                            key={`next-${i}`} 
+                                                            onClick={() => handleDayClick(d, nextM, nextY)}
+                                                            style={{ 
+                                                                fontSize: 11, fontWeight: 600, padding: '8px 0', cursor: 'pointer',
+                                                                background: active ? '#3B82F6' : 'transparent',
+                                                                color: active ? 'white' : 'var(--text-secondary)',
+                                                                borderRadius: active ? '50%' : '0'
+                                                            }}
+                                                        >
+                                                            {d}
+                                                        </div>
+                                                    );
+                                                })}
                                             </div>
                                         </div>
                                     </div>
 
                                     <div style={{ padding: 12, borderTop: '1px solid var(--border)', display: 'flex', gap: 12 }}>
                                         <button 
-                                            onClick={() => setShowDatePicker(false)}
+                                            onClick={clearFilter}
                                             style={{ flex: 1, padding: '10px', background: 'transparent', border: '1px solid #3B82F6', color: '#3B82F6', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
                                         >
                                             Limpar filtro
                                         </button>
                                         <button 
-                                            onClick={() => setShowDatePicker(false)}
+                                            onClick={handleFilter}
                                             style={{ flex: 1, padding: '10px', background: '#3B82F6', color: 'white', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 700, cursor: 'pointer' }}
                                         >
                                             Filtrar

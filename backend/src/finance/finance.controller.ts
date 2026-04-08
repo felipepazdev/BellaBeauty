@@ -102,11 +102,19 @@ export class FinanceController {
     @Req() req,
     @Query('year') year: string,
     @Query('month') month: string,
+    @Query('startDate') startDate?: string,
+    @Query('endDate') endDate?: string,
   ) {
     const today = new Date();
     const y = year ? parseInt(year) : today.getFullYear();
     const m = month ? parseInt(month) : today.getMonth() + 1;
-    return this.financeService.getMonthlyReport(req.user.salonId, y, m);
+    return this.financeService.getMonthlyReport(
+      req.user.salonId,
+      y,
+      m,
+      startDate,
+      endDate,
+    );
   }
   @Roles('ADMIN')
   @ApiOperation({ summary: 'Realizar sangria (retirada manual de caixa)' })

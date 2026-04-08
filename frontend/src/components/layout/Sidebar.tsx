@@ -67,24 +67,35 @@ function NavContent({ onClose }: { onClose?: () => void }) {
     const visibleItems = NAV_ITEMS.filter(item => canSee(item.roles, item.permission));
 
     return (
-        <div className="flex flex-col h-full p-5 bg-[#0c0c10]/95 backdrop-blur-xl border-r border-white/5">
+        <div style={{
+            display: 'flex', flexDirection: 'column', height: '100%',
+            padding: '20px 12px',
+        }}>
             {/* ── Logo / Branding ── */}
-            <div className="flex items-center gap-3 px-2 mb-10">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#06b6d4] to-[#7c3aed] flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.3)] animate-pulse-subtle">
-                    <Scissors size={20} className="text-white" strokeWidth={2.5} />
+            <div style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '4px 8px', marginBottom: 28,
+            }}>
+                <div style={{
+                    width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                    background: 'linear-gradient(135deg, #0284c7, #06b6d4)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(6,182,212,0.35)',
+                }}>
+                    <Scissors size={17} color="#fff" strokeWidth={2.5} />
                 </div>
                 <div>
-                    <p className="text-base font-serif font-black text-white tracking-tight leading-none">
+                    <p style={{ fontSize: 14, fontWeight: 700, color: '#111827', lineHeight: 1.2, letterSpacing: '-0.01em' }}>
                         Bella Beauty
                     </p>
-                    <p className="text-[10px] font-black text-[#06b6d4] uppercase tracking-[0.2em] mt-1">
-                        SASS PREMIUM
+                    <p style={{ fontSize: 10, fontWeight: 600, color: '#0284c7', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                        Salão & Spa
                     </p>
                 </div>
             </div>
 
             {/* ── Navegação principal ── */}
-            <nav className="flex-1 overflow-y-auto pr-2 space-y-1 custom-scrollbar">
+            <nav style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 2 }}>
                 {visibleItems.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(item.href);
@@ -93,50 +104,94 @@ function NavContent({ onClose }: { onClose?: () => void }) {
                             key={item.href}
                             href={item.href}
                             onClick={onClose}
-                            className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group ${
-                                active 
-                                ? 'bg-white/10 text-white shadow-[inset_0_0_20px_rgba(255,255,255,0.02)]' 
-                                : 'text-slate-400 hover:text-white hover:bg-white/5'
-                            }`}
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 12,
+                                padding: '10px 12px',
+                                borderRadius: 10,
+                                textDecoration: 'none',
+                                transition: 'all 0.15s ease',
+                                background: active ? 'rgba(2, 132, 199, 0.08)' : 'transparent',
+                                color: active ? '#0284c7' : '#6b7280',
+                            }}
+                            onMouseEnter={(e) => {
+                                if (!active) {
+                                    e.currentTarget.style.background = 'rgba(0,0,0,0.04)';
+                                    e.currentTarget.style.color = '#374151';
+                                }
+                            }}
+                            onMouseLeave={(e) => {
+                                if (!active) {
+                                    e.currentTarget.style.background = 'transparent';
+                                    e.currentTarget.style.color = '#6b7280';
+                                }
+                            }}
                         >
                             <Icon
-                                size={20}
-                                strokeWidth={active ? 2.5 : 2}
-                                className={`transition-all duration-300 ${
-                                    active ? 'text-[#06b6d4] drop-shadow-[0_0_8px_rgba(6,182,212,0.6)]' : 'text-slate-500 group-hover:text-slate-300'
-                                }`}
+                                size={19}
+                                strokeWidth={active ? 2.2 : 1.8}
+                                style={{ color: active ? '#0284c7' : '#9ca3af', flexShrink: 0 }}
                             />
-                            <span className={`text-[13.5px] tracking-wide ${active ? 'font-bold' : 'font-medium'}`}>
+                            <span style={{
+                                fontSize: 14,
+                                fontWeight: active ? 600 : 400,
+                                letterSpacing: '-0.01em',
+                                lineHeight: 1,
+                            }}>
                                 {item.label}
                             </span>
-                            {active && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#06b6d4] shadow-[0_0_8px_rgba(6,182,212,1)]" />}
                         </Link>
                     );
                 })}
             </nav>
 
             {/* ── Divider ── */}
-            <div className="h-px bg-white/5 my-6 mx-2" />
+            <div style={{ height: 1, background: '#f3f4f6', margin: '12px 4px' }} />
 
             {/* ── Perfil do usuário ── */}
-            <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-all group">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-white/10 flex items-center justify-center text-white text-sm font-black shadow-lg">
+            <div style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '10px 12px', borderRadius: 10, background: '#f9fafb',
+            }}>
+                {/* Avatar */}
+                <div style={{
+                    width: 34, height: 34, borderRadius: '50%', flexShrink: 0,
+                    background: 'rgba(2, 132, 199, 0.12)',
+                    border: '1.5px solid rgba(2, 132, 199, 0.25)',
+                    color: '#0284c7',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 13, fontWeight: 700,
+                }}>
                     {user?.name?.charAt(0).toUpperCase()}
                 </div>
-                <div className="flex-1 min-w-0">
-                    <p className="text-[13px] font-bold text-white truncate capitalize">
+                <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', textTransform: 'capitalize', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                         {user?.name?.toLowerCase()}
                     </p>
-                    <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mt-0.5">
+                    <p style={{ fontSize: 10, color: '#9ca3af', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.06em' }}>
                         {roleLabel[user?.role ?? ''] ?? ''}
                     </p>
                 </div>
                 <button
                     onClick={handleLogout}
-                    title="Encerrar Sessão"
-                    className="p-2.5 rounded-xl text-slate-500 hover:text-rose-500 hover:bg-rose-500/10 transition-all active:scale-90"
+                    title="Sair"
+                    style={{
+                        background: 'none', border: 'none', cursor: 'pointer',
+                        color: '#9ca3af', padding: 6, borderRadius: 8,
+                        display: 'flex', alignItems: 'center', transition: 'all 0.15s',
+                        flexShrink: 0,
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.color = '#dc2626';
+                        e.currentTarget.style.background = '#fee2e2';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.color = '#9ca3af';
+                        e.currentTarget.style.background = 'none';
+                    }}
                 >
-                    <LogOut size={16} />
+                    <LogOut size={15} />
                 </button>
             </div>
         </div>
@@ -150,39 +205,77 @@ export default function Sidebar() {
     return (
         <>
             {/* ── Desktop ── */}
-            <aside className="hidden lg:flex flex-col w-[260px] h-screen sticky top-0 bg-[#07070a] border-r border-white/5">
+            <aside style={{
+                width: 230, flexShrink: 0,
+                height: '100vh', position: 'sticky', top: 0,
+                background: '#ffffff',
+                borderRight: '1px solid #f3f4f6',
+                display: 'none',
+            }} className="sidebar-desktop">
                 <NavContent />
             </aside>
 
+            {/* ── Estilos inline para responsividade ── */}
+            <style>{`
+                @media (min-width: 1024px) {
+                    .sidebar-desktop { display: flex !important; flex-direction: column; }
+                    .sidebar-topbar  { display: none !important; }
+                }
+            `}</style>
+
             {/* ── Mobile top bar ── */}
-            <div className="lg:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between p-4 bg-[#0c0c10]/95 backdrop-blur-xl border-b border-white/5">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#06b6d4] to-[#7c3aed] flex items-center justify-center shadow-lg shadow-cyan-500/20">
-                        <Scissors size={14} className="text-white" strokeWidth={3} />
+            <div
+                className="sidebar-topbar"
+                style={{
+                    position: 'fixed', top: 0, left: 0, right: 0, zIndex: 40,
+                    display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                    padding: '10px 16px',
+                    background: 'rgba(255,255,255,0.95)',
+                    borderBottom: '1px solid #f3f4f6',
+                    backdropFilter: 'blur(12px)',
+                }}
+            >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{
+                        width: 30, height: 30, borderRadius: 8,
+                        background: 'linear-gradient(135deg, #0284c7, #06b6d4)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                        <Scissors size={14} color="#fff" strokeWidth={2.5} />
                     </div>
-                    <span className="text-sm font-serif font-black text-white">Bella Beauty</span>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>Bella Beauty</span>
                 </div>
                 <button
                     onClick={() => setMobileOpen(true)}
-                    className="p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white transition-all"
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#6b7280', padding: 6, borderRadius: 8, display: 'flex' }}
                 >
-                    <Menu size={22} />
+                    <Menu size={20} />
                 </button>
             </div>
 
             {/* ── Mobile drawer ── */}
             {mobileOpen && (
-                <div className="fixed inset-0 z-50 flex">
+                <div className="animate-fade-in" style={{ position: 'fixed', inset: 0, zIndex: 50, display: 'flex' }}>
+                    {/* Overlay */}
                     <div
-                        className="absolute inset-0 bg-black/80 backdrop-blur-md animate-fade-in"
+                        style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(4px)' }}
                         onClick={() => setMobileOpen(false)}
                     />
-                    <aside className="relative w-[280px] h-full bg-[#0c0c10] border-r border-white/10 shadow-2xl animate-slide-right">
+                    {/* Drawer */}
+                    <aside style={{
+                        position: 'relative', width: 260, height: '100%',
+                        background: '#ffffff', borderRight: '1px solid #f3f4f6',
+                        overflowY: 'auto',
+                    }}>
                         <button
                             onClick={() => setMobileOpen(false)}
-                            className="absolute top-5 right-5 p-2 rounded-lg bg-white/5 text-slate-400 hover:text-white transition-all z-10"
+                            style={{
+                                position: 'absolute', top: 14, right: 14,
+                                background: '#f3f4f6', border: 'none', cursor: 'pointer',
+                                color: '#6b7280', padding: 6, borderRadius: 8, display: 'flex',
+                            }}
                         >
-                            <X size={18} />
+                            <X size={16} />
                         </button>
                         <NavContent onClose={() => setMobileOpen(false)} />
                     </aside>

@@ -6,14 +6,15 @@
 */
 
 :root {
-    /* Cores Dark Premium (Padrão Vapor Clinic) */
-    --bg-base: #0a0a0f;
-    --bg-surface: #111118;
-    --bg-card: rgba(22, 22, 32, 0.60);
-    --bg-card-hover: rgba(30, 30, 44, 0.75);
+    /* Cores Light (Padrão) */
+    --bg-base: #f5f6f8;
+    --bg-surface: #ffffff;
+    --bg-card: rgba(255, 255, 255, 0.95);
+    --bg-card-hover: rgba(248, 249, 255, 1);
     
-    --border: rgba(255, 255, 255, 0.07);
-    --border-hover: rgba(139, 92, 246, 0.28);
+    /* Bordas e Acentos */
+    --border: rgba(0, 0, 0, 0.09);
+    --border-hover: rgba(139, 92, 246, 0.25);
     --border-accent: #8b5cf6;
     
     /* Cores de Marca */
@@ -21,45 +22,45 @@
     --accent-deep: #6d28d9;
     --accent-cyan: #06b6d4;
     --accent-cyan-deep: #0891b2;
-    --accent-glow: rgba(124, 58, 237, 0.18);
-    --accent-cyan-glow: rgba(6, 182, 212, 0.22);
+    --accent-glow: rgba(124, 58, 237, 0.12);
+    --accent-cyan-glow: rgba(6, 182, 212, 0.18);
     
     /* Tipografia */
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --text-cyan: #06b6d4;
-
-    /* Status */
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --info: #0ea5e9;
-
-    /* Spacing & Radius */
-    --p-card: 1.5rem;
-    --radius-card: 24px;
-    --radius-input: 12px;
-    --bg-body: var(--bg-base);
-}
-
-.light {
-    /* Cores Light (Opcional) */
-    --bg-base: #f5f6f8;
-    --bg-surface: #ffffff;
-    --bg-card: rgba(255, 255, 255, 0.95);
-    --bg-card-hover: rgba(248, 249, 255, 1);
-    
-    --border: rgba(0, 0, 0, 0.09);
-    --border-hover: rgba(139, 92, 246, 0.25);
-    
     --text-primary: #111827;
     --text-secondary: #4b5563;
     --text-muted: #9ca3af;
     --text-cyan: #0891b2;
 
-    --accent-glow: rgba(124, 58, 237, 0.12);
-    --accent-cyan-glow: rgba(6, 182, 212, 0.18);
+    /* Status */
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --info: #0284c7;
+
+    /* Spacing & Radius */
+    --p-card: 1.5rem;
+    --radius-card: 16px;
+    --radius-input: 10px;
+    --bg-body: var(--bg-base);
+}
+
+.dark {
+    /* Cores Dark Premium */
+    --bg-base: #0a0a0f;
+    --bg-surface: #111118;
+    --bg-card: rgba(22, 22, 32, 0.60);
+    --bg-card-hover: rgba(30, 30, 44, 0.75);
+    
+    --border: rgba(255, 255, 255, 0.07);
+    --border-hover: rgba(139, 92, 246, 0.28);
+    
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --text-cyan: #06b6d4;
+
+    --accent-glow: rgba(124, 58, 237, 0.18);
+    --accent-cyan-glow: rgba(6, 182, 212, 0.22);
 }
 
 * {
@@ -221,24 +222,22 @@ h1, h2, h3, h4, .font-serif {
     border-radius: var(--radius-card);
     padding: var(--p-card);
     transition: all 0.25s ease;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
 .card:hover {
     border-color: var(--border-hover);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.light .card {
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
-}
-
-.light .card:hover {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.dark .card {
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.dark .card:hover {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
 /* Inputs Elegantes */
@@ -248,7 +247,7 @@ textarea,
 .input-field {
     width: 100%;
     height: 48px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-input);
     padding: 0 16px;
@@ -263,16 +262,8 @@ input:not([type="checkbox"]):not([type="radio"]):focus,
 select:focus,
 textarea:focus,
 .input-field:focus {
-    background: rgba(255, 255, 255, 0.08);
     border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.light input:not([type="checkbox"]):not([type="radio"]),
-.light select,
-.light textarea,
-.light .input-field {
-    background: var(--bg-surface);
 }
 
 input::placeholder,
@@ -280,6 +271,22 @@ textarea::placeholder,
 .input-field::placeholder {
     color: var(--text-muted);
     font-weight: 400;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark select,
+.dark textarea,
+.dark .input-field {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: var(--border);
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]):focus,
+.dark select:focus,
+.dark textarea:focus,
+.dark .input-field:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
 }
 
 .form-label {
@@ -315,19 +322,19 @@ textarea::placeholder,
     border: 1px solid transparent;
 }
 
-.badge-success { background: rgba(16, 185, 129, 0.12); color: #34d399; border-color: rgba(16, 185, 129, 0.25); }
-.badge-warning { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-color: rgba(245, 158, 11, 0.25); }
-.badge-danger  { background: rgba(239, 68, 68, 0.12); color: #f87171; border-color: rgba(239, 68, 68, 0.25); }
-.badge-info    { background: rgba(14, 165, 233, 0.12); color: #38bdf8; border-color: rgba(14, 165, 233, 0.25); }
-.badge-purple  { background: rgba(139, 92, 246, 0.12); color: #a78bfa; border-color: rgba(139, 92, 246, 0.25); }
-.badge-gray    { background: rgba(71, 85, 105, 0.12); color: #94a3b8; border-color: rgba(71, 85, 105, 0.25); }
+.badge-success { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
+.badge-warning { background: #fef3c7; color: #0891b2; border-color: #fde68a; }
+.badge-danger  { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
+.badge-info    { background: #e0f2fe; color: #075985; border-color: #bae6fd; }
+.badge-purple  { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
+.badge-gray    { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
 
-.light .badge-success { background: #d1fae5; color: #065f46; border-color: #a7f3d0; }
-.light .badge-warning { background: #fef3c7; color: #0891b2; border-color: #fde68a; }
-.light .badge-danger  { background: #fee2e2; color: #991b1b; border-color: #fca5a5; }
-.light .badge-info    { background: #e0f2fe; color: #075985; border-color: #bae6fd; }
-.light .badge-purple  { background: #ede9fe; color: #5b21b6; border-color: #c4b5fd; }
-.light .badge-gray    { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+.dark .badge-success { background: rgba(16, 185, 129, 0.12); color: #34d399; border-color: rgba(16, 185, 129, 0.25); }
+.dark .badge-warning { background: rgba(245, 158, 11, 0.12); color: #fbbf24; border-color: rgba(245, 158, 11, 0.25); }
+.dark .badge-danger  { background: rgba(239, 68, 68, 0.12); color: #f87171; border-color: rgba(239, 68, 68, 0.25); }
+.dark .badge-info    { background: rgba(14, 165, 233, 0.12); color: #38bdf8; border-color: rgba(14, 165, 233, 0.25); }
+.dark .badge-purple  { background: rgba(139, 92, 246, 0.12); color: #a78bfa; border-color: rgba(139, 92, 246, 0.25); }
+.dark .badge-gray    { background: rgba(71, 85, 105, 0.12); color: #94a3b8; border-color: rgba(71, 85, 105, 0.25); }
 
 /* Spinner */
 .spinner {

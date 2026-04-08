@@ -1,200 +1,328 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
-import { ChevronLeft, Download, Search, Scissors, DollarSign } from 'lucide-react';
+import {
+    ChevronLeft, Calendar, Info, 
+    ArrowUpRight, ArrowDownRight, 
+    ChevronRight, ExternalLink,
+    Search, Filter, Download
+} from 'lucide-react';
 import { format } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
-interface AppointmentRecord {
+interface AppointmentReportItem {
     id: string;
-    saleId: string;
     date: string;
     clientName: string;
-    items: string[];
-    collaborators: string[];
-    total: number;
-    type: 'Comanda' | 'Venda Direta';
+    category: string;
+    serviceName: string;
+    value: number;
+    orderId: string;
 }
 
-export default function AppointmentsReport() {
+interface AppointmentReport {
+    summary: {
+        totalRevenue: number;
+        count: number;
+        avgService: number;
+        avgProduct: number;
+        avgPackage: number;
+    };
+    topServices: { name: string; revenue: number }[];
+    appointments: AppointmentReportItem[];
+}
+
+export default function AppointmentsReportPage() {
     const router = useRouter();
-    const [records, setRecords] = useState<AppointmentRecord[]>([]);
+    const now = new Date();
     const [loading, setLoading] = useState(true);
-    const [dateFrom, setDateFrom] = useState('');
-    const [dateTo, setDateTo] = useState('');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [summary, setSummary] = useState<any>(null);
+    const [data, setData] = useState<AppointmentReport | null>(null);
+    
+    // Date Picker States
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [activeTab, setActiveTab] = useState<'dates' | 'months'>('dates');
+    const [year] = useState(now.getFullYear());
+    const [month] = useState(now.getMonth() + 1);
+    const [selectedStart, setSelectedStart] = useState<Date | null>(new Date(now.getFullYear(), now.getMonth(), 1));
+    const [selectedEnd, setSelectedEnd] = useState<Date | null>(new Date(now.getFullYear(), now.getMonth() + 1, 0));
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                const params = {
-                    startDate: dateFrom || undefined,
-                    endDate: dateTo || undefined
-                };
-                
-                const res = await api.get('/finance/report/appointments', { params });
-                
-                // Map records to the UI model
-                const mapped: AppointmentRecord[] = res.data.appointments.map((a: any) => ({
-                    id: a.id,
-                    saleId: a.orderId,
-                    date: a.date,
-                    clientName: a.clientName,
-                    items: [a.serviceName],
-                    collaborators: [], // Backend doesn't return collaborators in this summary yet
-                    total: a.value,
-                    type: 'Comanda'
-                }));
-
-                setRecords(mapped);
-                setSummary(res.data.summary);
-            } catch (e) {
-                console.error('Erro ao buscar atendimentos:', e);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchData();
-    }, [dateFrom, dateTo]);
+    }, []);
+
+    const fetchData = (start?: string, end?: string) => {
+        setLoading(true);
+        const s = start || format(new Date(now.getFullYear(), now.getMonth(), 1), 'yyyy-MM-dd');
+        const e = end || format(new Date(now.getFullYear(), now.getMonth() + 1, 0), 'yyyy-MM-dd');
+        
+        api.get(`/finance/report/appointments?startDate=${s}&endDate=${e}`)
+            .then(r => setData(r.data))
+            .catch(console.error)
+            .finally(() => setLoading(false));
+    };
+
+    const handleFilter = () => {
+        if (selectedStart && selectedEnd) {
+            fetchData(format(selectedStart, 'yyyy-MM-dd'), format(selectedEnd, 'yyyy-MM-dd'));
+        }
+        setShowDatePicker(false);
+    };
+
+    const clearFilter = () => {
+        const s = new Date(now.getFullYear(), now.getMonth(), 1);
+        const e = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+        setSelectedStart(s);
+        setSelectedEnd(e);
+        fetchData(format(s, 'yyyy-MM-dd'), format(e, 'yyyy-MM-dd'));
+        setShowDatePicker(false);
+    };
 
     const formatCurrency = (val: number) => 
         val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center h-[80vh]">
-                <div className="w-10 h-10 border-4 border-[#5a79f2] border-t-transparent rounded-full animate-spin"></div>
-            </div>
-        );
-    }
+    // Calendar logic helpers
+    const calendarDays = useMemo(() => {
+        const startOfMonth = new Date(year, month - 1, 1);
+        const endOfMonth = new Date(year, month, 0);
+        const days = [];
+        for (let i = 0; i < startOfMonth.getDay(); i++) days.push(null);
+        for (let i = 1; i <= endOfMonth.getDate(); i++) days.push(i);
+        return days;
+    }, [year, month]);
 
-    const totalVendas = summary?.count || 0;
-    const subtotal = summary?.totalRevenue || 0;
-    const total = subtotal; // Simulado sem descontos no exemplo
+    const handleDayClick = (d: number, m: number, y: number) => {
+        const day = new Date(y, m, d);
+        if (!selectedStart || (selectedStart && selectedEnd)) {
+            setSelectedStart(day);
+            setSelectedEnd(null);
+        } else {
+            if (day < selectedStart) {
+                setSelectedStart(day);
+            } else {
+                setSelectedEnd(day);
+            }
+        }
+    };
 
-    const filteredRecords = records.filter(r => 
-        r.clientName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-        r.items.some(i => i.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    const isSelected = (d: number, m: number, y: number) => {
+        const day = new Date(y, m, d);
+        if (selectedStart && !selectedEnd) return day.getTime() === selectedStart.getTime();
+        if (selectedStart && selectedEnd) return day >= selectedStart && day <= selectedEnd;
+        return false;
+    };
 
     return (
-        <div className="animate-fade-in w-full pb-20">
-            <div className="mb-6 mt-2 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <button onClick={() => router.back()} className="text-gray-500 hover:text-[#111827] transition-colors p-1">
-                        <ChevronLeft size={28} strokeWidth={2.5} />
-                    </button>
-                    <h1 className="text-[32px] font-serif font-extrabold tracking-tight text-[#111827]">Relatório de Atendimentos</h1>
-                </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-[8px] text-[13px] font-extrabold hover:bg-gray-50 transition-colors shadow-sm tracking-wide">
-                    <Download size={16} strokeWidth={2.5}/>
-                    EXPORTAR
-                </button>
-            </div>
-
-            {/* Resumo */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
-                    <span className="text-[12px] font-extrabold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-2">
-                        Total de vendas
-                    </span>
-                    <span className="text-2xl font-black text-[#111827]">{totalVendas}</span>
-                </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
-                    <span className="text-[12px] font-extrabold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-2">
-                        Subtotal
-                    </span>
-                    <span className="text-2xl font-black text-[#111827]">{formatCurrency(subtotal)}</span>
-                </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
-                    <span className="text-[12px] font-extrabold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-2">
-                        Descontos
-                    </span>
-                    <span className="text-2xl font-black text-rose-500">{formatCurrency(0)}</span>
-                </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col">
-                    <span className="text-[12px] font-extrabold text-[#5a79f2] uppercase tracking-widest mb-1 flex items-center gap-2">
-                        <DollarSign size={14} className="text-[#5a79f2]"/>
-                        Total
-                    </span>
-                    <span className="text-2xl font-black text-[#111827]">{formatCurrency(total)}</span>
-                </div>
-            </div>
-
-            <div className="mb-6 flex gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-sm items-end flex-wrap">
-                <div className="flex flex-col gap-1 w-40">
-                    <label className="text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">De</label>
-                    <input type="date" className="border border-gray-300 rounded-lg p-2 text-[14px] font-medium focus:border-[#5a79f2] outline-none" value={dateFrom} onChange={(e) => setDateFrom(e.target.value)} />
-                </div>
-                <div className="flex flex-col gap-1 w-40">
-                    <label className="text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">Até</label>
-                    <input type="date" className="border border-gray-300 rounded-lg p-2 text-[14px] font-medium focus:border-[#5a79f2] outline-none" value={dateTo} onChange={(e) => setDateTo(e.target.value)} />
-                </div>
-                <div className="flex flex-col gap-1 flex-1 min-w-[200px]">
-                    <label className="text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">Buscar</label>
-                    <div className="relative">
-                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                        <input 
-                            type="text" 
-                            placeholder="Buscar cliente, item..."
-                            className="w-full border border-gray-300 rounded-lg p-2 pl-10 text-[14px] font-medium focus:border-[#5a79f2] outline-none"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
+        <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1400, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 40 }}>
+                
+                {/* HEADER */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+                        <button 
+                            onClick={() => router.back()}
+                            style={{ 
+                                background: 'transparent', border: 'none', cursor: 'pointer', 
+                                color: 'var(--text-primary)', marginTop: 4 
+                            }}
+                        >
+                            <ChevronLeft size={24} />
+                        </button>
+                        <div>
+                            <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-0.02em' }}>Relatório de Atendimentos</h1>
+                            <p style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 4 }}>
+                                Confira informações detalhadas dos seus atendimentos, independente de pagamentos.
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Abas simuladas conforme descrito */}
-            <div className="flex border-b border-gray-200 mb-6 space-x-8">
-                <button className="py-3 px-1 text-[13px] font-extrabold border-b-2 border-[#5a79f2] text-[#5a79f2] uppercase tracking-wide">
-                    Serviços & Produtos
-                </button>
-                <button className="py-3 px-1 text-[13px] font-bold border-b-2 border-transparent text-gray-500 hover:text-gray-900 uppercase tracking-wide">
-                    Pacotes Vendidos
-                </button>
-            </div>
-
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="border-b border-gray-200 bg-[#f8f9fa] text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
-                                <th className="p-4">Venda</th>
-                                <th className="p-4">Data/Hora</th>
-                                <th className="p-4">Cliente</th>
-                                <th className="p-4">Serviços / Itens</th>
-                                <th className="p-4">Colaborador(es)</th>
-                                <th className="p-4 text-right">Valor Total</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {filteredRecords.map(record => (
-                                <tr key={record.id} className="hover:bg-[#f8f9fa] transition-colors cursor-pointer">
-                                    <td className="p-4 flex items-center gap-2">
-                                        {record.type === 'Comanda' ? <Scissors size={16} className="text-gray-400"/> : <DollarSign size={16} className="text-gray-400"/>}
-                                        <span className="font-extrabold text-[#5a79f2] text-[14px]">{record.saleId}</span>
-                                    </td>
-                                    <td className="p-4 text-[13px] font-medium text-gray-600">{format(new Date(record.date), 'dd/MM/yyyy HH:mm')}</td>
-                                    <td className="p-4 text-[14px] font-bold text-[#111827]">{record.clientName}</td>
-                                    <td className="p-4 text-[13px] font-medium text-gray-600">
-                                        <div className="flex flex-col gap-1">
-                                            {record.items.map((item, i) => (
-                                                <span key={i} className="bg-gray-100 px-2 py-0.5 rounded text-gray-700 max-w-fit">{item}</span>
-                                            ))}
-                                        </div>
-                                    </td>
-                                    <td className="p-4 text-[13px] font-bold text-gray-700">{record.collaborators.join(', ')}</td>
-                                    <td className="p-4 text-[14px] font-extrabold text-[#111827] text-right">{formatCurrency(record.total)}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                {/* SUMMARY CARDS */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 20 }}>
+                    <SummaryCard 
+                        title="Valor total dos atendimentos" 
+                        value={data?.summary.totalRevenue ?? 0}
+                        subValue={`${data?.summary.count ?? 0} atendimentos`}
+                        items={data?.topServices ?? []}
+                    />
+                    <SummaryCard 
+                        title="Valor médio por serviço" 
+                        value={data?.summary.avgService ?? 0}
+                        subValue={`${data?.summary.count ?? 0} serviços`}
+                        items={data?.topServices ?? []}
+                    />
+                    <SummaryCard 
+                        title="Valor médio por produto" 
+                        value={data?.summary.avgProduct ?? 0}
+                        subValue="0 produtos"
+                    />
+                    <SummaryCard 
+                        title="Valor médio por pacote" 
+                        value={data?.summary.avgPackage ?? 0}
+                        subValue="0 pacotes"
+                    />
                 </div>
+
+                {/* DATE SELECTOR */}
+                <div style={{ position: 'relative', width: 'fit-content' }}>
+                    <button 
+                        onClick={() => setShowDatePicker(!showDatePicker)}
+                        style={{ 
+                            background: 'white', border: '1px solid var(--border)', padding: '8px 16px', 
+                            borderRadius: 8, fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', gap: 8,
+                            cursor: 'pointer', color: showDatePicker ? '#3B82F6' : 'var(--text-primary)', transition: 'all 0.2s',
+                            minWidth: 260, height: 40
+                        }}
+                    >
+                        <Calendar size={14} />
+                        {selectedStart ? format(selectedStart, 'dd MMMM yyyy', { locale: ptBR }) : '...'} - {selectedEnd ? format(selectedEnd, 'dd MMMM yyyy', { locale: ptBR }) : format(new Date(year, month, 0), 'dd MMMM yyyy', { locale: ptBR })}
+                        <ChevronRight size={14} style={{ transform: showDatePicker ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 0.2s' }} />
+                    </button>
+
+                    {showDatePicker && (
+                        <div style={{ 
+                            position: 'absolute', top: '120%', left: 0, width: 320, background: 'white', 
+                            borderRadius: 12, border: '1px solid var(--border)', boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                            zIndex: 100, overflow: 'hidden'
+                        }}>
+                            <div style={{ padding: 12, borderBottom: '1px solid var(--border)', display: 'flex', gap: 4 }}>
+                                <button onClick={() => setActiveTab('dates')} style={{ flex: 1, padding: '8px', border: 'none', borderRadius: 6, fontSize: 12, fontWeight: 700, background: activeTab === 'dates' ? '#3B82F6' : 'transparent', color: activeTab === 'dates' ? 'white' : 'var(--text-muted)' }}>Datas</button>
+                                <button onClick={() => setActiveTab('months')} style={{ flex: 1, padding: '8px', borderRadius: 6, fontSize: 12, fontWeight: 700, background: activeTab === 'months' ? '#3B82F6' : 'transparent', border: activeTab === 'months' ? 'none' : '1px solid var(--border)', color: activeTab === 'months' ? 'white' : 'var(--text-muted)' }}>Meses</button>
+                            </div>
+                            <div style={{ padding: 16 }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                                    <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><ChevronLeft size={16}/></button>
+                                    <span style={{ fontSize: 14, fontWeight: 700 }}>{year}</span>
+                                    <button style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--text-muted)' }}><ChevronRight size={16}/></button>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 0, textAlign: 'center' }}>
+                                    {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map(d => (
+                                        <span key={d} style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', marginBottom: 8 }}>{d}</span>
+                                    ))}
+                                    {calendarDays.map((d, i) => {
+                                        if (d === null) return <div key={i} />;
+                                        const active = isSelected(d, month - 1, year);
+                                        return (
+                                            <div key={i} onClick={() => handleDayClick(d, month - 1, year)} style={{ fontSize: 11, fontWeight: 600, padding: '8px 0', cursor: 'pointer', background: active ? '#3B82F6' : 'transparent', color: active ? 'white' : 'var(--text-secondary)', borderRadius: active ? '50%' : '0' }}>{d}</div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                            <div style={{ padding: 12, borderTop: '1px solid var(--border)', display: 'flex', gap: 12 }}>
+                                <button onClick={clearFilter} style={{ flex: 1, padding: '10px', background: 'transparent', border: '1px solid #3B82F6', color: '#3B82F6', borderRadius: 8, fontSize: 12, fontWeight: 700 }}>Limpar filtro</button>
+                                <button onClick={handleFilter} style={{ flex: 1, padding: '10px', background: '#3B82F6', color: 'white', border: 'none', borderRadius: 8, fontSize: 12, fontWeight: 700 }}>Filtrar</button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* TABLE */}
+                <div className="card" style={{ overflow: 'hidden', padding: 0 }}>
+                    <div style={{ width: '100%', overflowX: 'auto' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                            <thead>
+                                <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
+                                    <th style={TH_STYLE}>Data da venda <ChevronRight size={10} style={{ transform: 'rotate(90deg)', marginLeft: 4 }} /></th>
+                                    <th style={TH_STYLE}>cliente <ChevronRight size={10} style={{ transform: 'rotate(90deg)', marginLeft: 4 }} /></th>
+                                    <th style={TH_STYLE}>categoria <ChevronRight size={10} style={{ transform: 'rotate(90deg)', marginLeft: 4 }} /></th>
+                                    <th style={TH_STYLE}>serviço e produto <ChevronRight size={10} style={{ transform: 'rotate(90deg)', marginLeft: 4 }} /></th>
+                                    <th style={TH_STYLE}>valor <ChevronRight size={10} style={{ transform: 'rotate(90deg)', marginLeft: 4 }} /></th>
+                                    <th style={TH_STYLE}>comanda <ChevronRight size={10} style={{ transform: 'rotate(90deg)', marginLeft: 4 }} /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr>
+                                        <td colSpan={6} style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Carregando dados...</td>
+                                    </tr>
+                                ) : data?.appointments.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} style={{ padding: 40, textAlign: 'center', color: 'var(--text-muted)' }}>Nenhum atendimento encontrado no período.</td>
+                                    </tr>
+                                ) : (
+                                    data?.appointments.map((app) => (
+                                        <tr key={app.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+                                            <td style={TD_STYLE}>{format(new Date(app.date), 'dd/MM/yyyy')}</td>
+                                            <td style={{ ...TD_STYLE, fontWeight: 700 }}>{app.clientName}</td>
+                                            <td style={TD_STYLE}>{app.category}</td>
+                                            <td style={TD_STYLE}>{app.serviceName}</td>
+                                            <td style={{ ...TD_STYLE, fontWeight: 700 }}>{formatCurrency(app.value)}</td>
+                                            <td style={TD_STYLE}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                                                    {app.orderId}
+                                                    {app.orderId !== '-' && <ExternalLink size={12} color="#3B82F6" style={{ cursor: 'pointer' }} />}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    );
+}
+
+const TH_STYLE: React.CSSProperties = {
+    padding: '16px 24px',
+    fontSize: '10px',
+    fontWeight: 700,
+    color: '#64748b',
+    textTransform: 'uppercase',
+    letterSpacing: '0.05em'
+};
+
+const TD_STYLE: React.CSSProperties = {
+    padding: '16px 24px',
+    fontSize: '12px',
+    color: 'var(--text-secondary)'
+};
+
+function SummaryCard({ title, value, subValue, items = [] }: any) {
+    const [expanded, setExpanded] = useState(false);
+
+    return (
+        <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 12, height: 'fit-content', transition: 'all 0.3s' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{title}</span>
+                </div>
+                <h2 style={{ fontSize: 24, fontWeight: 800 }}>{value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</h2>
+                <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>{subValue}</p>
+            </div>
+
+            {expanded && items.length > 0 && (
+                <div style={{ marginTop: 8, borderTop: '1px solid var(--border)', paddingTop: 16 }}>
+                    <p style={{ fontSize: 10, fontWeight: 800, color: 'var(--text-primary)', textTransform: 'uppercase', marginBottom: 12 }}>Mais vendidos</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        {items.map((item: any, i: number) => (
+                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>{item.name}</span>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-secondary)' }}>
+                                    {item.revenue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 4 }}>
+                <button 
+                    onClick={() => setExpanded(!expanded)}
+                    style={{ 
+                        padding: 4, border: '1.5px solid #3B82F6', color: '#3B82F6', 
+                        borderRadius: 4, background: 'transparent', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'all 0.2s'
+                    }}
+                >
+                    <ChevronRight size={12} style={{ transform: expanded ? 'rotate(-90deg)' : 'rotate(90deg)', transition: 'transform 0.2s' }} />
+                </button>
             </div>
         </div>
     );

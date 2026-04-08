@@ -1,9 +1,9 @@
 'use client';
 
 import {
-    Users, Activity, MinusCircle, Smile, 
+    Users, UserCircle, MinusCircle, Smile, 
     ShoppingBag, ClipboardList, Package, Tag, 
-    ChevronRight, List, UserCircle
+    List, ChevronRight, BarChart3
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -25,115 +25,160 @@ export default function ReportsPage() {
             title: 'Relatório Financeiro',
             description: 'Confira valores recebidos, despesas e dados sobre o seu negócio',
             isNew: true,
-            path: '/dashboard/reports/finance',
-            icon: null
+            path: '/dashboard/reports/finance'
         },
         {
             id: 'atendimentos',
             title: 'Relatório de Atendimentos',
             description: 'Confira os detalhes dos seus atendimentos, produtos, serviços e pacotes por período',
             isNew: true,
-            path: '/dashboard/reports/appointments',
-            icon: null
+            path: '/dashboard/reports/appointments'
         },
         {
             id: 'colaboradores',
             title: 'Colaboradores',
             description: 'Confira os colaboradores mais rentáveis para seu negócio.',
+            icon: <Users size={20} />,
             isNew: true,
-            path: '/dashboard/reports/collaborators',
-            icon: <Users size={18} strokeWidth={2} />
+            path: '/dashboard/reports/collaborators'
         },
         {
             id: 'clientes',
             title: 'Clientes',
             description: 'Confira os dados de seus clientes, como gasto médio e mais.',
-            path: '/dashboard/reports/customers',
-            icon: <UserCircle size={18} strokeWidth={2} />
+            icon: <UserCircle size={20} />,
+            path: '/dashboard/reports/customers'
         },
         {
             id: 'clientes-sumidos',
             title: 'Clientes Sumidos',
             description: 'Confira os clientes sumidos e o tempo de ausência.',
-            path: '/dashboard/reports/missing-customers',
-            icon: <MinusCircle size={18} strokeWidth={2} />
+            icon: <MinusCircle size={20} />,
+            path: '/dashboard/reports/missing-customers'
         },
         {
             id: 'clientes-ativos',
             title: 'Clientes Ativos',
             description: 'Confira os clientes que realizaram compras recentemente.',
-            path: '/dashboard/reports/active-customers',
-            icon: <Smile size={18} strokeWidth={2} />
+            icon: <Smile size={20} />,
+            path: '/dashboard/reports/active-customers'
         },
         {
             id: 'pacotes',
             title: 'Pacotes',
             description: 'Dados sobre pacotes, como pacotes mais vendidos no período, listagens e mais.',
-            path: '/dashboard/reports/packages',
-            icon: <ShoppingBag size={18} strokeWidth={2} />
+            icon: <ShoppingBag size={20} />,
+            path: '/dashboard/reports/packages'
         },
         {
             id: 'servicos',
             title: 'Serviços',
             description: 'Dados sobre serviços, como serviços mais realizados no período, listagens e mais.',
-            path: '/dashboard/reports/services',
-            icon: <ClipboardList size={18} strokeWidth={2} />
+            icon: <ClipboardList size={20} />,
+            path: '/dashboard/reports/services'
         },
         {
             id: 'produtos',
             title: 'Produtos',
             description: 'Dados sobre produtos, como produtos mais vendidos no período, listagens e mais.',
-            path: '/dashboard/reports/products',
-            icon: <Package size={18} strokeWidth={2} />
+            icon: <Package size={20} />,
+            path: '/dashboard/reports/products'
         },
         {
             id: 'descontos',
             title: 'Descontos',
             description: 'Listagem de descontos pré-cadastrados, com informações resumidas e detalhadas.',
-            path: '/dashboard/reports/discounts',
-            icon: <Tag size={18} strokeWidth={2} />
+            icon: <Tag size={20} />,
+            path: '/dashboard/reports/discounts'
+        },
+        {
+            id: 'movimentacoes',
+            title: 'Movimentações de Estoque',
+            description: 'Dados sobre movimentações de estoque, como entradas e saídas de produtos.',
+            icon: <List size={20} />,
+            path: '/dashboard/reports/stock'
         }
     ];
 
     return (
-        <div className="animate-fade-in w-full pb-20">
-            <div className="mb-8 mt-2">
-                <h1 className="text-[32px] font-serif font-extrabold tracking-tight text-[#111827] mb-2">Relatórios</h1>
-            </div>
+        <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 0 40px 0' }}>
+                <div style={{ marginBottom: 32 }}>
+                    <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+                        Relatórios
+                    </h1>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                {reports.map((report) => (
-                    <div 
-                        key={report.id}
-                        onClick={() => router.push(report.path)}
-                        className="cursor-pointer bg-white border border-gray-200 hover:border-gray-300 transition-colors p-[22px] rounded-2xl flex flex-col relative"
-                    >
-                        <div className="flex items-center gap-2 mb-3 h-6">
-                            {report.isNew && (
-                                <span className="px-[8px] py-[3px] bg-[#5a79f2] text-white text-[10px] font-bold uppercase rounded-[5px] flex items-center justify-center tracking-wider leading-none">
-                                    Novo
-                                </span>
-                            )}
-                            {report.icon && (
-                                <div className="text-[#4b5563]">
-                                    {report.icon}
+                <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(480px, 1fr))', 
+                    gap: 16 
+                }}>
+                    {reports.map((report) => (
+                        <div 
+                            key={report.id}
+                            onClick={() => router.push(report.path)}
+                            style={{
+                                background: 'var(--bg-card)',
+                                border: '1px solid var(--border)',
+                                borderRadius: 16,
+                                padding: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'space-between',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                height: '100%'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.currentTarget.style.borderColor = 'var(--accent)';
+                                e.currentTarget.style.transform = 'translateY(-2px)';
+                                e.currentTarget.style.boxShadow = '0 10px 20px -5px rgba(0,0,0,0.1)';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.currentTarget.style.borderColor = 'var(--border)';
+                                e.currentTarget.style.transform = 'translateY(0)';
+                                e.currentTarget.style.boxShadow = 'none';
+                            }}
+                        >
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1, paddingRight: 20 }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                    {report.isNew && (
+                                        <span style={{ 
+                                            background: '#3B82F6', 
+                                            color: '#FFF', 
+                                            fontSize: 10, 
+                                            fontWeight: 800, 
+                                            padding: '4px 8px', 
+                                            borderRadius: 6,
+                                            textTransform: 'uppercase'
+                                        }}>
+                                            Novo
+                                        </span>
+                                    )}
+                                    {report.icon && (
+                                        <div style={{ color: 'var(--text-primary)' }}>
+                                            {report.icon}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
-                        </div>
+                                
+                                <div>
+                                    <h3 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)', marginBottom: 4 }}>
+                                        {report.title}
+                                    </h3>
+                                    <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5, maxWidth: '90%' }}>
+                                        {report.description}
+                                    </p>
+                                </div>
+                            </div>
 
-                        <div className="flex justify-between items-start">
-                            <div className="flex-1 pr-6">
-                                <h3 className="text-[17px] font-extrabold text-[#111827] mb-[6px] font-serif tracking-tight">{report.title}</h3>
-                                <p className="text-[14px] text-[#6b7280] leading-snug font-medium">
-                                    {report.description}
-                                </p>
-                            </div>
-                            <div className="text-gray-300 absolute right-6 top-1/2 -translate-y-1/2">
-                                <ChevronRight size={20} strokeWidth={2.5} />
+                            <div style={{ color: 'var(--text-muted)' }}>
+                                <ChevronRight size={20} />
                             </div>
                         </div>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
         </div>
     );

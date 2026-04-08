@@ -68,7 +68,8 @@ export default function ProductsReport() {
     const totalValue = records.reduce((acc, r) => acc + r.value, 0);
 
     return (
-        <div className="animate-fade-in w-full pb-20">
+        <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 0 40px 0' }}>
             <div className="mb-6 mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <button onClick={() => router.back()} className="text-gray-500 hover:text-[#111827] transition-colors p-1">
@@ -102,20 +103,20 @@ export default function ProductsReport() {
                 </div>
 
                 <div className="lg:col-span-2 bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                    <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-white">
-                        <h2 className="font-extrabold text-[16px] text-[#111827]">Desempenho de Vendas (Produtos)</h2>
+                    <div style={{ padding: 24, borderBottom: '1px solid var(--border)' }}>
+                        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>Desempenho de Vendas (Produtos)</h2>
                         <span className="text-[13px] font-bold text-gray-500">Total: {formatCurrency(totalValue)}</span>
                     </div>
                     <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
-                        <table className="w-full text-left border-collapse">
+                        <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
                             <thead className="sticky top-0 bg-[#f8f9fa] shadow-sm z-10">
-                                <tr className="border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
+                                <tr style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
                                     <th className="p-4">Produto</th>
                                     <th className="p-4 text-center">Unidades Vendidas</th>
                                     <th className="p-4 text-right">Receita (R$)</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-100">
+                            <tbody>
                                 {records.map(record => (
                                     <tr key={record.id} className="hover:bg-[#f8f9fa] transition-colors cursor-pointer group">
                                         <td className="p-4 font-extrabold text-[#111827] text-[14px] group-hover:text-[#5a79f2] transition-colors">{record.name}</td>

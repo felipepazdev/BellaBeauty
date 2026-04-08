@@ -60,7 +60,8 @@ export default function ActiveCustomersReport() {
     }
 
     return (
-        <div className="animate-fade-in w-full pb-20">
+        <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 0 40px 0' }}>
             <div className="mb-6 mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <button 
@@ -89,9 +90,9 @@ export default function ActiveCustomersReport() {
                 </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+            <div className="card" style={{ overflow: 'hidden' }}>
+                <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
                         <thead>
                             <tr className="border-b border-gray-200 bg-[#f8f9fa] text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
                                 <th className="p-5">Cliente</th>
@@ -99,7 +100,7 @@ export default function ActiveCustomersReport() {
                                 <th className="p-5 text-right">Total Pago (R$)</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody>
                             {clients.map(client => {
                                 return (
                                     <tr key={client.id} className="hover:bg-[#f8f9fa] transition-colors group cursor-pointer" onClick={() => router.push(`/dashboard/customers/${client.id}`)}>

@@ -48,7 +48,8 @@ export default function StockReport() {
     ];
 
     return (
-        <div className="animate-fade-in w-full pb-20">
+        <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 0 40px 0' }}>
             <div className="flex justify-between items-start mb-8">
                 <div className="flex items-start gap-4">
                     <button 

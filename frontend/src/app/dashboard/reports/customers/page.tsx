@@ -50,82 +50,86 @@ export default function CustomersReport() {
     const avgTicket = totalClients > 0 ? records.reduce((acc, c) => acc + c.totalSpent, 0) / records.reduce((acc, c) => acc + (c.totalAppointments || 1), 0) : 0;
 
     return (
-        <div className="animate-fade-in w-full pb-20">
-            <div className="mb-6 mt-2 flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <button onClick={() => router.back()} className="text-gray-500 hover:text-[#111827] transition-colors p-1">
-                        <ChevronLeft size={28} strokeWidth={2.5} />
-                    </button>
-                    <h1 className="text-[32px] font-serif font-extrabold tracking-tight text-[#111827]">Relatório de Clientes</h1>
+    return (
+        <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 0 40px 0' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 32 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                        <button onClick={() => router.back()} style={{ background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
+                            <ChevronLeft size={28} strokeWidth={2.5} />
+                        </button>
+                        <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+                            Relatório de Clientes
+                        </h1>
+                    </div>
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 text-gray-700 rounded-[8px] text-[13px] font-extrabold hover:bg-gray-50 transition-colors shadow-sm tracking-wide">
-                    <Download size={16} strokeWidth={2.5}/>
-                    EXPORTAR
-                </button>
-            </div>
 
-            <div className="flex gap-4 mb-6">
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col w-64">
-                    <span className="text-[12px] font-extrabold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-2">
-                        <Users size={14} className="text-[#5a79f2]"/>
-                        Meus Clientes
-                    </span>
-                    <span className="text-2xl font-black text-[#111827]">{totalClients}</span>
+                <div style={{ display: 'flex', gap: 16, marginBottom: 32 }}>
+                    <div className="card" style={{ padding: 24, flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <Users size={14} color="#3B82F6"/>
+                            Meus Clientes
+                        </span>
+                        <span style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)' }}>{totalClients}</span>
+                    </div>
+                    <div className="card" style={{ padding: 24, flex: 1, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }}>
+                            <UserCircle size={14} color="#10b981"/>
+                            Ticket Médio Geral
+                        </span>
+                        <span style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-primary)' }}>{formatCurrency(avgTicket)}</span>
+                    </div>
                 </div>
-                <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm flex flex-col w-64">
-                    <span className="text-[12px] font-extrabold text-gray-500 uppercase tracking-widest mb-1 flex items-center gap-2">
-                        <UserCircle size={14} className="text-emerald-500"/>
-                        Ticket Médio Geral
-                    </span>
-                    <span className="text-2xl font-black text-[#111827]">{formatCurrency(avgTicket)}</span>
-                </div>
-            </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-white">
-                    <h2 className="font-extrabold text-[16px] text-[#111827]">Listagem e Perfil de Consumo</h2>
-                </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
-                        <thead className="bg-[#f8f9fa]">
-                            <tr className="border-b border-gray-200 text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
-                                <th className="p-4">Cliente</th>
-                                <th className="p-4 text-center">Última Venda</th>
-                                <th className="p-4 text-center">Atendimentos</th>
-                                <th className="p-4 text-right">Gasto Total</th>
-                                <th className="p-4 text-right">Ticket Médio Cliente</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-100">
-                            {records.map(client => {
-                                const clientTicket = client.totalAppointments > 0 ? client.totalSpent / client.totalAppointments : client.totalSpent;
-                                return (
-                                    <tr key={client.id} className="hover:bg-[#f8f9fa] transition-colors cursor-pointer group" onClick={() => router.push(`/dashboard/clients/${client.id}`)}>
-                                        <td className="p-4 flex items-center gap-3">
-                                            <div className="w-9 h-9 rounded-full bg-gray-100 border border-gray-200 text-gray-600 flex items-center justify-center font-bold text-sm">
-                                                {client.name.charAt(0).toUpperCase()}
-                                            </div>
-                                            <div className="flex flex-col">
-                                                <span className="font-extrabold text-[#111827] text-[14px] group-hover:text-[#5a79f2] transition-colors flex flex-row items-center gap-1">
-                                                    {client.name}
-                                                    <ExternalLink size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                </span>
-                                                <span className="text-xs text-gray-400 font-medium">{client.phone}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-[13px] font-medium text-gray-600 text-center">
-                                            {client.lastVisit ? format(new Date(client.lastVisit), "dd/MM/yyyy") : '-'}
-                                        </td>
-                                        <td className="p-4 text-[13px] font-bold text-gray-700 text-center">{client.totalAppointments || 0}</td>
-                                        <td className="p-4 text-[14px] font-extrabold text-[#111827] text-right">{formatCurrency(client.totalSpent)}</td>
-                                        <td className="p-4 text-[14px] font-bold text-emerald-600 text-right">{formatCurrency(clientTicket)}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                <div className="card" style={{ overflow: 'hidden' }}>
+                    <div style={{ padding: 24, borderBottom: '1px solid var(--border)' }}>
+                        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>Listagem e Perfil de Consumo</h2>
+                    </div>
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr style={{ borderBottom: '1px solid var(--border)', background: 'var(--bg-surface)' }}>
+                                    <th style={{ padding: 16, fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>Cliente</th>
+                                    <th style={{ padding: 16, fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', textAlign: 'center' }}>Última Visita</th>
+                                    <th style={{ padding: 16, fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', textAlign: 'center' }}>Atendimentos</th>
+                                    <th style={{ padding: 16, fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', textAlign: 'right' }}>Gasto Total</th>
+                                    <th style={{ padding: 16, fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', textAlign: 'right' }}>Ticket Médio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {records.map(client => {
+                                    const clientTicket = client.totalAppointments > 0 ? client.totalSpent / client.totalAppointments : client.totalSpent;
+                                    return (
+                                        <tr key={client.id} style={{ borderBottom: '1px solid var(--border)', cursor: 'pointer', transition: 'all 0.2s ease' }} 
+                                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-surface)'}
+                                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                            onClick={() => router.push(`/dashboard/clients/${client.id}`)}>
+                                            <td style={{ padding: 16, display: 'flex', alignItems: 'center', gap: 12 }}>
+                                                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, fontWeight: 700 }}>
+                                                    {client.name.charAt(0).toUpperCase()}
+                                                </div>
+                                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 4 }}>
+                                                        {client.name}
+                                                    </span>
+                                                    <span style={{ fontSize: 12, color: 'var(--text-muted)', fontWeight: 500 }}>{client.phone}</span>
+                                                </div>
+                                            </td>
+                                            <td style={{ padding: 16, fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', textAlign: 'center' }}>
+                                                {client.lastVisit ? format(new Date(client.lastVisit), "dd/MM/yyyy") : '-'}
+                                            </td>
+                                            <td style={{ padding: 16, fontSize: 13, fontWeight: 700, color: 'var(--text-muted)', textAlign: 'center' }}>{client.totalAppointments || 0}</td>
+                                            <td style={{ padding: 16, fontSize: 14, fontWeight: 800, color: 'var(--text-primary)', textAlign: 'right' }}>{formatCurrency(client.totalSpent)}</td>
+                                            <td style={{ padding: 16, fontSize: 14, fontWeight: 700, color: '#10b981', textAlign: 'right' }}>{formatCurrency(clientTicket)}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     );
 }
+

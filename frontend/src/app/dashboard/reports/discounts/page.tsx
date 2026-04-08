@@ -43,7 +43,8 @@ export default function DiscountsReport() {
     const overallDiscount = records.reduce((acc, r) => acc + r.totalDiscounted, 0);
 
     return (
-        <div className="animate-fade-in w-full pb-20">
+        <div style={{ width: '100%', background: 'var(--bg-main)', minHeight: '100%', color: 'var(--text-primary)' }}>
+            <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 0 40px 0' }}>
             <div className="mb-6 mt-2 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                     <button onClick={() => router.back()} className="text-gray-500 hover:text-[#111827] transition-colors p-1">
@@ -69,15 +70,15 @@ export default function DiscountsReport() {
                 </div>
             </div>
 
-            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
-                <div className="p-5 border-b border-gray-200 flex justify-between items-center bg-white">
+            <div className="card" style={{ overflow: 'hidden' }}>
+                <div style={{ padding: 24, borderBottom: '1px solid var(--border)' }}>
                     <div className="flex items-center gap-2">
                         <Tag size={18} className="text-[#5a79f2]"/>
-                        <h2 className="font-extrabold text-[16px] text-[#111827]">Histórico de Descontos Concedidos</h2>
+                        <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-primary)' }}>Histórico de Descontos Concedidos</h2>
                     </div>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                <div style={{ overflowX: 'auto' }}>
+                    <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse' }}>
                         <thead>
                             <tr className="border-b border-gray-200 bg-[#f8f9fa] text-[11px] font-extrabold text-gray-500 uppercase tracking-widest">
                                 <th className="p-4">Desconto (Campanha / Motivo)</th>
@@ -85,7 +86,7 @@ export default function DiscountsReport() {
                                 <th className="p-4 text-right">Valor Descontado (R$)</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody>
                             {records.map(record => (
                                 <tr key={record.id} className="hover:bg-[#f8f9fa] transition-colors cursor-pointer group">
                                     <td className="p-4 font-extrabold text-[#111827] text-[14px] group-hover:text-[#5a79f2] transition-colors">{record.name}</td>

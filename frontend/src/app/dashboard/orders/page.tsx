@@ -153,7 +153,7 @@ export default function OrdersPage() {
             {/* Tabela de Comandas - Layout Salão 99 */}
             <div className="w-full bg-white border border-slate-100 shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full text-left border-collapse table-auto min-w-[1100px]">
+                    <table className="w-full text-left border-collapse table-auto min-w-[1400px]">
                         <thead>
                             <tr className="border-b border-slate-50 bg-slate-50/50">
                                 <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest">Comanda</th>
@@ -161,8 +161,8 @@ export default function OrdersPage() {
                                 <th className="py-6 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest">Cliente</th>
                                 <th className="py-6 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Valor Total (R$)</th>
                                 <th className="py-6 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Adicional</th>
-                                <th className="py-6 px-12 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right whitespace-nowrap">Pagamento (R$)</th>
-                                <th className="py-6 px-12 text-[11px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Situação</th>
+                                <th className="py-6 px-16 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right whitespace-nowrap">Pagamento (R$)</th>
+                                <th className="py-6 px-16 text-[11px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Situação</th>
                                 <th className="py-6 pr-8 w-20"></th>
                             </tr>
                         </thead>
@@ -198,9 +198,9 @@ export default function OrdersPage() {
                                         </td>
                                         <td className="py-6 px-6 text-[15px] text-slate-900 text-right font-black tracking-tight">{fmt(total)}</td>
                                         <td className="py-6 px-6 text-[14px] text-slate-300 text-right">0,00</td>
-                                        <td className="py-6 px-12 text-[15px] text-emerald-600 text-right font-bold tracking-tight">{fmt(paid)}</td>
-                                        <td className="py-6 px-12">
-                                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                                        <td className="py-6 px-16 text-[15px] text-emerald-600 text-right font-bold tracking-tight">{fmt(paid)}</td>
+                                        <td className="py-6 px-16">
+                                            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider whitespace-nowrap ${
                                                 isClosed ? 'bg-[#06b6d4]/10 text-[#06b6d4]' : 'bg-slate-100 text-slate-500'
                                             }`}>
                                                 <div className={`w-1.5 h-1.5 rounded-full ${isClosed ? 'bg-[#06b6d4]' : 'bg-slate-400'}`} />

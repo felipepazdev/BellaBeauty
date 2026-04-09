@@ -26,73 +26,44 @@ interface DashboardData {
 const MONTHS = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
 
-const BAR_COLORS = ['#06b6d4', '#0ea5e9', '#3b82f6', '#6366f1', '#8b5cf6'];
-const DONUT_COLORS_1 = ['#06b6d4', '#3b82f6', '#8b5cf6', '#d946ef'];
-const DONUT_COLORS_2 = ['#10b981', '#ef4444'];
-const DONUT_COLORS_3 = ['#06b6d4', '#0ea5e9', '#3b82f6'];
+const DONUT_COLORS_1 = ['#1e3a8a', '#3b82f6', '#93c5fd', '#eab308', '#06b6d4'];
+const DONUT_COLORS_2 = ['#1e3a8a', '#06b6d4'];
+const DONUT_COLORS_3 = ['#eab308', '#3b82f6', '#93c5fd'];
 
-function KpiCard({ icon: Icon, label, value, sub, isCyan = false, isAccent = false, isRed = false }: {
+function KpiCard({ icon: Icon, label, value, sub }: {
     icon: React.ElementType; label: string; value: string | number;
-    sub?: string; isCyan?: boolean; isAccent?: boolean; isRed?: boolean;
+    sub?: string;
 }) {
     return (
-        <div className={`card overflow-hidden relative p-6 flex flex-col gap-2 rounded-3xl border transition-all hover:-translate-y-1 ${
-            isCyan ? 'bg-gradient-to-br from-[var(--bg-surface)] to-[#0c0c10] border-[var(--accent-cyan)]/30 shadow-[0_0_20px_rgba(6,182,212,0.1)]' : 
-            isRed ? 'bg-red-500/5 border-red-500/20' :
-            'bg-white/5 border-white/5 hover:border-white/10'
-        }`}>
-            <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full blur-2xl opacity-20 pointer-events-none ${
-                isCyan ? 'bg-[var(--accent-cyan)]' : 
-                isRed ? 'bg-red-500' :
-                'bg-white'
-            }`} />
-            
-            <div className="flex items-center gap-3 relative z-10">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 border ${
-                    isCyan ? 'bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] border-[var(--accent-cyan)]/20' : 
-                    isRed ? 'bg-red-500/10 text-red-400 border-red-500/20' :
-                    'bg-white/5 text-slate-400 border-white/5'
-                }`}>
-                    <Icon size={16} />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-                    {label}
-                </span>
+        <div className="flex flex-col p-3 rounded-md bg-gradient-to-r from-cyan-400 to-blue-500 text-white shadow-sm h-24 relative overflow-hidden">
+            <span className="text-[11px] font-medium text-center tracking-wide">{label}</span>
+            <div className="flex items-center justify-between mt-auto w-full px-1">
+                <Icon size={24} className="opacity-90" />
+                <span className="text-xl font-bold tracking-tight">{value}</span>
             </div>
-
-            <p className={`text-3xl font-serif font-black relative z-10 mt-2 ${
-                isCyan ? 'text-[var(--accent-cyan)]' : 
-                isRed ? 'text-red-400' :
-                'text-white'
-            }`}>
-                {value}
-            </p>
-            {sub && <p className="text-xs text-slate-500 font-medium relative z-10">{sub}</p>}
+            {sub && <span className="absolute bottom-1 right-2 text-[8px] opacity-70">{sub}</span>}
         </div>
     );
 }
 
-function SectionCard({ title, children, icon: Icon }: {
-    title: string; children: React.ReactNode; icon: React.ElementType;
+function SectionCard({ title, children, className = "" }: {
+    title: string; children: React.ReactNode; className?: string;
 }) {
     return (
-        <div className="card bg-[#0c0c10] border border-white/10 rounded-[32px] p-8 relative overflow-hidden">
-            <div className="flex items-center gap-3 mb-8 pb-4 border-b border-white/5">
-                <div className="w-10 h-10 rounded-xl bg-[var(--accent-cyan)]/10 text-[var(--accent-cyan)] flex items-center justify-center border border-[var(--accent-cyan)]/20">
-                    <Icon size={20} />
-                </div>
-                <h3 className="text-lg font-serif font-bold text-white tracking-tight">{title}</h3>
+        <div className={`bg-white border border-slate-200 rounded-xl p-4 shadow-sm h-full flex flex-col ${className}`}>
+            <h3 className="text-center text-sm font-medium text-slate-600 mb-4">{title}</h3>
+            <div className="flex-1 flex flex-col justify-center">
+                {children}
             </div>
-            {children}
         </div>
     );
 }
 
 function Empty({ text }: { text: string }) {
     return (
-        <div className="flex flex-col items-center justify-center py-10 gap-4 opacity-50">
-            <Activity size={32} className="text-slate-500" />
-            <p className="text-xs font-black uppercase tracking-widest text-slate-500">{text}</p>
+        <div className="flex flex-col items-center justify-center py-10 gap-2 opacity-50">
+            <Activity size={24} className="text-slate-400" />
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-400">{text}</p>
         </div>
     );
 }
@@ -102,31 +73,39 @@ function DonutChart({ data, colors, formatLabel }: {
     formatLabel?: (v: number) => string;
 }) {
     const total = data.reduce((a, d) => a + d.value, 0);
-    if (!total) return <Empty text="Sem dados suficientes" />;
+    if (!total) return <Empty text="Sem dados" />;
     return (
-        <div className="flex flex-col items-center">
-            <ResponsiveContainer width="100%" height={200}>
+        <div className="flex flex-col items-center w-full">
+            <ResponsiveContainer width="100%" height={180}>
                 <PieChart>
-                    <Pie data={data} cx="50%" cy="50%" innerRadius={60} outerRadius={85}
-                        paddingAngle={5} dataKey="value" startAngle={90} endAngle={-270} stroke="none">
+                    <Pie data={data} cx="50%" cy="50%" innerRadius={45} outerRadius={70}
+                        paddingAngle={1} dataKey="value" stroke="none"
+                        label={({ name, percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
+                        labelLine={false}
+                    >
                         {data.map((_, i) => <Cell key={i} fill={colors[i % colors.length]} />)}
                     </Pie>
                     <Tooltip
-                        contentStyle={{ background: '#0c0c10', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '16px', color: '#fff' }}
-                        itemStyle={{ color: '#fff', fontSize: '12px', fontWeight: 'bold' }}
+                        contentStyle={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: '8px', color: '#1e293b' }}
+                        itemStyle={{ color: '#1e293b', fontSize: '12px', fontWeight: 'bold' }}
                         formatter={(v) => [formatLabel ? formatLabel(Number(v)) : `${v}`, '']}
                     />
                 </PieChart>
             </ResponsiveContainer>
-            <div className="flex flex-wrap gap-4 justify-center mt-2">
-                {data.map((d, i) => (
-                    <div key={d.name} className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full" style={{ background: colors[i % colors.length] }} />
-                        <span className="text-xs text-slate-400 font-medium">
-                            {d.name} <span className="text-white ml-1 font-bold">{total > 0 ? `${((d.value / total) * 100).toFixed(0)}%` : ''}</span>
-                        </span>
-                    </div>
-                ))}
+            <div className="flex flex-wrap gap-x-4 gap-y-1 justify-center mt-2">
+                {data.map((d, i) => {
+                    const pct = total > 0 ? ((d.value / total) * 100).toFixed(0) : '0';
+                    return (
+                        <div key={d.name} className="flex flex-col items-center pt-1">
+                            <span className="text-[10px] text-slate-500 whitespace-nowrap">{d.name}</span>
+                            <div className="flex items-center gap-1">
+                                <span className="text-xs font-bold text-slate-700">
+                                    {formatLabel ? formatLabel(d.value) : d.value}
+                                </span>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
@@ -175,184 +154,159 @@ export default function DashboardPage() {
     const fmt = (v: number) => `R$ ${v.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 
     const adminKpis = [
-        { icon: DollarSign, label: 'Receita Bruta', value: fmt(totalRevenue), sub: 'Todas entradas do caixa' },
-        { icon: TrendingDown, label: 'Despesas Gerais', value: fmt(totalExpenses), isRed: true, sub: 'Todas saídas do caixa' },
-        { icon: Award, label: 'Lucro Líquido', value: fmt(lucro), isCyan: true, sub: 'Receita - Despesas' },
-        { icon: Percent, label: 'Margem %', value: `${margem.toFixed(2)}%` },
+        { icon: DollarSign, label: 'Receita Bruta', value: fmt(totalRevenue) },
         { icon: Scissors, label: 'Serviços', value: totalServices },
-        { icon: Users, label: 'Clientes Únicos', value: data?.topClients.length ?? 0 }
+        { icon: Users, label: 'Clientes Únicos', value: data?.topClients.length ?? 0 },
+        { icon: TrendingDown, label: 'Despesas Gerais', value: fmt(totalExpenses) },
+        { icon: Percent, label: 'Margem %', value: `${margem.toFixed(2)}%` },
+        { icon: Award, label: 'Lucro Líquido', value: fmt(lucro) }
     ];
     const managerKpis = [
-        { icon: Scissors, label: 'Serviços Prestados', value: totalServices, isCyan: true },
+        { icon: Scissors, label: 'Serviços Prestados', value: totalServices },
         { icon: Users, label: 'Clientes Atendidos', value: data?.topClients.length ?? 0 },
         { icon: Award, label: 'Colaboradores Ativos', value: data?.topProfessionals.length ?? 0 },
     ];
     const professionalKpis = [
-        { icon: Scissors, label: 'Meus Serviços', value: totalServices, isCyan: true },
+        { icon: Scissors, label: 'Meus Serviços', value: totalServices },
         { icon: Users, label: 'Meus Clientes', value: data?.topClients.length ?? 0 },
     ];
     const kpis = isAdmin ? adminKpis : isManager ? managerKpis : professionalKpis;
 
-    const clientsDonut = (data?.topClients ?? []).map(c => ({ name: c.name.split(' ')[0], value: c.spent }));
-    const profDonut = (data?.topProfessionals ?? []).map(p => ({ name: p.professional.split(' ')[0], value: p.count }));
+    const clientsDonut = (data?.topClients ?? []).slice(0, 4).map(c => ({ name: c.name.split(' ')[0], value: c.spent }));
+    if ((data?.topClients?.length ?? 0) > 4) {
+        clientsDonut.push({ name: 'Outros', value: data!.topClients.slice(4).reduce((a, c) => a + c.spent, 0) });
+    }
     const revenueDonut = [{ name: 'Receita', value: totalRevenue }, { name: 'Despesas', value: totalExpenses }];
 
     // Análise de Custos
     const expensesBreakdown = [
         { name: 'Comissões', value: commPaid },
-        { name: 'Produtos/Materiais', value: matCost },
-        { name: 'Outros Custos', value: totalExpenses - (commPaid + matCost) > 0 ? totalExpenses - (commPaid + matCost) : 0 }
+        { name: 'Produtos', value: matCost },
+        { name: 'Outros', value: totalExpenses - (commPaid + matCost) > 0 ? totalExpenses - (commPaid + matCost) : 0 }
     ];
 
     return (
-        <div className="animate-fade-in w-full pb-20">
+        <div className="animate-fade-in w-full pb-20 bg-slate-50 min-h-screen px-4 md:px-8 pt-8">
             {/* Header */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                 <div>
-                    <h1 className="text-4xl font-serif font-bold tracking-tight text-white mb-2">
+                    <h1 className="text-2xl font-bold tracking-tight text-slate-800 mb-1">
                         {greeting()}, {user?.name?.split(' ')[0]} 👋
                     </h1>
-                    <p className="text-sm mt-1 text-slate-500">
+                    <p className="text-xs text-slate-500">
                         {isAdmin ? 'Visão avançada de performance e finanças' : 'Resumo das suas atividades do mês'}
                     </p>
                 </div>
                 
                 {/* Month Picker */}
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 p-1.5 rounded-2xl">
-                    <button onClick={() => changeMonth(-1)} className="w-10 h-10 flex flex-col items-center justify-center rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
-                        <ChevronLeft size={18} />
+                <div className="flex items-center gap-1 bg-white border border-slate-200 p-1 rounded-xl shadow-sm">
+                    <button onClick={() => changeMonth(-1)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-cyan-600 transition-colors">
+                        <ChevronLeft size={16} />
                     </button>
-                    <div className="flex items-center gap-3 px-6 h-10 border-x border-white/5">
-                        <CalendarDays size={16} className="text-[var(--accent-cyan)]" />
-                        <span className="text-sm font-black uppercase tracking-widest text-white">
+                    <div className="flex items-center justify-center min-w-[120px] h-8 border-x border-slate-100">
+                        <span className="text-xs font-bold uppercase tracking-widest text-slate-700">
                             {MONTHS[month - 1]} {year}
                         </span>
                     </div>
-                    <button onClick={() => changeMonth(1)} className="w-10 h-10 flex flex-col items-center justify-center rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
-                        <ChevronRight size={18} />
+                    <button onClick={() => changeMonth(1)} className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 hover:text-cyan-600 transition-colors">
+                        <ChevronRight size={16} />
                     </button>
                 </div>
             </div>
 
             {loading ? (
-                <div className="flex justify-center py-20"><span className="w-10 h-10 border-2 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin" /></div>
+                <div className="flex justify-center py-20"><span className="w-8 h-8 border-2 border-cyan-500 border-t-transparent rounded-full animate-spin" /></div>
             ) : (
-                <div className="flex flex-col gap-8">
+                <div className="flex flex-col gap-4 max-w-7xl mx-auto">
 
-                    {/* KPI Row */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                    {/* Row 1: KPI Cards */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                         {kpis.map((k, i) => <KpiCard key={i} {...k} />)}
                     </div>
 
-                    {/* Advanced Metrics Admin */}
-                    {isAdmin && (
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <SectionCard title="Fluxo e Custos Analíticos" icon={TrendingDown}>
-                                <div className="flex flex-col h-full justify-center pb-8">
-                                    <div className="mb-6 flex items-center justify-between p-4 rounded-2xl bg-black/20 border border-white/5">
-                                        <span className="text-xs font-black uppercase tracking-widest text-slate-500">Lucratividade Real</span>
-                                        <span className="text-xl font-mono font-black text-emerald-400">
-                                            {totalRevenue ? ((lucro / totalRevenue)*100).toFixed(1) : 0}%
-                                        </span>
+                    {/* Row 2: Analysis & Rankings */}
+                    <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
+                        {/* Clientes (simula a Vendas Mensais do layout em proporção) */}
+                        <div className="lg:col-span-2 flex flex-col h-full">
+                            <SectionCard title="Melhores Clientes" className="h-full">
+                                {!data?.topClients.length ? <Empty text="Sem dados" /> : (
+                                    <div className="flex flex-col gap-3 pb-2 h-full justify-center">
+                                        {data.topClients.slice(0, 5).map((c, i) => (
+                                            <div key={c.name} className="flex items-center justify-between border-b border-slate-50 pb-2 last:border-0 last:pb-0">
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full bg-cyan-400" />
+                                                    <span className="text-xs text-slate-600 font-medium truncate w-24 md:w-32">{c.name}</span>
+                                                </div>
+                                                <span className="text-xs font-bold text-slate-700">{fmt(c.spent)}</span>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <DonutChart data={expensesBreakdown} colors={['#8b5cf6', '#d946ef', '#475569']} formatLabel={fmt} />
-                                </div>
-                            </SectionCard>
-
-                            <SectionCard title="Receita vs Despesa" icon={DollarSign}>
-                                <div className="flex flex-col h-full justify-center pb-8">
-                                    <DonutChart data={revenueDonut} colors={DONUT_COLORS_2} formatLabel={fmt} />
-                                </div>
-                            </SectionCard>
-                            
-                            <SectionCard title="Distribuição de Clientes" icon={Users}>
-                                <div className="flex flex-col h-full justify-center pb-8">
-                                    <DonutChart data={clientsDonut} colors={DONUT_COLORS_1} formatLabel={fmt} />
-                                </div>
+                                )}
                             </SectionCard>
                         </div>
-                    )}
 
-                    {/* Gráficos em Lista */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        {/* Top Serviços */}
-                        <SectionCard title="Top 5 - Serviços" icon={Scissors}>
-                            {!data?.topServices.length ? <Empty text="Sem atendimentos" /> : (
-                                <div className="flex flex-col gap-4">
-                                    {data.topServices.slice(0, 5).map((s, i) => (
-                                        <div key={s.service} className="flex flex-col gap-2">
-                                            <div className="flex items-center justify-between uppercase tracking-widest">
-                                                <span className="text-xs font-bold text-white">{s.service}</span>
-                                                <span className="text-[10px] text-[var(--accent-cyan)] font-black">{s.count} vezes</span>
+                        {/* Top 5 Serviços por valor/venda */}
+                        <div className="lg:col-span-3 flex flex-col h-full">
+                            <SectionCard title="Top 5 - Serviços mais realizados" className="h-full">
+                                {!data?.topServices.length ? <Empty text="Sem dados" /> : (
+                                    <div className="flex flex-col justify-center h-full gap-3">
+                                        {data.topServices.slice(0, 5).map((s, i) => (
+                                            <div key={s.service} className="flex items-center gap-3 w-full">
+                                                <span className="text-xs text-slate-600 font-medium w-1/3 text-right truncate">
+                                                    {s.service}
+                                                </span>
+                                                <div className="w-2/3 flex items-center pr-4">
+                                                    <div 
+                                                        className="h-5 bg-[#3b82f6] rounded-sm transition-all"
+                                                        style={{ width: `${Math.max(5, (s.count / (data.topServices[0]?.count || 1)) * 100)}%` }}
+                                                    />
+                                                    <span className="text-[10px] text-slate-500 font-bold ml-2 w-8">
+                                                        {s.count}x
+                                                    </span>
+                                                </div>
                                             </div>
-                                            <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                                                <div 
-                                                    className="h-full bg-gradient-to-r from-[#0369a1] to-[var(--accent-cyan)] rounded-full"
-                                                    style={{ width: `${Math.min(100, (s.count / (data.topServices[0]?.count || 1)) * 100)}%` }}
-                                                />
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </SectionCard>
+                                        ))}
+                                    </div>
+                                )}
+                            </SectionCard>
+                        </div>
 
-                        {/* Top Clientes */}
-                        <SectionCard title="Consumo por Cliente" icon={Users}>
-                            {!data?.topClients.length ? <Empty text="Sem movimentação" /> : (
-                                <div className="flex flex-col gap-3">
-                                    {data.topClients.slice(0, 5).map((c, i) => (
-                                        <div key={c.name} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors">
-                                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0c0c10] to-[var(--bg-surface)] border border-white/10 flex items-center justify-center font-serif font-bold text-slate-300">
-                                                {i + 1}
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <p className="font-bold text-sm text-white truncate">{c.name}</p>
-                                                <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mt-0.5">Top Consumidor</p>
-                                            </div>
-                                            <p className="font-mono font-black text-emerald-400">
-                                                {fmt(c.spent)}
-                                            </p>
+                        {/* Imagem/Destaque */}
+                        <div className="lg:col-span-1 flex flex-col h-full">
+                            {!isProfessional && data?.topProfessionals && data.topProfessionals.length > 0 ? (
+                                <SectionCard title="Top / Destaque" className="h-full">
+                                    <div className="flex flex-col items-center justify-center p-2 h-full text-center mt-2">
+                                        <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center text-cyan-500 mb-3 shadow-inner border border-slate-100 relative">
+                                            <Award size={32} />
+                                            <div className="absolute -top-1 -right-1 bg-yellow-400 text-white w-6 h-6 flex items-center justify-center rounded-full text-xs font-bold border-2 border-white shadow-sm">1</div>
                                         </div>
-                                    ))}
-                                </div>
+                                        <h4 className="font-bold text-slate-700 text-sm">{data.topProfessionals[0].professional}</h4>
+                                        <p className="text-[10px] text-slate-500 font-medium mt-1 uppercase tracking-wider">{data.topProfessionals[0].count} Serviços</p>
+                                    </div>
+                                </SectionCard>
+                            ) : (
+                                <SectionCard title="Top / Destaque" className="h-full">
+                                    <Empty text="Sem Destaque" />
+                                </SectionCard>
                             )}
-                        </SectionCard>
+                        </div>
                     </div>
 
-                    {/* Ranking de Profissionais */}
-                    {!isProfessional && data?.topProfessionals && data.topProfessionals.length > 0 && (
-                        <SectionCard title="Ranking de Talentos" icon={Briefcase}>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-                                {data.topProfessionals.map((p, i) => (
-                                    <div key={p.professional} className={`flex flex-col items-center text-center p-6 rounded-3xl border transition-all ${
-                                        i === 0 ? 'bg-gradient-to-b from-[var(--accent-cyan)]/20 to-transparent border-[var(--accent-cyan)]/30' : 
-                                        'bg-white/5 border-white/5'
-                                    }`}>
-                                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-4 border ${
-                                            i === 0 ? 'bg-[var(--accent-cyan)]/20 border-[var(--accent-cyan)]/40 shadow-[0_0_15px_rgba(6,182,212,0.4)]' : 
-                                            'bg-[#0c0c10] border-white/10'
-                                        }`}>
-                                            {i === 0 ? '👑' : i === 1 ? '🌟' : i === 2 ? '🔥' : i + 1}
-                                        </div>
-                                        <p className="font-bold text-white text-sm tracking-tight mb-2 uppercase min-h-[40px] flex items-center">{p.professional}</p>
-                                        
-                                        <div className="flex flex-col w-full gap-2 mt-2 pt-4 border-t border-white/5">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Volumetria</span>
-                                                <span className="font-mono text-xs font-bold text-white">{p.count}</span>
-                                            </div>
-                                            {isAdmin && p.revenue !== undefined && (
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-[9px] font-black uppercase tracking-widest text-slate-500">Rec. Gerada</span>
-                                                    <span className="font-mono text-xs font-bold text-emerald-400">{fmt(p.revenue)}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </SectionCard>
+                    {/* Row 3: Admin Donut Charts */}
+                    {isAdmin && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <SectionCard title="Fluxo e Custos Analíticos">
+                                <DonutChart data={expensesBreakdown} colors={DONUT_COLORS_1} formatLabel={fmt} />
+                            </SectionCard>
+
+                            <SectionCard title="Receita vs Despesa">
+                                <DonutChart data={revenueDonut} colors={DONUT_COLORS_2} formatLabel={fmt} />
+                            </SectionCard>
+                            
+                            <SectionCard title="Distribuição de Clientes">
+                                <DonutChart data={clientsDonut} colors={DONUT_COLORS_3} formatLabel={fmt} />
+                            </SectionCard>
+                        </div>
                     )}
 
                 </div>
@@ -360,3 +314,4 @@ export default function DashboardPage() {
         </div>
     );
 }
+

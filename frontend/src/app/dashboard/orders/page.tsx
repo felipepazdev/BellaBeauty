@@ -333,21 +333,21 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
             <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-[4px] animate-fade-in" />
 
             <div 
-                className="relative bg-white w-full max-w-[720px] shadow-2xl rounded-[40px] flex flex-col overflow-hidden animate-scale-in border border-slate-100"
-                style={{ maxHeight: '92vh' }}
+                className="relative bg-white w-full max-w-[700px] shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-scale-in border border-slate-200"
+                style={{ maxHeight: '95vh' }}
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header Salão 99 Style */}
-                <div className="flex items-center justify-between px-12 py-8 border-b border-slate-50 bg-white">
-                    <div className="flex items-center gap-5">
-                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${
+                <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-white">
+                    <div className="flex items-center gap-4">
+                        <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-md ${
                             isClosed ? 'bg-[#06b6d4] shadow-[#06b6d4]/20' : 'bg-slate-800 shadow-slate-200'
                         }`}>
-                            <ClipboardList size={22} />
+                            <ClipboardList size={20} />
                         </div>
                         <div>
-                            <h2 className="text-[20px] font-black text-slate-900 tracking-tight leading-none mb-1">Comanda #{currentOrder.id.slice(0, 8).toUpperCase()}</h2>
-                            <p className="text-[12px] text-slate-400 font-bold uppercase tracking-widest">{currentOrder.client.name.toLowerCase()}</p>
+                            <h2 className="text-[18px] font-black text-slate-900 tracking-tight leading-none mb-1">Comanda #{currentOrder.id.slice(0, 8).toUpperCase()}</h2>
+                            <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest">{currentOrder.client.name.toLowerCase()}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
@@ -361,11 +361,11 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                 </div>
 
                 {/* Sub-Header Navigation */}
-                <div className="flex px-12 border-b border-slate-50 gap-10 bg-slate-50/30">
+                <div className="flex px-8 border-b border-slate-100 gap-8 bg-slate-50/50">
                     {[
                         { id: 'DETAILS', label: 'Resumo' },
-                        { id: 'MANAGE', label: 'Gerenciar Itens' },
-                        { id: 'PAYMENT', label: 'Receber Pagamento' }
+                        { id: 'MANAGE', label: 'Gerenciar' },
+                        { id: 'PAYMENT', label: 'Receber' }
                     ].map(tab => (
                         <button 
                             key={tab.id}
@@ -380,39 +380,36 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                     ))}
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-12 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
                     {view === 'DETAILS' && (
-                        <div className="space-y-10 animate-fade-in">
-                            <div className="grid grid-cols-2 gap-8">
-                                <div className="p-6 bg-slate-50/50 rounded-3xl border border-slate-100 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform"><User size={60} /></div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Proprietário da Comanda</label>
-                                    <div className="text-[17px] font-black text-slate-900 capitalize">{currentOrder.client.name.toLowerCase()}</div>
-                                    <p className="text-[12px] text-slate-500 mt-1 font-medium">{currentOrder.client.phone || '(Sem telefone)'}</p>
+                        <div className="space-y-8 animate-fade-in">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200 relative overflow-hidden">
+                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Proprietário</label>
+                                    <div className="text-[15px] font-black text-slate-900 capitalize">{currentOrder.client.name.toLowerCase()}</div>
+                                    <p className="text-[11px] text-slate-500 mt-1 font-medium">{currentOrder.client.phone || '(Sem telefone)'}</p>
                                 </div>
-                                <div className="p-6 bg-slate-50/50 rounded-3xl border border-slate-100 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform"><Calendar size={60} /></div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Data de Emissão</label>
-                                    <div className="text-[17px] font-black text-slate-900">{format(new Date(currentOrder.createdAt), "dd 'de' MMMM, yyyy", { locale: ptBR })}</div>
-                                    <p className="text-[12px] text-slate-500 mt-1 font-medium">Abertura: {format(new Date(currentOrder.createdAt), "HH:mm")}</p>
+                                <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200 relative overflow-hidden">
+                                    <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Emissão</label>
+                                    <div className="text-[15px] font-black text-slate-900">{format(new Date(currentOrder.createdAt), "dd 'de' MMMM, yyyy", { locale: ptBR })}</div>
+                                    <p className="text-[11px] text-slate-500 mt-1 font-medium">Abertura: {format(new Date(currentOrder.createdAt), "HH:mm")}</p>
                                 </div>
                             </div>
 
-                            {/* Resumo Financeiro - Estilo Card Salão 99 */}
-                                <div className="bg-slate-900 rounded-[36px] p-10 text-white shadow-2xl shadow-slate-200 relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform"><ShoppingBag size={140} /></div>
-                                    <div className="flex justify-between items-end relative z-10">
-                                        <div>
-                                            <p className="text-[11px] font-black uppercase tracking-[0.3em] opacity-50 mb-4">Total Consumido</p>
-                                            <div className="flex items-baseline gap-2">
-                                                <span className="text-2xl font-bold opacity-70">R$</span>
-                                                <span className="text-4xl font-black tracking-tighter">{fmt(total)}</span>
-                                            </div>
+                            {/* Resumo Financeiro */}
+                            <div className="bg-slate-900 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+                                <div className="flex justify-between items-center relative z-10">
+                                    <div>
+                                        <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-3">Total Consumido</p>
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-xl font-bold opacity-60">R$</span>
+                                            <span className="text-3xl font-black tracking-tight">{fmt(total)}</span>
                                         </div>
+                                    </div>
                                     <div className="text-right">
-                                        <p className="text-[11px] font-black uppercase tracking-[0.3em] opacity-50 mb-2">Situação</p>
-                                        <div className={`px-5 py-2 rounded-2xl text-[12px] font-black uppercase tracking-widest ${
-                                            isClosed ? 'bg-[#06b6d4] text-white shadow-lg shadow-[#06b6d4]/40' : 'bg-white/10 text-white backdrop-blur-md'
+                                        <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-2">Situação</p>
+                                        <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 ${
+                                            isClosed ? 'bg-[#06b6d4] text-white' : 'bg-white/5 text-white'
                                         }`}>
                                             {isClosed ? 'Liquidado' : 'Aguardando Pagamento'}
                                         </div>
@@ -420,18 +417,18 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-3 gap-6">
-                                <div className="p-6 bg-white border border-slate-100 rounded-3xl text-center flex flex-col items-center justify-center gap-1">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Subtotal Itens</p>
-                                    <p className="text-[18px] font-black text-slate-800">R$ {fmt(subtotal)}</p>
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="p-4 bg-white border border-slate-100 rounded-2xl text-center">
+                                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Itens</p>
+                                    <p className="text-[15px] font-black text-slate-800">R$ {fmt(subtotal)}</p>
                                 </div>
-                                <div className="p-6 bg-rose-50 border border-rose-100 rounded-3xl text-center flex flex-col items-center justify-center gap-1">
-                                    <p className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-1">Descontos</p>
-                                    <p className="text-[18px] font-black text-rose-600">- R$ {fmt(currentOrder.discount)}</p>
+                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl text-center">
+                                    <p className="text-[9px] font-black text-rose-400 uppercase tracking-widest mb-1">Descontos</p>
+                                    <p className="text-[15px] font-black text-rose-600">- R$ {fmt(currentOrder.discount)}</p>
                                 </div>
-                                <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-3xl text-center flex flex-col items-center justify-center gap-1">
-                                    <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Já Pago</p>
-                                    <p className="text-[18px] font-black text-emerald-600">R$ {fmt(paid)}</p>
+                                <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-center">
+                                    <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">Já Pago</p>
+                                    <p className="text-[15px] font-black text-emerald-600">R$ {fmt(paid)}</p>
                                 </div>
                             </div>
                         </div>
@@ -441,52 +438,52 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                         <div className="space-y-8 animate-fade-in">
                             {!isClosed && (
                                 <div className="flex gap-4">
-                                    <button onClick={() => setView('ADD_SERVICE')} className="flex-1 h-16 bg-[#06b6d4] text-white rounded-2xl text-[12px] font-bold uppercase tracking-widest hover:bg-[#0891b2] transition-all shadow-lg shadow-[#06b6d4]/20 flex items-center justify-center gap-3">
-                                        <PlusCircle size={22} />
+                                    <button onClick={() => setView('ADD_SERVICE')} className="flex-1 h-14 bg-[#06b6d4] text-white rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-[#0891b2] transition-all shadow-lg shadow-[#06b6d4]/20 flex items-center justify-center gap-2">
+                                        <PlusCircle size={20} />
                                         INCLUIR SERVIÇO
                                     </button>
-                                    <button onClick={() => setView('ADD_PRODUCT')} className="flex-1 h-16 bg-slate-900 text-white rounded-2xl text-[12px] font-bold uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-3">
-                                        <Package size={22} />
+                                    <button onClick={() => setView('ADD_PRODUCT')} className="flex-1 h-14 bg-slate-800 text-white rounded-xl text-[11px] font-bold uppercase tracking-widest hover:bg-slate-700 transition-all shadow-lg shadow-slate-200 flex items-center justify-center gap-2">
+                                        <Package size={20} />
                                         INCLUIR PRODUTO
                                     </button>
                                 </div>
                             )}
 
                             <div className="space-y-4">
-                                <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Itens Selecionados</h4>
+                                <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Itens Selecionados</h4>
                                 {currentOrder.appointments?.map((ap: any) => (
-                                    <div key={ap.id} className="flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[28px] group hover:border-[#06b6d4]/30 transition-all shadow-sm">
-                                        <div className="flex items-center gap-5">
-                                            <div className="w-12 h-12 rounded-2xl bg-[#06b6d4]/5 flex items-center justify-center text-[#06b6d4]"><Scissors size={20} /></div>
+                                    <div key={ap.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl group hover:border-[#06b6d4]/30 transition-all shadow-sm">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-[#06b6d4]/5 flex items-center justify-center text-[#06b6d4]"><Scissors size={18} /></div>
                                             <div>
-                                                <p className="text-[15px] font-black text-slate-800 capitalize leading-none mb-1">{ap.service.name.toLowerCase()}</p>
-                                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">{ap.professional.name}</p>
+                                                <p className="text-[14px] font-black text-slate-800 capitalize leading-none mb-1">{ap.service.name.toLowerCase()}</p>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{ap.professional.name}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-8">
-                                            <span className="text-[16px] font-black text-slate-900 tracking-tight">R$ {fmt(ap.service.price)}</span>
+                                        <div className="flex items-center gap-6">
+                                            <span className="text-[14px] font-black text-slate-900 tracking-tight">R$ {fmt(ap.service.price)}</span>
                                             {!isClosed && (
-                                                <button onClick={() => handleRemoveItem('SERVICE', ap.id)} className="w-10 h-10 rounded-xl bg-rose-50 text-rose-400 hover:text-rose-600 hover:bg-rose-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                                                    <Trash2 size={18} />
+                                                <button onClick={() => handleRemoveItem('SERVICE', ap.id)} className="w-9 h-9 rounded-lg bg-rose-50 text-rose-400 hover:text-rose-600 hover:bg-rose-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                                    <Trash2 size={16} />
                                                 </button>
                                             )}
                                         </div>
                                     </div>
                                 ))}
                                 {currentOrder.products?.map((p: any) => (
-                                    <div key={p.id} className="flex items-center justify-between p-5 bg-white border border-slate-100 rounded-[28px] group hover:border-[#06b6d4]/30 transition-all shadow-sm">
-                                        <div className="flex items-center gap-5">
-                                            <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400"><ShoppingBag size={20} /></div>
+                                    <div key={p.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl group hover:border-[#06b6d4]/30 transition-all shadow-sm">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400"><ShoppingBag size={18} /></div>
                                             <div>
-                                                <p className="text-[15px] font-black text-slate-800 capitalize leading-none mb-1">{p.product.name.toLowerCase()}</p>
-                                                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Quantidade: {p.quantity}</p>
+                                                <p className="text-[14px] font-black text-slate-800 capitalize leading-none mb-1">{p.product.name.toLowerCase()}</p>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Quantidade: {p.quantity}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-8">
-                                            <span className="text-[16px] font-black text-slate-900 tracking-tight">R$ {fmt(p.unitPrice * p.quantity)}</span>
+                                        <div className="flex items-center gap-6">
+                                            <span className="text-[14px] font-black text-slate-900 tracking-tight">R$ {fmt(p.unitPrice * p.quantity)}</span>
                                             {!isClosed && (
-                                                <button onClick={() => handleRemoveItem('PRODUCT', p.id)} className="w-10 h-10 rounded-xl bg-rose-50 text-rose-400 hover:text-rose-600 hover:bg-rose-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
-                                                    <Trash2 size={18} />
+                                                <button onClick={() => handleRemoveItem('PRODUCT', p.id)} className="w-9 h-9 rounded-lg bg-rose-50 text-rose-400 hover:text-rose-600 hover:bg-rose-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all">
+                                                    <Trash2 size={16} />
                                                 </button>
                                             )}
                                         </div>
@@ -502,29 +499,28 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                     )}
 
                     {view === 'PAYMENT' && (
-                        <div className="space-y-10 animate-fade-in">
-                            <div className="p-10 bg-emerald-500 rounded-[40px] text-white shadow-2xl shadow-emerald-200 relative overflow-hidden group text-center border-4 border-emerald-400">
-                                <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-125 transition-transform"><DollarSign size={140} /></div>
-                                <p className="text-[11px] font-black uppercase tracking-[0.5em] mb-4 opacity-70">Saldo em Aberto</p>
-                                <div className="flex items-baseline justify-center gap-3">
-                                    <span className="text-3xl font-bold opacity-60">R$</span>
-                                    <span className="text-6xl font-black tracking-tighter">{fmt(remaining)}</span>
+                        <div className="space-y-8 animate-fade-in">
+                            <div className="p-8 bg-[#06b6d4] rounded-2xl text-white shadow-xl relative overflow-hidden group text-center">
+                                <p className="text-[10px] font-black uppercase tracking-[0.4em] mb-2 opacity-70">Saldo em Aberto</p>
+                                <div className="flex items-baseline justify-center gap-2">
+                                    <span className="text-2xl font-bold opacity-60">R$</span>
+                                    <span className="text-5xl font-black tracking-tighter">{fmt(remaining)}</span>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-6">
+                            <div className="grid grid-cols-2 gap-4">
                                 {PAYMENT_METHODS.map(m => (
                                     <button 
                                         key={m.value} 
                                         onClick={() => handleAddPayment(m.value, remaining)} 
-                                        className="p-8 rounded-[36px] bg-slate-50 border border-slate-100 hover:border-[#06b6d4] hover:bg-white transition-all group shadow-sm flex flex-col items-center gap-4 text-center ring-offset-4 active:ring-4 active:ring-[#06b6d4]/10"
+                                        className="p-6 rounded-2xl bg-white border border-slate-200 hover:border-[#06b6d4] hover:bg-slate-50 transition-all group flex flex-col items-center gap-3 text-center"
                                     >
-                                        <div className="w-16 h-16 rounded-[24px] bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] group-hover:bg-[#06b6d4]/5 group-hover:border-[#06b6d4]/20 transition-all shadow-sm">
-                                            <CreditCard size={28} />
+                                        <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] group-hover:bg-white transition-all">
+                                            <CreditCard size={24} />
                                         </div>
                                         <div>
-                                            <span className="text-[15px] font-black text-slate-800 block">{m.label}</span>
-                                            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Liquidurar Total</span>
+                                            <span className="text-[14px] font-black text-slate-800 block">{m.label}</span>
+                                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest">Liquidurar Total</span>
                                         </div>
                                     </button>
                                 ))}
@@ -540,25 +536,6 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                      <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
                                      <input type="text" placeholder="Filtrar itens..." className="w-full pl-10 h-10 bg-slate-50 border-none rounded-xl text-[12px] font-bold" />
                                 </div>
-                            </div>
-                            <div className="grid grid-cols-1 gap-3">
-                                {(view === 'ADD_SERVICE' ? services : products.filter((p: any) => p.stock > 0)).map((item: any) => (
-                                    <div key={item.id} className="flex items-center justify-between p-5 bg-slate-50 border border-slate-100 rounded-3xl hover:border-[#06b6d4]/20 hover:bg-white transition-all group">
-                                        <div className="flex items-center gap-5">
-                                            <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] transition-all">
-                                                {view === 'ADD_SERVICE' ? <Scissors size={20} /> : <ShoppingBag size={20} />}
-                                            </div>
-                                            <div>
-                                                <p className="text-[14px] font-black text-slate-800 capitalize leading-none mb-1">{item.name.toLowerCase()}</p>
-                                                <p className="text-[11px] font-bold text-[#06b6d4] uppercase tracking-widest">R$ {fmt(item.price)}</p>
-                                            </div>
-                                        </div>
-                                        <button 
-                                            onClick={() => view === 'ADD_SERVICE' ? handleAddService(item.id, professionals[0]?.id) : handleAddProduct(item.id, 1)}
-                                            className="px-6 h-11 bg-white border border-slate-200 text-slate-800 rounded-2xl text-[11px] font-black uppercase tracking-widest hover:bg-[#06b6d4] hover:text-white hover:border-[#06b6d4] transition-all shadow-sm"
-                                        >
-                                            CAPTURAR
-                                        </button>
                                     </div>
                                 ))}
                             </div>
@@ -566,10 +543,10 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                     )}
                 </div>
 
-                <div className="px-10 py-6 border-t border-slate-50 bg-slate-50/20 flex items-center justify-between">
+                <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-[#06b6d4] animate-pulse" />
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Bella Beauty Checkout System</span>
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Bella Beauty Checkout System</span>
                     </div>
                 </div>
             </div>

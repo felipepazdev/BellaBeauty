@@ -111,7 +111,7 @@ export default function OrdersPage() {
 
             {/* Toolbar - Estilo Salão 99 */}
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8 w-full">
-                <div className="flex items-center gap-8 w-full lg:w-auto">
+                <div className="flex flex-col sm:flex-row items-center gap-6 lg:gap-12 w-full lg:w-auto">
                     {/* Filtros de Situação */}
                     <div className="flex bg-slate-50 p-1 rounded-2xl border border-slate-100">
                         {['ALL', 'OPEN', 'CLOSED'].map((f) => (
@@ -130,7 +130,7 @@ export default function OrdersPage() {
                     </div>
 
                     {/* Busca */}
-                    <div className="relative flex-1 lg:w-[400px]">
+                    <div className="relative w-full lg:w-[450px]">
                         <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#06b6d4]" />
                         <input 
                             type="text" 
@@ -156,14 +156,14 @@ export default function OrdersPage() {
                     <table className="w-full text-left border-collapse table-auto min-w-[1100px]">
                         <thead>
                             <tr className="border-b border-slate-50 bg-slate-50/50">
-                                <th className="py-5 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest">Comanda</th>
-                                <th className="py-5 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Data</th>
-                                <th className="py-5 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest">Cliente</th>
-                                <th className="py-5 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Valor Total (R$)</th>
-                                <th className="py-5 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Adicional</th>
-                                <th className="py-5 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Pagamento (R$)</th>
-                                <th className="py-5 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest">Situação</th>
-                                <th className="py-5 pr-6 w-16"></th>
+                                <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest">Comanda</th>
+                                <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Data</th>
+                                <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest">Cliente</th>
+                                <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Valor Total (R$)</th>
+                                <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Adicional</th>
+                                <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Pagamento (R$)</th>
+                                <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest">Situação</th>
+                                <th className="py-6 pr-8 w-20"></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -189,17 +189,17 @@ export default function OrdersPage() {
                                         className="group hover:bg-[#06b6d4]/[0.02] transition-colors cursor-pointer"
                                         onClick={() => setSelectedOrder(order)}
                                     >
-                                        <td className="py-6 px-6 text-[14px] text-slate-900 font-bold">#{order.id.slice(0, 8).toUpperCase()}</td>
-                                        <td className="py-6 px-6 text-[13px] text-slate-500 font-medium text-center">
+                                        <td className="py-6 px-8 text-[14px] text-slate-900 font-bold">#{order.id.slice(0, 8).toUpperCase()}</td>
+                                        <td className="py-6 px-8 text-[13px] text-slate-500 font-medium text-center">
                                             {format(new Date(order.createdAt), "dd/MMM/yy", { locale: ptBR })}
                                         </td>
-                                        <td className="py-6 px-6">
+                                        <td className="py-6 px-8">
                                             <div className="text-[14px] text-slate-800 font-bold capitalize truncate max-w-[200px]">{order.client?.name?.toLowerCase() || 'Sem cliente'}</div>
                                         </td>
-                                        <td className="py-6 px-6 text-[15px] text-slate-900 text-right font-black tracking-tight">{fmt(total)}</td>
-                                        <td className="py-6 px-6 text-[14px] text-slate-300 text-right">0,00</td>
-                                        <td className="py-6 px-6 text-[15px] text-emerald-600 text-right font-bold tracking-tight">{fmt(paid)}</td>
-                                        <td className="py-6 px-6">
+                                        <td className="py-6 px-8 text-[15px] text-slate-900 text-right font-black tracking-tight">{fmt(total)}</td>
+                                        <td className="py-6 px-8 text-[14px] text-slate-300 text-right">0,00</td>
+                                        <td className="py-6 px-8 text-[15px] text-emerald-600 text-right font-bold tracking-tight">{fmt(paid)}</td>
+                                        <td className="py-6 px-8">
                                             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
                                                 isClosed ? 'bg-[#06b6d4]/10 text-[#06b6d4]' : 'bg-slate-100 text-slate-500'
                                             }`}>
@@ -207,8 +207,8 @@ export default function OrdersPage() {
                                                 {status.label}
                                             </div>
                                         </td>
-                                        <td className="py-6 pr-6 text-right">
-                                            <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-[#06b6d4] group-hover:text-white transition-all shadow-sm">
+                                        <td className="py-6 pr-8 text-right">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-[#06b6d4] group-hover:text-white transition-all shadow-sm ml-auto">
                                                 <ChevronRight size={20} />
                                             </div>
                                         </td>
@@ -338,7 +338,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header Salão 99 Style */}
-                <div className="flex items-center justify-between px-10 py-6 border-b border-slate-50 bg-white">
+                <div className="flex items-center justify-between px-12 py-8 border-b border-slate-50 bg-white">
                     <div className="flex items-center gap-5">
                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-lg ${
                             isClosed ? 'bg-[#06b6d4] shadow-[#06b6d4]/20' : 'bg-slate-800 shadow-slate-200'
@@ -361,7 +361,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                 </div>
 
                 {/* Sub-Header Navigation */}
-                <div className="flex px-10 border-b border-slate-50 gap-8 bg-slate-50/30">
+                <div className="flex px-12 border-b border-slate-50 gap-10 bg-slate-50/30">
                     {[
                         { id: 'DETAILS', label: 'Resumo' },
                         { id: 'MANAGE', label: 'Gerenciar Itens' },
@@ -380,35 +380,35 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                     ))}
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-10 custom-scrollbar">
+                <div className="flex-1 overflow-y-auto p-12 custom-scrollbar">
                     {view === 'DETAILS' && (
                         <div className="space-y-10 animate-fade-in">
-                            <div className="grid grid-cols-2 gap-12">
+                            <div className="grid grid-cols-2 gap-8">
                                 <div className="p-6 bg-slate-50/50 rounded-3xl border border-slate-100 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform"><User size={60} /></div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Proprietário da Comanda</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Proprietário da Comanda</label>
                                     <div className="text-[17px] font-black text-slate-900 capitalize">{currentOrder.client.name.toLowerCase()}</div>
                                     <p className="text-[12px] text-slate-500 mt-1 font-medium">{currentOrder.client.phone || '(Sem telefone)'}</p>
                                 </div>
                                 <div className="p-6 bg-slate-50/50 rounded-3xl border border-slate-100 relative overflow-hidden group">
                                     <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform"><Calendar size={60} /></div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Data de Emissão</label>
+                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Data de Emissão</label>
                                     <div className="text-[17px] font-black text-slate-900">{format(new Date(currentOrder.createdAt), "dd 'de' MMMM, yyyy", { locale: ptBR })}</div>
                                     <p className="text-[12px] text-slate-500 mt-1 font-medium">Abertura: {format(new Date(currentOrder.createdAt), "HH:mm")}</p>
                                 </div>
                             </div>
 
                             {/* Resumo Financeiro - Estilo Card Salão 99 */}
-                            <div className="bg-slate-900 rounded-[36px] p-8 text-white shadow-2xl shadow-slate-200 relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform"><ShoppingBag size={140} /></div>
-                                <div className="flex justify-between items-end relative z-10">
-                                    <div>
-                                        <p className="text-[11px] font-black uppercase tracking-[0.3em] opacity-50 mb-4">Total Consumido</p>
-                                        <div className="flex items-baseline gap-2">
-                                            <span className="text-2xl font-bold opacity-70">R$</span>
-                                            <span className="text-5xl font-black tracking-tighter">{fmt(total)}</span>
+                                <div className="bg-slate-900 rounded-[36px] p-10 text-white shadow-2xl shadow-slate-200 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform"><ShoppingBag size={140} /></div>
+                                    <div className="flex justify-between items-end relative z-10">
+                                        <div>
+                                            <p className="text-[11px] font-black uppercase tracking-[0.3em] opacity-50 mb-4">Total Consumido</p>
+                                            <div className="flex items-baseline gap-2">
+                                                <span className="text-2xl font-bold opacity-70">R$</span>
+                                                <span className="text-4xl font-black tracking-tighter">{fmt(total)}</span>
+                                            </div>
                                         </div>
-                                    </div>
                                     <div className="text-right">
                                         <p className="text-[11px] font-black uppercase tracking-[0.3em] opacity-50 mb-2">Situação</p>
                                         <div className={`px-5 py-2 rounded-2xl text-[12px] font-black uppercase tracking-widest ${
@@ -421,16 +421,16 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                             </div>
 
                             <div className="grid grid-cols-3 gap-6">
-                                <div className="p-6 bg-white border border-slate-100 rounded-3xl text-center">
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Subtotal Itens</p>
+                                <div className="p-6 bg-white border border-slate-100 rounded-3xl text-center flex flex-col items-center justify-center gap-1">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Subtotal Itens</p>
                                     <p className="text-[18px] font-black text-slate-800">R$ {fmt(subtotal)}</p>
                                 </div>
-                                <div className="p-6 bg-rose-50 border border-rose-100 rounded-3xl text-center">
-                                    <p className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-2">Descontos</p>
+                                <div className="p-6 bg-rose-50 border border-rose-100 rounded-3xl text-center flex flex-col items-center justify-center gap-1">
+                                    <p className="text-[10px] font-black text-rose-400 uppercase tracking-widest mb-1">Descontos</p>
                                     <p className="text-[18px] font-black text-rose-600">- R$ {fmt(currentOrder.discount)}</p>
                                 </div>
-                                <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-3xl text-center">
-                                    <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-2">Já Pago</p>
+                                <div className="p-6 bg-emerald-50 border border-emerald-100 rounded-3xl text-center flex flex-col items-center justify-center gap-1">
+                                    <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest mb-1">Já Pago</p>
                                     <p className="text-[18px] font-black text-emerald-600">R$ {fmt(paid)}</p>
                                 </div>
                             </div>

@@ -333,12 +333,12 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
             <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-[4px] animate-fade-in" />
 
             <div 
-                className="relative bg-white w-full max-w-[700px] shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-scale-in border border-slate-200"
+                className="relative bg-white w-full max-w-[700px] shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-scale-in"
                 style={{ maxHeight: '95vh' }}
                 onClick={e => e.stopPropagation()}
             >
                 {/* Header Salão 99 Style */}
-                <div className="flex items-center justify-between px-8 py-6 border-b border-slate-100 bg-white">
+                <div className="flex items-center justify-between px-8 py-6 bg-white">
                     <div className="flex items-center gap-4">
                         <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-md ${
                             isClosed ? 'bg-[#06b6d4] shadow-[#06b6d4]/20' : 'bg-slate-800 shadow-slate-200'
@@ -361,7 +361,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                 </div>
 
                 {/* Sub-Header Navigation */}
-                <div className="flex px-8 border-b border-slate-100 gap-8 bg-slate-50/50">
+                <div className="flex px-8 gap-8 bg-slate-50/50">
                     {[
                         { id: 'DETAILS', label: 'Resumo' },
                         { id: 'MANAGE', label: 'Gerenciar' },
@@ -384,12 +384,12 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                     {view === 'DETAILS' && (
                         <div className="space-y-8 animate-fade-in">
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200 relative overflow-hidden">
+                                <div className="p-5 bg-slate-50/80 rounded-2xl relative overflow-hidden">
                                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Proprietário</label>
                                     <div className="text-[15px] font-black text-slate-900 capitalize">{currentOrder.client.name.toLowerCase()}</div>
                                     <p className="text-[11px] text-slate-500 mt-1 font-medium">{currentOrder.client.phone || '(Sem telefone)'}</p>
                                 </div>
-                                <div className="p-5 bg-slate-50/80 rounded-2xl border border-slate-200 relative overflow-hidden">
+                                <div className="p-5 bg-slate-50/80 rounded-2xl relative overflow-hidden">
                                     <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Emissão</label>
                                     <div className="text-[15px] font-black text-slate-900">{format(new Date(currentOrder.createdAt), "dd 'de' MMMM, yyyy", { locale: ptBR })}</div>
                                     <p className="text-[11px] text-slate-500 mt-1 font-medium">Abertura: {format(new Date(currentOrder.createdAt), "HH:mm")}</p>
@@ -408,7 +408,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                     </div>
                                     <div className="text-right">
                                         <p className="text-[9px] font-black uppercase tracking-[0.2em] opacity-50 mb-2">Situação</p>
-                                        <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20 ${
+                                        <div className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${
                                             isClosed ? 'bg-[#06b6d4] text-white' : 'bg-white/5 text-white'
                                         }`}>
                                             {isClosed ? 'Liquidado' : 'Aguardando Pagamento'}
@@ -418,15 +418,15 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                             </div>
 
                             <div className="grid grid-cols-3 gap-4">
-                                <div className="p-4 bg-white border border-slate-100 rounded-2xl text-center">
+                                <div className="p-4 bg-white rounded-2xl text-center">
                                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Itens</p>
                                     <p className="text-[15px] font-black text-slate-800">R$ {fmt(subtotal)}</p>
                                 </div>
-                                <div className="p-4 bg-rose-50 border border-rose-100 rounded-2xl text-center">
+                                <div className="p-4 bg-rose-50 rounded-2xl text-center">
                                     <p className="text-[9px] font-black text-rose-400 uppercase tracking-widest mb-1">Descontos</p>
                                     <p className="text-[15px] font-black text-rose-600">- R$ {fmt(currentOrder.discount)}</p>
                                 </div>
-                                <div className="p-4 bg-emerald-50 border border-emerald-100 rounded-2xl text-center">
+                                <div className="p-4 bg-emerald-50 rounded-2xl text-center">
                                     <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">Já Pago</p>
                                     <p className="text-[15px] font-black text-emerald-600">R$ {fmt(paid)}</p>
                                 </div>
@@ -452,7 +452,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                             <div className="space-y-4">
                                 <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Itens Selecionados</h4>
                                 {currentOrder.appointments?.map((ap: any) => (
-                                    <div key={ap.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl group hover:border-[#06b6d4]/30 transition-all shadow-sm">
+                                    <div key={ap.id} className="flex items-center justify-between p-4 bg-white rounded-2xl group hover:bg-slate-50 transition-all shadow-sm">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-[#06b6d4]/5 flex items-center justify-center text-[#06b6d4]"><Scissors size={18} /></div>
                                             <div>
@@ -471,7 +471,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                     </div>
                                 ))}
                                 {currentOrder.products?.map((p: any) => (
-                                    <div key={p.id} className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl group hover:border-[#06b6d4]/30 transition-all shadow-sm">
+                                    <div key={p.id} className="flex items-center justify-between p-4 bg-white rounded-2xl group hover:bg-slate-50 transition-all shadow-sm">
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400"><ShoppingBag size={18} /></div>
                                             <div>
@@ -513,9 +513,9 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                     <button 
                                         key={m.value} 
                                         onClick={() => handleAddPayment(m.value, remaining)} 
-                                        className="p-6 rounded-2xl bg-white border border-slate-200 hover:border-[#06b6d4] hover:bg-slate-50 transition-all group flex flex-col items-center gap-3 text-center"
+                                        className="p-6 rounded-2xl bg-white hover:bg-slate-50 transition-all group flex flex-col items-center gap-3 text-center shadow-sm"
                                     >
-                                        <div className="w-14 h-14 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] group-hover:bg-white transition-all">
+                                        <div className="w-14 h-14 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] group-hover:bg-white transition-all">
                                             <CreditCard size={24} />
                                         </div>
                                         <div>
@@ -586,7 +586,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                     )}
                 </div>
 
-                <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                <div className="px-8 py-5 bg-slate-50/50 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <div className="w-2 h-2 rounded-full bg-[#06b6d4] animate-pulse" />
                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Bella Beauty Checkout System</span>

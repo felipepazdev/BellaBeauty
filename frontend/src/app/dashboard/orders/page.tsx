@@ -535,7 +535,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                 <button onClick={() => setView('MANAGE')} className="text-[10px] font-black text-[#06b6d4] hover:underline uppercase tracking-widest">Voltar</button>
                             </div>
                             <div className="grid grid-cols-1 gap-3">
-                                {services.map(s => (
+                                {services.map((s: any) => (
                                     <button 
                                         key={s.id} 
                                         onClick={() => handleAddItem('SERVICE', s.id)}
@@ -562,7 +562,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                 <button onClick={() => setView('MANAGE')} className="text-[10px] font-black text-[#06b6d4] hover:underline uppercase tracking-widest">Voltar</button>
                             </div>
                             <div className="grid grid-cols-1 gap-3">
-                                {products.map(p => (
+                                {products.map((p: any) => (
                                     <button 
                                         key={p.id} 
                                         onClick={() => handleAddItem('PRODUCT', p.id)}

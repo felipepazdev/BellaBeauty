@@ -528,15 +528,58 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                         </div>
                     )}
 
-                    {(view === 'ADD_SERVICE' || view === 'ADD_PRODUCT') && (
-                        <div className="space-y-8 animate-fade-in">
+                    {view === 'ADD_SERVICE' && (
+                        <div className="space-y-6 animate-fade-in">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-[18px] font-black text-slate-900 tracking-tight">Vincular {view === 'ADD_SERVICE' ? 'Serviço' : 'Produto'}</h3>
-                                <div className="relative w-64">
-                                     <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300" />
-                                     <input type="text" placeholder="Filtrar itens..." className="w-full pl-10 h-10 bg-slate-50 border-none rounded-xl text-[12px] font-bold" />
-                                </div>
-                                    </div>
+                                <h3 className="text-[14px] font-black text-slate-800 uppercase tracking-widest">Incluir Serviço</h3>
+                                <button onClick={() => setView('MANAGE')} className="text-[10px] font-black text-[#06b6d4] hover:underline uppercase tracking-widest">Voltar</button>
+                            </div>
+                            <div className="grid grid-cols-1 gap-3">
+                                {services.map(s => (
+                                    <button 
+                                        key={s.id} 
+                                        onClick={() => handleAddItem('SERVICE', s.id)}
+                                        className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#06b6d4] hover:bg-slate-50 transition-all group shadow-sm text-left"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] group-hover:bg-white transition-all"><Scissors size={18} /></div>
+                                            <div>
+                                                <p className="text-[13px] font-black text-slate-800 capitalize leading-none mb-1">{s.name.toLowerCase()}</p>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{s.duration} min</p>
+                                            </div>
+                                        </div>
+                                        <span className="text-[14px] font-black text-[#06b6d4]">R$ {fmt(s.price)}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {view === 'ADD_PRODUCT' && (
+                        <div className="space-y-6 animate-fade-in">
+                            <div className="flex items-center justify-between">
+                                <h3 className="text-[14px] font-black text-slate-800 uppercase tracking-widest">Incluir Produto</h3>
+                                <button onClick={() => setView('MANAGE')} className="text-[10px] font-black text-[#06b6d4] hover:underline uppercase tracking-widest">Voltar</button>
+                            </div>
+                            <div className="grid grid-cols-1 gap-3">
+                                {products.map(p => (
+                                    <button 
+                                        key={p.id} 
+                                        onClick={() => handleAddItem('PRODUCT', p.id)}
+                                        className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#06b6d4] hover:bg-slate-50 transition-all group shadow-sm text-left"
+                                    >
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] group-hover:bg-white transition-all"><ShoppingBag size={18} /></div>
+                                            <div>
+                                                <p className="text-[13px] font-black text-slate-800 capitalize leading-none mb-1">{p.name.toLowerCase()}</p>
+                                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Estoque: {p.stock}</p>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[14px] font-black text-[#06b6d4] leading-none mb-1">R$ {fmt(p.price)}</p>
+                                            <p className="text-[9px] font-black text-slate-300 uppercase">Uni.</p>
+                                        </div>
+                                    </button>
                                 ))}
                             </div>
                         </div>

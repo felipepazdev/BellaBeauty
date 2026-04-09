@@ -113,7 +113,7 @@ export default function OrdersPage() {
             <div className="flex flex-col lg:flex-row items-center justify-between gap-6 mb-8 w-full">
                 <div className="flex flex-col sm:flex-row items-center gap-6 lg:gap-12 w-full lg:w-auto">
                     {/* Filtros de Situação */}
-                    <div className="flex items-center gap-2 bg-slate-50 p-1 rounded-2xl border border-slate-100">
+                    <div className="flex items-center !gap-4 bg-slate-50 p-1 rounded-2xl border border-slate-100">
                         {['ALL', 'OPEN', 'CLOSED'].map((f) => (
                             <button
                                 key={f}
@@ -137,7 +137,7 @@ export default function OrdersPage() {
                             placeholder="Buscar por cliente ou código..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                             className="w-full pl-12 pr-4 bg-white border border-slate-100 text-[14px] text-slate-600 focus:border-[#06b6d4] focus:ring-4 focus:ring-[#06b6d4]/5 placeholder:text-slate-300 h-11 rounded-2xl transition-all shadow-sm font-medium"
+                             className="w-full !pl-16 pr-4 bg-white border border-slate-100 text-[14px] text-slate-600 focus:border-[#06b6d4] focus:ring-4 focus:ring-[#06b6d4]/5 placeholder:text-slate-300 h-11 rounded-2xl transition-all shadow-sm font-medium"
                         />
                     </div>
                 </div>

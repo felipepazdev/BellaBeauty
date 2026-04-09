@@ -538,7 +538,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                 {services.map((s: any) => (
                                     <button 
                                         key={s.id} 
-                                        onClick={() => handleAddItem('SERVICE', s.id)}
+                                        onClick={() => handleAddService(s.id, professionals[0]?.id)}
                                         className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#06b6d4] hover:bg-slate-50 transition-all group shadow-sm text-left"
                                     >
                                         <div className="flex items-center gap-4">
@@ -565,7 +565,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                 {products.map((p: any) => (
                                     <button 
                                         key={p.id} 
-                                        onClick={() => handleAddItem('PRODUCT', p.id)}
+                                        onClick={() => handleAddProduct(p.id, 1)}
                                         className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#06b6d4] hover:bg-slate-50 transition-all group shadow-sm text-left"
                                     >
                                         <div className="flex items-center gap-4">

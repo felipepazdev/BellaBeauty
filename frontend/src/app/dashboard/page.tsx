@@ -80,7 +80,7 @@ function DonutChart({ data, colors, formatLabel }: {
                 <PieChart>
                     <Pie data={data} cx="50%" cy="50%" innerRadius={45} outerRadius={70}
                         paddingAngle={1} dataKey="value" stroke="none"
-                        label={({ name, percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
+                        label={({ name, percent }) => (percent ?? 0) > 0.05 ? `${((percent ?? 0) * 100).toFixed(0)}%` : ''}
                         labelLine={false}
                     >
                         {data.map((_, i) => <Cell key={i} fill={colors[i % colors.length]} />)}

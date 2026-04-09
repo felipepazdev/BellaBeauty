@@ -351,10 +351,10 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                         </div>
                     </div>
                     <div className="flex items-center gap-3">
-                        <button onClick={handlePrint} className="p-3 text-slate-400 hover:text-[#06b6d4] transition-all bg-slate-50 rounded-xl border border-slate-100">
+                        <button onClick={handlePrint} className="p-3 text-slate-400 hover:text-[#06b6d4] transition-all bg-slate-50 rounded-xl">
                             <Printer size={20} />
                         </button>
-                        <button onClick={onClose} className="p-3 text-slate-400 hover:text-rose-500 hover:rotate-90 transition-all duration-300 bg-slate-50 rounded-xl border border-slate-100">
+                        <button onClick={onClose} className="p-3 text-slate-400 hover:text-rose-500 hover:rotate-90 transition-all duration-300 bg-slate-50 rounded-xl">
                             <X size={20} />
                         </button>
                     </div>
@@ -490,7 +490,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                     </div>
                                 ))}
                                 {currentOrder.appointments?.length === 0 && currentOrder.products?.length === 0 && (
-                                    <div className="py-20 text-center text-slate-300 text-[13px] font-bold uppercase tracking-widest border-2 border-dashed border-slate-100 rounded-[40px]">
+                                    <div className="py-20 text-center text-slate-300 text-[13px] font-bold uppercase tracking-widest bg-slate-50 rounded-2xl">
                                         Comanda Vazia
                                     </div>
                                 )}
@@ -539,7 +539,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                     <button 
                                         key={s.id} 
                                         onClick={() => handleAddService(s.id, professionals[0]?.id)}
-                                        className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#06b6d4] hover:bg-slate-50 transition-all group shadow-sm text-left"
+                                        className="flex items-center justify-between p-4 bg-white rounded-2xl hover:bg-slate-50 transition-all group shadow-sm text-left"
                                     >
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] group-hover:bg-white transition-all"><Scissors size={18} /></div>
@@ -566,7 +566,7 @@ function OrderModal({ order, onClose, onUpdate, clients, services, products, pro
                                     <button 
                                         key={p.id} 
                                         onClick={() => handleAddProduct(p.id, 1)}
-                                        className="flex items-center justify-between p-4 bg-white border border-slate-100 rounded-2xl hover:border-[#06b6d4] hover:bg-slate-50 transition-all group shadow-sm text-left"
+                                        className="flex items-center justify-between p-4 bg-white rounded-2xl hover:bg-slate-50 transition-all group shadow-sm text-left"
                                     >
                                         <div className="flex items-center gap-4">
                                             <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:text-[#06b6d4] group-hover:bg-white transition-all"><ShoppingBag size={18} /></div>

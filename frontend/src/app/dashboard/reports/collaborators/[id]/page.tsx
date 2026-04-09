@@ -379,7 +379,7 @@ export default function CollaboratorDetailPage() {
                         {/* DIAS COM ATENDIMENTO */}
                         <div style={CARD_STYLE}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                                <span style={{ color: '#E91E63', fontWeight: 700, fontSize: 13 }}>Dias com Atendimento</span>
+                                <span style={{ color: '#06b6d4', fontWeight: 700, fontSize: 13 }}>Dias com Atendimento</span>
                             </div>
                             <p style={{ fontSize: 11, color: '#64748b', marginBottom: 8 }}>Quantidade de dias que o colaborador realizou atendimentos.</p>
                             <span style={{ fontSize: 18, fontWeight: 800 }}>{data.metrics.activeDays}</span>
@@ -388,8 +388,8 @@ export default function CollaboratorDetailPage() {
                          {/* GASTO TOTAL PRODUTOS */}
                          <div style={CARD_STYLE}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 12 }}>
-                                <span style={{ color: '#E91E63', fontWeight: 700, fontSize: 13 }}>Gasto Total Produtos</span>
-                                <ExternalLink size={14} color="#E91E63" />
+                                <span style={{ color: '#06b6d4', fontWeight: 700, fontSize: 13 }}>Gasto Total Produtos</span>
+                                <ExternalLink size={14} color="#06b6d4" />
                             </div>
                             <p style={{ fontSize: 11, color: '#64748b', marginBottom: 8 }}>Valor total gasto com produtos durante os atendimentos.</p>
                             <span style={{ fontSize: 18, fontWeight: 800 }}>{formatCurrency(data.metrics.productCost)}</span>
@@ -406,8 +406,8 @@ function MetricCard({ title, rows }: { title: string, rows: { label: string, val
     return (
         <div style={CARD_STYLE}>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-                <span style={{ color: '#E91E63', fontWeight: 700, fontSize: 13 }}>{title}</span>
-                <ExternalLink size={14} color="#E91E63" />
+                <span style={{ color: '#06b6d4', fontWeight: 700, fontSize: 13 }}>{title}</span>
+                <ExternalLink size={14} color="#06b6d4" />
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {rows.map((row, idx) => (

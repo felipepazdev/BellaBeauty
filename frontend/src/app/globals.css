@@ -31,11 +31,10 @@
     --text-muted: #9ca3af;
     --text-cyan: #0891b2;
 
-    /* Status */
-    --success: #059669;
-    --warning: #d97706;
-    --danger: #dc2626;
-    --info: #0284c7;
+    /* Salão 99 Identity (Now Cyan) */
+    --salao99-pink: #06b6d4;
+    --salao99-pink-hover: #0891b2;
+    --salao99-pink-glow: rgba(6, 182, 212, 0.15);
 
     /* Spacing & Radius */
     --p-card: 1.5rem;

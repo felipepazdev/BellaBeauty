@@ -653,16 +653,16 @@ function AppointmentDetailsModal({ ap, professionals, onClose, onSaved, onEdit }
                         
                         {ap.status !== 'COMPLETED' && ap.status !== 'CANCELLED' && ap.status !== 'NO_SHOW' && (
                             <div className="grid grid-cols-2 gap-2 mt-2">
-                                <button className="btn-secondary flex items-center justify-center gap-2 transition-all hover:scale-[1.02]" onClick={() => setView('CHECKOUT')} style={{ gridColumn: 'span 2', background: 'var(--accent)', color: '#fff', border: 'none' }}>
+                                <button className="btn-secondary flex items-center justify-center gap-2 transition-all hover:scale-[1.02] shadow-sm font-bold uppercase tracking-widest text-[11px]" onClick={() => setView('CHECKOUT')} style={{ gridColumn: 'span 2', background: '#06b6d4', color: '#fff', border: 'none' }}>
                                     <DollarSign size={16}/> Abrir Comanda / Checkout
                                 </button>
-                                <button className="btn-secondary flex items-center justify-center gap-2 transition-all hover:scale-[1.02]" onClick={() => onEdit(ap)}>
-                                    <Edit2 size={16}/> Editar Agendamento
+                                <button className="btn-secondary flex items-center justify-center gap-2 transition-all hover:scale-[1.02] text-[11px] font-bold uppercase tracking-widest" onClick={() => onEdit(ap)}>
+                                    <Edit2 size={16}/> Editar
                                 </button>
-                                <button className="btn-secondary flex items-center justify-center gap-2 transition-all hover:scale-[1.02]" onClick={() => setView('RESCHEDULE')}>
+                                <button className="btn-secondary flex items-center justify-center gap-2 transition-all hover:scale-[1.02] text-[11px] font-bold uppercase tracking-widest" onClick={() => setView('RESCHEDULE')}>
                                     <Calendar size={16}/> Reagendar
                                 </button>
-                                <button className="btn-secondary flex items-center justify-center gap-2 transition-all hover:scale-[1.02]" onClick={handleNoShow} disabled={saving} style={{ color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
+                                <button className="btn-secondary flex items-center justify-center gap-2 transition-all hover:scale-[1.02] text-[11px] font-bold uppercase tracking-widest" onClick={handleNoShow} disabled={saving} style={{ color: 'var(--danger)', borderColor: 'rgba(239, 68, 68, 0.3)' }}>
                                     <Ban size={16}/> Faltou
                                 </button>
                             </div>
@@ -782,7 +782,7 @@ function AppointmentDetailsModal({ ap, professionals, onClose, onSaved, onEdit }
                         <div className="flex gap-2 mt-4">
                             <button className="btn-secondary flex-1" onClick={() => setView('DETAILS')}>Voltar</button>
                             <button 
-                                className="btn-cyan flex-1 !rounded-xl" 
+                                className="flex-1 h-[48px] rounded-xl font-bold uppercase tracking-widest text-xs bg-[#06b6d4] text-white shadow-lg shadow-[#06b6d4]/20 hover:bg-[#0891b2] transition-all" 
                                 disabled={saving || payments.reduce((acc, p) => acc + Number(p.amount), 0) < total - 0.01} 
                                 onClick={handleCheckout} 
                             >

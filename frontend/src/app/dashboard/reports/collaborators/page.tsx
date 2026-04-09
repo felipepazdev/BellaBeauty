@@ -313,7 +313,7 @@ export default function CollaboratorsReportPage() {
                                             <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{item.name}</span>
                                             <button 
                                                 onClick={() => router.push(`/dashboard/reports/collaborators/${item.id}`)}
-                                                style={{ background: 'transparent', border: 'none', padding: 0, color: '#E91E63', fontSize: 11, fontWeight: 700, cursor: 'pointer', textAlign: 'left' }}
+                                                style={{ background: 'transparent', border: 'none', padding: 0, color: '#06b6d4', fontSize: 11, fontWeight: 700, cursor: 'pointer', textAlign: 'left' }}
                                             >
                                                 Ver Dados Completos
                                             </button>

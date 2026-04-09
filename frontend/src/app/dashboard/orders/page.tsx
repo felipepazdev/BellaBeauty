@@ -151,19 +151,19 @@ export default function OrdersPage() {
             </div>
 
             {/* Tabela de Comandas - Layout Salão 99 */}
-            <div className="w-full bg-white rounded-[32px] border border-slate-100 shadow-sm overflow-hidden">
+            <div className="w-full bg-white border border-slate-100 shadow-sm">
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-left border-collapse table-auto min-w-[1100px]">
                         <thead>
                             <tr className="border-b border-slate-50 bg-slate-50/50">
-                                <th className="py-6 px-12 text-[11px] font-black text-slate-400 uppercase tracking-widest">Comanda</th>
-                                <th className="py-6 px-10 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Data</th>
-                                <th className="py-6 px-10 text-[11px] font-black text-slate-400 uppercase tracking-widest">Cliente</th>
-                                <th className="py-6 px-10 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Valor Total (R$)</th>
-                                <th className="py-6 px-10 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Adicional</th>
-                                <th className="py-6 px-10 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Pagamento (R$)</th>
-                                <th className="py-6 px-10 text-[11px] font-black text-slate-400 uppercase tracking-widest">Situação</th>
-                                <th className="py-6 pr-12 w-20"></th>
+                                <th className="py-6 px-8 text-[11px] font-black text-slate-400 uppercase tracking-widest">Comanda</th>
+                                <th className="py-6 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-center">Data</th>
+                                <th className="py-6 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest">Cliente</th>
+                                <th className="py-6 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Valor Total (R$)</th>
+                                <th className="py-6 px-6 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right">Adicional</th>
+                                <th className="py-6 px-12 text-[11px] font-black text-slate-400 uppercase tracking-widest text-right whitespace-nowrap">Pagamento (R$)</th>
+                                <th className="py-6 px-12 text-[11px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Situação</th>
+                                <th className="py-6 pr-8 w-20"></th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -189,17 +189,17 @@ export default function OrdersPage() {
                                         className="group hover:bg-[#06b6d4]/[0.02] transition-colors cursor-pointer"
                                         onClick={() => setSelectedOrder(order)}
                                     >
-                                        <td className="py-6 px-12 text-[14px] text-slate-900 font-bold">#{order.id.slice(0, 8).toUpperCase()}</td>
-                                        <td className="py-6 px-10 text-[13px] text-slate-500 font-medium text-center">
+                                        <td className="py-6 px-8 text-[14px] text-slate-900 font-bold">#{order.id.slice(0, 8).toUpperCase()}</td>
+                                        <td className="py-6 px-6 text-[13px] text-slate-500 font-medium text-center">
                                             {format(new Date(order.createdAt), "dd/MMM/yy", { locale: ptBR })}
                                         </td>
-                                        <td className="py-6 px-10">
+                                        <td className="py-6 px-6">
                                             <div className="text-[14px] text-slate-800 font-bold capitalize truncate max-w-[200px]">{order.client?.name?.toLowerCase() || 'Sem cliente'}</div>
                                         </td>
-                                        <td className="py-6 px-10 text-[15px] text-slate-900 text-right font-black tracking-tight">{fmt(total)}</td>
-                                        <td className="py-6 px-10 text-[14px] text-slate-300 text-right">0,00</td>
-                                        <td className="py-6 px-10 text-[15px] text-emerald-600 text-right font-bold tracking-tight">{fmt(paid)}</td>
-                                        <td className="py-6 px-10">
+                                        <td className="py-6 px-6 text-[15px] text-slate-900 text-right font-black tracking-tight">{fmt(total)}</td>
+                                        <td className="py-6 px-6 text-[14px] text-slate-300 text-right">0,00</td>
+                                        <td className="py-6 px-12 text-[15px] text-emerald-600 text-right font-bold tracking-tight">{fmt(paid)}</td>
+                                        <td className="py-6 px-12">
                                             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
                                                 isClosed ? 'bg-[#06b6d4]/10 text-[#06b6d4]' : 'bg-slate-100 text-slate-500'
                                             }`}>
@@ -207,7 +207,7 @@ export default function OrdersPage() {
                                                 {status.label}
                                             </div>
                                         </td>
-                                        <td className="py-6 pr-12 text-right">
+                                        <td className="py-6 pr-8 text-right">
                                             <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-[#06b6d4] group-hover:text-white transition-all shadow-sm ml-auto">
                                                 <ChevronRight size={20} />
                                             </div>

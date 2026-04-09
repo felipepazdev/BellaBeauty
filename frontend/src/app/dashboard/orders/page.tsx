@@ -19,7 +19,7 @@ interface Order {
     status: string;
     totalAmount: number;
     discount: number;
-    client: { id: string; name: string };
+    client: { id: string; name: string; phone?: string };
     appointments: { id: string; service: { id: string; name: string; price: number }; professional: { name: string } }[];
     products: { id: string; quantity: number; unitPrice: number; product: { id: string; name: string } }[];
     payments: { id: string; method: string; amount: number; createdAt: string }[];

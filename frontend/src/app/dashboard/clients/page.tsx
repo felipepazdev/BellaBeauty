@@ -101,9 +101,16 @@ export default function ClientsPage() {
             const msg = e.response?.data?.message;
             if (Array.isArray(msg)) {
                 const translated = msg.map(m => {
-                    if (m.includes('name')) return 'O nome é obrigatório.';
-                    if (m.includes('phone')) return 'O telefone deve ser um texto válido.';
-                    if (m.includes('should not exist')) return 'Dados extras não permitidos.';
+                    const low = m.toLowerCase();
+                    if (low.includes('name')) {
+                        if (low.includes('empty')) return 'O nome é obrigatório.';
+                        if (low.includes('string')) return 'O nome deve ser um texto.';
+                        return 'Erro no campo Nome.';
+                    }
+                    if (low.includes('phone')) {
+                        return 'O telefone deve ser um texto válido.';
+                    }
+                    if (low.includes('should not exist')) return 'Dados extras não permitidos.';
                     return m;
                 }).join(' ');
                 setError(translated);

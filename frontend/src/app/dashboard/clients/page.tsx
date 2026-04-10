@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
-import { Users, Search, Plus, Phone, Edit2, Filter, UserPlus, ChevronRight } from 'lucide-react';
+import { Users, Search, Plus, Phone, Edit2, Filter, UserPlus, ChevronRight, MoreVertical, Trash2 } from 'lucide-react';
 
 interface Client {
     id: string;
@@ -119,6 +119,17 @@ export default function ClientsPage() {
             }
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleRemove = async (id: string, name: string) => {
+        if (!confirm(`Tem certeza que deseja remover o cliente ${name}?`)) return;
+        try {
+            await api.delete(`/clients/${id}`);
+            fetchClients();
+        } catch (e) {
+            console.error(e);
+            alert('Erro ao remover cliente.');
         }
     };
 
@@ -358,7 +369,7 @@ export default function ClientsPage() {
                 </div>
             )}
 
-            {/* Lista */}
+            {/* Lista Estilo Salão99 */}
             {loading ? (
                 <div className="flex justify-center py-32"><div className="w-12 h-12 border-4 border-slate-200 border-t-[var(--accent-cyan)] rounded-full animate-spin" /></div>
             ) : filtered.length === 0 ? (
@@ -371,34 +382,58 @@ export default function ClientsPage() {
                     </p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
-                    {filtered.map((c) => (
-                        <div 
-                            key={c.id} 
-                            onClick={() => handleOpenClient(c)}
-                            className="card group/client flex items-center p-5 gap-5 bg-[var(--bg-surface)] hover:bg-slate-50 border border-[var(--border)] hover:border-[var(--accent-cyan)]/40 transition-all cursor-pointer relative overflow-hidden active:scale-[0.98]"
-                        >
-                            <div className="absolute top-0 right-0 p-2 opacity-0 group-hover/client:opacity-100 transition-opacity">
-                                <ChevronRight size={16} className="text-[var(--accent-cyan)]" />
-                            </div>
-                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shrink-0 bg-slate-100 border border-slate-200 text-slate-400 group-hover/client:bg-[var(--accent-cyan)] group-hover/client:text-white group-hover/client:border-[var(--accent-cyan)] transition-all duration-300">
-                                {c.name.charAt(0).toUpperCase()}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="font-bold text-lg text-[var(--text-primary)] tracking-tight capitalize truncate leading-tight">{c.name.toLowerCase()}</p>
-                                <div className="flex items-center gap-1.5 mt-1.5">
-                                    <Phone size={12} className="text-[var(--accent-cyan)] opacity-70" />
-                                    <span className="text-[12px] font-mono font-bold tracking-wider text-slate-500">{c.phone || '(sem contato)'}</span>
+                <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
+                    {/* Header da Lista */}
+                    <div className="grid grid-cols-[1fr,150px,150px,80px] px-8 py-4 bg-slate-50/50 border-b border-slate-100">
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Nome</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">WhatsApp</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">Cadastro</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Ações</span>
+                    </div>
+
+                    <div className="divide-y divide-slate-50">
+                        {filtered.map((c) => (
+                            <div 
+                                key={c.id} 
+                                onClick={() => handleOpenClient(c)}
+                                className="grid grid-cols-[1fr,150px,150px,80px] items-center px-8 py-4 hover:bg-slate-50 transition-all cursor-pointer group"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-400 group-hover:bg-[var(--accent-cyan-glow)] group-hover:text-[var(--accent-cyan)] transition-colors">
+                                        {c.name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <span className="font-bold text-slate-700 capitalize group-hover:text-[var(--accent-cyan)] transition-colors">
+                                        {c.name.toLowerCase()}
+                                    </span>
+                                </div>
+                                
+                                <span className="text-sm font-medium text-slate-500 font-mono tracking-tight">
+                                    {c.phone || '-'}
+                                </span>
+
+                                <span className="text-xs font-bold text-slate-400 text-center">
+                                    {c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : '-'}
+                                </span>
+
+                                <div className="flex justify-end pr-2 gap-2">
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); handleOpenClient(c); }}
+                                        className="p-2 hover:bg-white rounded-lg text-slate-300 hover:text-[var(--accent-cyan)] transition-all"
+                                        title="Ver/Editar Perfil"
+                                    >
+                                        <Edit2 size={16} />
+                                    </button>
+                                    <button 
+                                        onClick={(e) => { e.stopPropagation(); handleRemove(c.id, c.name); }}
+                                        className="p-2 hover:bg-white rounded-lg text-slate-300 hover:text-red-500 transition-all"
+                                        title="Remover Cliente"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
                                 </div>
                             </div>
-                            <div className="flex flex-col items-end gap-1 shrink-0">
-                                <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Desde</span>
-                                <span className="text-[10px] font-bold text-slate-700">
-                                    {c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR')}
-                                </span>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

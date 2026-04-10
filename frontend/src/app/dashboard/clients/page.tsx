@@ -393,7 +393,9 @@ export default function ClientsPage() {
                             </div>
                             <div className="flex flex-col items-end gap-1 shrink-0">
                                 <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Desde</span>
-                                <span className="text-[10px] font-bold text-slate-700">{new Date(c.createdAt).toLocaleDateString('pt-BR')}</span>
+                                <span className="text-[10px] font-bold text-slate-700">
+                                    {c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : new Date().toLocaleDateString('pt-BR')}
+                                </span>
                             </div>
                         </div>
                     ))}

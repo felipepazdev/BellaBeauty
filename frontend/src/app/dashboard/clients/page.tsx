@@ -20,6 +20,8 @@ export default function ClientsPage() {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [form, setForm] = useState({ name: '', phone: '' });
+    const [sortBy, setSortBy] = useState<'name' | 'newest' | 'oldest'>('name');
+    const [showSortMenu, setShowSortMenu] = useState(false);
 
     const [selectedClient, setSelectedClient] = useState<any>(null);
     const [clientDetails, setClientDetails] = useState<any>(null);
@@ -32,10 +34,7 @@ export default function ClientsPage() {
     const fetchClients = () => {
         setLoading(true);
         api.get('/clients')
-            .then((r) => {
-                const sorted = r.data.sort((a: any, b: any) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
-                setClients(sorted);
-            })
+            .then((r) => setClients(r.data))
             .catch(console.error)
             .finally(() => setLoading(false));
     };
@@ -77,10 +76,17 @@ export default function ClientsPage() {
         }
     };
 
-    const filtered = clients.filter((c) =>
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        (c.phone || '').includes(search)
-    );
+    const filtered = clients
+        .filter((c) =>
+            c.name.toLowerCase().includes(search.toLowerCase()) ||
+            (c.phone || '').includes(search)
+        )
+        .sort((a, b) => {
+            if (sortBy === 'name') return a.name.localeCompare(b.name, 'pt-BR');
+            if (sortBy === 'newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+            if (sortBy === 'oldest') return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+            return 0;
+        });
 
     const handleSave = async () => {
         if (!form.name.trim()) { setError('Nome é obrigatório'); return; }
@@ -127,9 +133,54 @@ export default function ClientsPage() {
                         className="h-12 w-full !bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl !pl-14 !pr-4 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-medium placeholder:text-slate-400" 
                     />
                 </div>
-                <button className="h-12 px-5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl text-slate-500 hover:text-[var(--accent-cyan)] transition-all flex items-center gap-2 text-sm font-bold">
-                    <Filter size={16} /> Filtros
-                </button>
+                
+                <div className="relative">
+                    <button 
+                        onClick={() => setShowSortMenu(!showSortMenu)}
+                        className={`h-12 px-5 border rounded-xl transition-all flex items-center gap-2 text-sm font-bold ${
+                            showSortMenu || sortBy !== 'name' 
+                            ? 'bg-[var(--accent-cyan-glow)] border-[var(--accent-cyan)] text-[var(--accent-cyan)]' 
+                            : 'bg-[var(--bg-surface)] border-[var(--border)] text-slate-500 hover:text-[var(--accent-cyan)]'
+                        }`}
+                    >
+                        <Filter size={16} /> 
+                        {sortBy === 'name' ? 'Ordem: A-Z' : sortBy === 'newest' ? 'Mais Novos' : 'Mais Antigos'}
+                    </button>
+
+                    {showSortMenu && (
+                        <>
+                            <div className="fixed inset-0 z-[100]" onClick={() => setShowSortMenu(false)} />
+                            <div className="absolute right-0 mt-2 w-56 bg-white border border-slate-100 rounded-2xl shadow-xl z-[101] overflow-hidden animate-scale-in">
+                                <div className="p-2 border-b border-slate-50">
+                                    <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-400">Ordenar por:</p>
+                                </div>
+                                <div className="p-1">
+                                    <button 
+                                        onClick={() => { setSortBy('name'); setShowSortMenu(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors ${sortBy === 'name' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
+                                    >
+                                        Nome (A-Z)
+                                        {sortBy === 'name' && <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] shadow-[var(--accent-cyan-glow)]" />}
+                                    </button>
+                                    <button 
+                                        onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors ${sortBy === 'newest' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
+                                    >
+                                        Mais Novos primeiro
+                                        {sortBy === 'newest' && <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] shadow-[var(--accent-cyan-glow)]" />}
+                                    </button>
+                                    <button 
+                                        onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors ${sortBy === 'oldest' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
+                                    >
+                                        Mais Antigos primeiro
+                                        {sortBy === 'oldest' && <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] shadow-[var(--accent-cyan-glow)]" />}
+                                    </button>
+                                </div>
+                            </div>
+                        </>
+                    )}
+                </div>
             </div>
 
             {/* Modal Novo Cliente (Centralização Absoluta na Janela) */}

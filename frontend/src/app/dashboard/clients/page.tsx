@@ -118,13 +118,13 @@ export default function ClientsPage() {
 
             {/* Busca e Filtros */}
             <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                <div className="relative flex-1">
-                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10" />
+                <div className="relative flex-1 group">
+                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10 pointer-events-none transition-colors group-focus-within:text-[var(--accent-cyan)]" />
                     <input 
                         value={search} 
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Pesquise por nome ou telefone..."
-                        className="h-12 w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl pl-12 pr-4 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-medium placeholder:text-slate-400" 
+                        className="h-12 w-full !bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl !pl-14 !pr-4 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-medium placeholder:text-slate-400" 
                     />
                 </div>
                 <button className="h-12 px-5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl text-slate-500 hover:text-[var(--accent-cyan)] transition-all flex items-center gap-2 text-sm font-bold">

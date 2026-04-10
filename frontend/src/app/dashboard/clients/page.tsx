@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import api from '@/lib/api';
 import { useAuthStore } from '@/store/auth.store';
-import { Users, Search, Plus, Phone, Edit2 } from 'lucide-react';
+import { Users, Search, Plus, Phone, Edit2, Filter, UserPlus, ChevronRight } from 'lucide-react';
 
 interface Client {
     id: string;
@@ -32,7 +32,10 @@ export default function ClientsPage() {
     const fetchClients = () => {
         setLoading(true);
         api.get('/clients')
-            .then((r) => setClients(r.data))
+            .then((r) => {
+                const sorted = r.data.sort((a: any, b: any) => a.name.localeCompare(b.name, 'pt-BR', { sensitivity: 'base' }));
+                setClients(sorted);
+            })
             .catch(console.error)
             .finally(() => setLoading(false));
     };
@@ -97,51 +100,62 @@ export default function ClientsPage() {
 
     return (
         <div className="animate-fade-in w-full pb-20">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div>
-                    <h1 className="text-4xl font-serif font-bold tracking-tight text-white mb-2">Carteira de Clientes</h1>
-                    <p className="text-sm mt-1 text-slate-500">
-                        {clients.length} clientes cadastrados em sua base.
-                    </p>
+                    <h1 className="text-4xl font-serif font-bold tracking-tight text-[var(--text-primary)] mb-2">Carteira de Clientes</h1>
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent-cyan)] animate-pulse" />
+                        <p className="text-sm font-medium text-slate-500">
+                            {clients.length} {clients.length === 1 ? 'cliente cadastrado' : 'clientes cadastrados'}
+                        </p>
+                    </div>
                 </div>
-                <button className="btn-cyan h-14 px-8 shadow-[var(--accent-cyan-glow)]"
+                <button className="btn-cyan h-12 px-6 shadow-[var(--accent-cyan-glow)] flex items-center gap-2"
                     onClick={() => { setShowForm(true); setError(''); }}>
-                    <Plus size={18} /> Novo Cliente
+                    <UserPlus size={18} /> Novo Cliente
                 </button>
             </div>
 
-            {/* Busca */}
-            <div className="relative mb-8 max-w-md">
-                <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
-                <input value={search} onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Buscar por nome ou telefone..."
-                    className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl pl-12 pr-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold placeholder:text-slate-600 placeholder:font-medium" />
+            {/* Busca e Filtros */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <div className="relative flex-1">
+                    <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 z-10" />
+                    <input 
+                        value={search} 
+                        onChange={(e) => setSearch(e.target.value)}
+                        placeholder="Pesquise por nome ou telefone..."
+                        className="h-12 w-full bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl pl-12 pr-4 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-medium placeholder:text-slate-400" 
+                    />
+                </div>
+                <button className="h-12 px-5 bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl text-slate-500 hover:text-[var(--accent-cyan)] transition-all flex items-center gap-2 text-sm font-bold">
+                    <Filter size={16} /> Filtros
+                </button>
             </div>
 
             {/* Modal Novo Cliente */}
             {showForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-                    <div className="card w-full max-w-[480px] bg-[#0c0c10] border border-white/10 rounded-[32px] p-8 animate-scale-in">
-                        <h2 className="text-2xl font-serif font-bold text-white mb-6">Novo Cliente</h2>
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px] animate-fade-in">
+                    <div className="card w-full max-w-[480px] bg-[var(--bg-surface)] border border-[var(--border)] rounded-[24px] p-8 shadow-2xl animate-scale-in">
+                        <h2 className="text-2xl font-serif font-bold text-[var(--text-primary)] mb-6">Novo Cadastro</h2>
                         <div className="flex flex-col gap-5">
                             <div>
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Nome *</label>
+                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Nome Completo *</label>
                                 <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    placeholder="Ex: Maria" className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold" />
+                                    placeholder="Ex: Maria Oliveira" className="h-12 w-full bg-slate-50 border border-[var(--border)] rounded-xl px-4 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-semibold" />
                             </div>
                             <div>
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Telefone</label>
+                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">WhatsApp / Telefone</label>
                                 <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                                    placeholder="(11) 99999-9999" className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold font-mono tracking-wider" />
+                                    placeholder="(11) 99999-9999" className="h-12 w-full bg-slate-50 border border-[var(--border)] rounded-xl px-4 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-bold font-mono tracking-wider" />
                             </div>
-                            {error && <p className="text-xs text-red-500 font-bold uppercase tracking-tight">{error}</p>}
-                            <div className="flex gap-3 mt-4 pt-6 border-t border-white/5">
+                            {error && <p className="text-[10px] text-red-500 font-bold uppercase tracking-tight">{error}</p>}
+                            <div className="flex gap-3 mt-4 pt-6 border-t border-slate-100">
                                 <button onClick={() => setShowForm(false)}
-                                    className="flex-1 h-14 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                                    className="flex-1 h-12 rounded-xl bg-slate-100 text-[11px] font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-200 transition-all">
                                     Cancelar
                                 </button>
-                                 <button onClick={handleSave} disabled={saving} className="flex-1 h-14 btn-cyan shadow-[var(--accent-cyan-glow)]">
-                                    {saving ? 'Registrando...' : 'Confirmar'}
+                                 <button onClick={handleSave} disabled={saving} className="flex-1 h-12 btn-cyan shadow-[var(--accent-cyan-glow)]">
+                                    {saving ? 'Salvando...' : 'Confirmar'}
                                 </button>
                             </div>
                         </div>
@@ -263,37 +277,40 @@ export default function ClientsPage() {
 
             {/* Lista */}
             {loading ? (
-                <div className="flex justify-center py-20"><span className="w-10 h-10 border-2 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin" /></div>
+                <div className="flex justify-center py-32"><div className="w-12 h-12 border-4 border-slate-200 border-t-[var(--accent-cyan)] rounded-full animate-spin" /></div>
             ) : filtered.length === 0 ? (
-                <div className="card flex flex-col items-center py-24 gap-4 border-dashed border-white/10">
-                    <Users size={48} className="text-slate-600" />
-                    <p className="text-slate-400 font-serif italic text-lg">
-                        {search ? 'Nenhum cliente encontrado.' : 'Sem clientes no sistema.'}
+                <div className="card flex flex-col items-center py-28 gap-4 border-dashed bg-slate-50/50">
+                    <div className="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center text-slate-300">
+                        <Users size={32} />
+                    </div>
+                    <p className="text-slate-400 font-serif italic text-xl">
+                        {search ? 'Nenhum cliente encontrado...' : 'Sua carteira de clientes está vazia.'}
                     </p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5">
                     {filtered.map((c) => (
                         <div 
                             key={c.id} 
                             onClick={() => handleOpenClient(c)}
-                            className="card flex items-center p-6 gap-5 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[var(--accent-cyan)]/30 transition-all cursor-pointer group/client"
+                            className="card group/client flex items-center p-5 gap-5 bg-[var(--bg-surface)] hover:bg-slate-50 border border-[var(--border)] hover:border-[var(--accent-cyan)]/40 transition-all cursor-pointer relative overflow-hidden active:scale-[0.98]"
                         >
-                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shrink-0 bg-gradient-to-br from-[var(--bg-surface)] to-[var(--bg-card)] border border-white/10 text-slate-300 group-hover/client:text-[var(--accent-cyan)] group-hover/client:border-[var(--accent-cyan)]/30 transition-all">
+                            <div className="absolute top-0 right-0 p-2 opacity-0 group-hover/client:opacity-100 transition-opacity">
+                                <ChevronRight size={16} className="text-[var(--accent-cyan)]" />
+                            </div>
+                            <div className="w-14 h-14 rounded-2xl flex items-center justify-center font-black text-xl shrink-0 bg-slate-100 border border-slate-200 text-slate-400 group-hover/client:bg-[var(--accent-cyan)] group-hover/client:text-white group-hover/client:border-[var(--accent-cyan)] transition-all duration-300">
                                 {c.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="font-bold text-base text-white tracking-tight capitalize truncate">{c.name.toLowerCase()}</p>
-                                {c.phone && (
-                                    <div className="flex items-center gap-1.5 mt-1.5 opacity-60">
-                                        <Phone size={12} className="text-[var(--accent-cyan)]" />
-                                        <span className="text-[11px] font-mono tracking-widest text-slate-300">{c.phone}</span>
-                                    </div>
-                                )}
+                                <p className="font-bold text-lg text-[var(--text-primary)] tracking-tight capitalize truncate leading-tight">{c.name.toLowerCase()}</p>
+                                <div className="flex items-center gap-1.5 mt-1.5">
+                                    <Phone size={12} className="text-[var(--accent-cyan)] opacity-70" />
+                                    <span className="text-[12px] font-mono font-bold tracking-wider text-slate-500">{c.phone || '(sem contato)'}</span>
+                                </div>
                             </div>
-                            <div className="flex flex-col items-end gap-1 opacity-40 group-hover/client:opacity-100 transition-opacity">
-                                <span className="text-[8px] font-black uppercase tracking-widest">Cadastro</span>
-                                <span className="text-[10px] font-mono">{new Date(c.createdAt).toLocaleDateString('pt-BR')}</span>
+                            <div className="flex flex-col items-end gap-1 shrink-0">
+                                <span className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-400">Desde</span>
+                                <span className="text-[10px] font-bold text-slate-700">{new Date(c.createdAt).toLocaleDateString('pt-BR')}</span>
                             </div>
                         </div>
                     ))}

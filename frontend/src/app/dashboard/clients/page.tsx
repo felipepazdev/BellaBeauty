@@ -369,6 +369,9 @@ export default function ClientsPage() {
                 </div>
             )}
 
+            {/* Espaçador de Segurança para o Cabeçalho */}
+            <div className="h-10" />
+
             {/* Lista Final - Fiel ao Exemplo (Nome e WhatsApp Lado a Lado) */}
             {loading ? (
                 <div className="flex justify-center py-32"><div className="w-12 h-12 border-4 border-slate-200 border-t-[var(--accent-cyan)] rounded-full animate-spin" /></div>
@@ -382,20 +385,20 @@ export default function ClientsPage() {
                     </p>
                 </div>
             ) : (
-                <div className="mt-12 w-full bg-white">
+                <div className="w-full bg-white">
                     {/* Header - Alinhamento Horizontal Forçado */}
-                    <div className="flex items-center px-10 py-3 border-b border-slate-50 bg-slate-50/30">
+                    <div className="flex items-center px-10 py-4 border-b border-slate-50 bg-slate-50/30">
                         <div className="flex-1">
-                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 italic">Nome</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">NOME</span>
                         </div>
                         <div className="w-[180px]">
-                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">WhatsApp</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">WHATSAPP</span>
                         </div>
                         <div className="w-[120px] text-center">
-                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Cadastro</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">CADASTRO</span>
                         </div>
                         <div className="w-[80px] text-right">
-                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Ações</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">AÇÕES</span>
                         </div>
                     </div>
 
@@ -404,19 +407,19 @@ export default function ClientsPage() {
                             <div 
                                 key={c.id} 
                                 onClick={() => handleOpenClient(c)}
-                                className="flex items-center px-10 py-2 hover:bg-slate-50/80 transition-all cursor-pointer group"
+                                className="flex items-center px-10 py-2.5 hover:bg-slate-50/80 transition-all cursor-pointer group"
                             >
                                 {/* Nome */}
                                 <div className="flex-1 flex items-center gap-2">
                                     <span className="text-slate-200 font-bold">.</span>
-                                    <span className="font-medium text-slate-700 text-[13px] capitalize truncate">
+                                    <span className="font-medium text-slate-700 text-[14px] capitalize truncate">
                                         {c.name.toLowerCase()}
                                     </span>
                                 </div>
                                 
                                 {/* WhatsApp - LADO A LADO */}
                                 <div className="w-[180px]">
-                                    <span className="text-[12px] font-medium text-slate-400 font-mono tracking-tight">
+                                    <span className="text-[12px] font-medium text-slate-500 font-mono tracking-tight">
                                         {c.phone || '-'}
                                     </span>
                                 </div>
@@ -432,13 +435,13 @@ export default function ClientsPage() {
                                 <div className="w-[80px] flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleOpenClient(c); }}
-                                        className="w-7 h-7 flex items-center justify-center rounded-md text-slate-300 hover:text-[var(--accent-cyan)] hover:bg-white transition-all"
+                                        className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-[var(--accent-cyan)] hover:bg-white transition-all shadow-none"
                                     >
                                         <Edit2 size={13} />
                                     </button>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleRemove(c.id, c.name); }}
-                                        className="w-7 h-7 flex items-center justify-center rounded-md text-slate-300 hover:text-red-500 hover:bg-white transition-all"
+                                        className="w-8 h-8 flex items-center justify-center rounded-md text-slate-300 hover:text-red-500 hover:bg-white transition-all shadow-none"
                                     >
                                         <Trash2 size={13} />
                                     </button>

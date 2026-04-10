@@ -49,6 +49,7 @@ export class ClientsService {
         id: c.id,
         name: c.name,
         phone: c.phone,
+        createdAt: c.createdAt,
         totalAppointments: c.appointments.length,
         totalSpent,
         lastVisit,

@@ -98,7 +98,18 @@ export default function ClientsPage() {
             setShowForm(false);
             fetchClients();
         } catch (e: any) {
-            setError(e.response?.data?.message || 'Erro ao salvar cliente');
+            const msg = e.response?.data?.message;
+            if (Array.isArray(msg)) {
+                const translated = msg.map(m => {
+                    if (m.includes('name')) return 'O nome é obrigatório.';
+                    if (m.includes('phone')) return 'O telefone deve ser um texto válido.';
+                    if (m.includes('should not exist')) return 'Dados extras não permitidos.';
+                    return m;
+                }).join(' ');
+                setError(translated);
+            } else {
+                setError(msg || 'Erro ao salvar cliente. Verifique os dados.');
+            }
         } finally {
             setSaving(false);
         }

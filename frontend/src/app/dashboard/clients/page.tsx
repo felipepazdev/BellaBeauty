@@ -99,7 +99,7 @@ export default function ClientsPage() {
     };
 
     return (
-        <div className="animate-fade-in w-full pb-20">
+        <div className="animate-opacity-in w-full pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div>
                     <h1 className="text-4xl font-serif font-bold tracking-tight text-[var(--text-primary)] mb-2">Carteira de Clientes</h1>
@@ -132,29 +132,29 @@ export default function ClientsPage() {
                 </button>
             </div>
 
-            {/* Modal Novo Cliente (Fixo na Janela Inteira) */}
+            {/* Modal Novo Cliente (Centralização Absoluta na Janela) */}
             {showForm && (
-                <div className="fixed top-0 left-0 w-full h-full z-[9999] flex items-center justify-center p-4 bg-black/40 backdrop-blur-[4px] animate-fade-in">
-                    <div className="card w-full max-w-[480px] bg-[var(--bg-surface)] border border-[var(--border)] rounded-[24px] p-8 shadow-2xl animate-scale-in">
-                        <h2 className="text-2xl font-serif font-bold text-[var(--text-primary)] mb-6 text-center">Novo Cadastro</h2>
+                <div className="fixed inset-0 w-screen h-screen z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-md">
+                    <div className="card w-full max-w-[480px] bg-[var(--bg-surface)] border border-[var(--border)] rounded-[32px] p-10 shadow-[0_30px_70px_rgba(0,0,0,0.4)] animate-scale-in">
+                        <h2 className="text-3xl font-serif font-bold text-[var(--text-primary)] mb-8 text-center">Novo Cadastro</h2>
                         <div className="flex flex-col gap-6">
                             <div>
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Nome Completo *</label>
-                                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    placeholder="Ex: Maria Oliveira" className="h-12 w-full bg-slate-50 border border-[var(--border)] rounded-xl px-4 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-semibold" />
+                                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Nome Completo *</label>
+                                <input autoFocus value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                    placeholder="Ex: Maria Oliveira" className="h-14 w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-semibold text-lg" />
                             </div>
                             <div>
-                                <label className="text-[11px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">WhatsApp / Telefone</label>
+                                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">WhatsApp / Telefone</label>
                                 <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                                    placeholder="(11) 99999-9999" className="h-12 w-full bg-slate-50 border border-[var(--border)] rounded-xl px-4 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-bold font-mono tracking-wider" />
+                                    placeholder="(11) 99999-9999" className="h-14 w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-bold font-mono tracking-widest text-lg" />
                             </div>
-                            {error && <p className="text-[10px] text-red-500 font-bold uppercase tracking-tight">{error}</p>}
-                            <div className="flex gap-3 mt-4 pt-6 border-t border-slate-100">
+                            {error && <p className="text-[11px] text-red-500 font-bold uppercase tracking-tight bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>}
+                            <div className="flex gap-4 mt-4 pt-8 border-t border-slate-100">
                                 <button onClick={() => setShowForm(false)}
-                                    className="flex-1 h-12 rounded-xl bg-slate-100 text-[11px] font-bold uppercase tracking-widest text-slate-500 hover:bg-slate-200 transition-all font-bold">
+                                    className="flex-1 h-14 rounded-2xl bg-slate-100 text-[12px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-all">
                                     Cancelar
                                 </button>
-                                 <button onClick={handleSave} disabled={saving} className="flex-1 h-12 btn-cyan shadow-[var(--accent-cyan-glow)]">
+                                 <button onClick={handleSave} disabled={saving} className="flex-1 h-14 btn-cyan shadow-[var(--accent-cyan-glow)] !text-[12px]">
                                     {saving ? 'Gravando...' : 'Confirmar'}
                                 </button>
                             </div>
@@ -165,7 +165,7 @@ export default function ClientsPage() {
 
             {/* Modal Perfil Cliente (Histórico/Fichas) */}
             {selectedClient && (
-                <div className="fixed top-0 left-0 w-full h-full z-[9999] flex items-center justify-end bg-black/30 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedClient(null)}>
+                <div className="fixed inset-0 w-screen h-screen z-[99999] flex items-center justify-end bg-black/30 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedClient(null)}>
                     <div className="w-full max-w-lg h-full bg-[var(--bg-surface)] border-l border-[var(--border)] flex flex-col transform transition-transform animate-slide-left shadow-2xl" onClick={e => e.stopPropagation()}>
                         
                         {/* Header Perfil */}

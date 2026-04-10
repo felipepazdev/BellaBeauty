@@ -382,11 +382,11 @@ export default function ClientsPage() {
                     </p>
                 </div>
             ) : (
-                <div className="mt-8 w-full bg-white">
+                <div className="mt-12 w-full bg-white">
                     {/* Header - Alinhamento Horizontal Forçado */}
                     <div className="flex items-center px-10 py-3 border-b border-slate-50 bg-slate-50/30">
                         <div className="flex-1">
-                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 italic">Nome / Detalhes</span>
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 italic">Nome</span>
                         </div>
                         <div className="w-[180px]">
                             <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">WhatsApp</span>

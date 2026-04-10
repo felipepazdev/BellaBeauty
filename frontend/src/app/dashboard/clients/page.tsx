@@ -369,7 +369,7 @@ export default function ClientsPage() {
                 </div>
             )}
 
-            {/* Lista Ultra-Fiel ao Exemplo */}
+            {/* Lista Final - Fiel ao Exemplo (Nome e WhatsApp Lado a Lado) */}
             {loading ? (
                 <div className="flex justify-center py-32"><div className="w-12 h-12 border-4 border-slate-200 border-t-[var(--accent-cyan)] rounded-full animate-spin" /></div>
             ) : filtered.length === 0 ? (
@@ -382,13 +382,21 @@ export default function ClientsPage() {
                     </p>
                 </div>
             ) : (
-                <div className="mt-10 w-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
-                    {/* Header da Lista - Estilo Minimalista */}
-                    <div className="grid grid-cols-[1fr,200px,120px,100px] gap-4 px-10 py-4 border-b border-slate-50">
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Nome</span>
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">WhatsApp</span>
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 text-center">Cadastro</span>
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 text-right">Ações</span>
+                <div className="mt-8 w-full bg-white">
+                    {/* Header - Alinhamento Horizontal Forçado */}
+                    <div className="flex items-center px-10 py-3 border-b border-slate-50 bg-slate-50/30">
+                        <div className="flex-1">
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 italic">Nome / Detalhes</span>
+                        </div>
+                        <div className="w-[180px]">
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">WhatsApp</span>
+                        </div>
+                        <div className="w-[120px] text-center">
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Cadastro</span>
+                        </div>
+                        <div className="w-[80px] text-right">
+                            <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Ações</span>
+                        </div>
                     </div>
 
                     <div className="divide-y divide-slate-50">
@@ -396,35 +404,43 @@ export default function ClientsPage() {
                             <div 
                                 key={c.id} 
                                 onClick={() => handleOpenClient(c)}
-                                className="grid grid-cols-[1fr,200px,120px,100px] gap-4 items-center px-10 py-3.5 hover:bg-slate-50/50 transition-all cursor-pointer group"
+                                className="flex items-center px-10 py-2 hover:bg-slate-50/80 transition-all cursor-pointer group"
                             >
-                                <div className="flex items-center gap-2">
-                                    <span className="text-slate-300 font-bold">.</span>
-                                    <span className="font-medium text-slate-700 text-[14px] capitalize truncate transition-colors group-hover:text-[var(--accent-cyan)]">
+                                {/* Nome */}
+                                <div className="flex-1 flex items-center gap-2">
+                                    <span className="text-slate-200 font-bold">.</span>
+                                    <span className="font-medium text-slate-700 text-[13px] capitalize truncate">
                                         {c.name.toLowerCase()}
                                     </span>
                                 </div>
                                 
-                                <span className="text-[13px] font-medium text-slate-500 font-mono tracking-tight">
-                                    {c.phone || '-'}
-                                </span>
+                                {/* WhatsApp - LADO A LADO */}
+                                <div className="w-[180px]">
+                                    <span className="text-[12px] font-medium text-slate-400 font-mono tracking-tight">
+                                        {c.phone || '-'}
+                                    </span>
+                                </div>
 
-                                <span className="text-[11px] font-medium text-slate-400 text-center">
-                                    {c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : '-'}
-                                </span>
+                                {/* Cadastro */}
+                                <div className="w-[120px] text-center">
+                                    <span className="text-[11px] font-medium text-slate-300">
+                                        {c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : '-'}
+                                    </span>
+                                </div>
 
-                                <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                {/* Ações */}
+                                <div className="w-[80px] flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleOpenClient(c); }}
-                                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-[var(--accent-cyan)] hover:bg-white transition-all"
+                                        className="w-7 h-7 flex items-center justify-center rounded-md text-slate-300 hover:text-[var(--accent-cyan)] hover:bg-white transition-all"
                                     >
-                                        <Edit2 size={14} />
+                                        <Edit2 size={13} />
                                     </button>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleRemove(c.id, c.name); }}
-                                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-red-500 hover:bg-white transition-all"
+                                        className="w-7 h-7 flex items-center justify-center rounded-md text-slate-300 hover:text-red-500 hover:bg-white transition-all"
                                     >
-                                        <Trash2 size={14} />
+                                        <Trash2 size={13} />
                                     </button>
                                 </div>
                             </div>

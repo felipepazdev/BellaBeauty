@@ -166,7 +166,7 @@ export default function ClientsPage() {
                 <div className="relative">
                     <button 
                         onClick={() => setShowSortMenu(!showSortMenu)}
-                        className={`h-12 px-5 rounded-xl transition-all flex items-center gap-2 text-sm font-bold shadow-sm ${
+                        className={`h-12 px-5 rounded-xl transition-all flex items-center gap-2 text-sm font-bold shadow-sm !border-0 ${
                             showSortMenu || sortBy !== 'name' 
                             ? 'bg-[var(--accent-cyan-glow)] text-[var(--accent-cyan)]' 
                             : 'bg-white text-slate-500 hover:text-[var(--accent-cyan)]'
@@ -179,28 +179,28 @@ export default function ClientsPage() {
                     {showSortMenu && (
                         <>
                             <div className="fixed inset-0 z-[100]" onClick={() => setShowSortMenu(false)} />
-                            <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl z-[101] overflow-hidden animate-scale-in border-none">
+                            <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-[0_15px_50px_-15px_rgba(0,0,0,0.15)] z-[101] overflow-hidden animate-scale-in !border-0">
                                 <div className="p-3">
                                     <p className="px-3 py-2 text-[10px] font-black uppercase tracking-widest text-slate-300">Ordenar por:</p>
                                 </div>
                                 <div className="p-1 pb-2">
                                     <button 
                                         onClick={() => { setSortBy('name'); setShowSortMenu(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors ${sortBy === 'name' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors !border-0 ${sortBy === 'name' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
                                     >
                                         Nome (A-Z)
                                         {sortBy === 'name' && <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] shadow-[var(--accent-cyan-glow)]" />}
                                     </button>
                                     <button 
                                         onClick={() => { setSortBy('newest'); setShowSortMenu(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors ${sortBy === 'newest' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors !border-0 ${sortBy === 'newest' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
                                     >
                                         Mais Novos primeiro
                                         {sortBy === 'newest' && <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] shadow-[var(--accent-cyan-glow)]" />}
                                     </button>
                                     <button 
                                         onClick={() => { setSortBy('oldest'); setShowSortMenu(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors ${sortBy === 'oldest' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
+                                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold rounded-xl transition-colors !border-0 ${sortBy === 'oldest' ? 'bg-slate-50 text-[var(--accent-cyan)]' : 'text-slate-600 hover:bg-slate-50'}`}
                                     >
                                         Mais Antigos primeiro
                                         {sortBy === 'oldest' && <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent-cyan)] shadow-[var(--accent-cyan-glow)]" />}

@@ -369,7 +369,7 @@ export default function ClientsPage() {
                 </div>
             )}
 
-            {/* Lista Estilo Salão99 */}
+            {/* Lista Minimalista Sem Bordas */}
             {loading ? (
                 <div className="flex justify-center py-32"><div className="w-12 h-12 border-4 border-slate-200 border-t-[var(--accent-cyan)] rounded-full animate-spin" /></div>
             ) : filtered.length === 0 ? (
@@ -382,32 +382,32 @@ export default function ClientsPage() {
                     </p>
                 </div>
             ) : (
-                <div className="bg-white rounded-[32px] shadow-sm p-4">
-                    {/* Header da Lista */}
-                    <div className="grid grid-cols-[1.5fr,1fr,120px,100px] px-8 py-6 mb-2">
-                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Nome do Cliente</span>
-                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">WhatsApp / Contato</span>
-                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Cadastro</span>
-                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Ações</span>
+                <div className="mt-12 w-full">
+                    {/* Header da Lista - Alinhamento Fino */}
+                    <div className="grid grid-cols-[1fr,200px,150px,100px] gap-4 px-6 pb-4 border-b border-slate-100 mb-2">
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Nome</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">WhatsApp / Contato</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Cadastro</span>
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Ações</span>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-0">
                         {filtered.map((c) => (
                             <div 
                                 key={c.id} 
                                 onClick={() => handleOpenClient(c)}
-                                className="grid grid-cols-[1.5fr,1fr,120px,100px] items-center px-8 py-5 hover:bg-slate-50 rounded-2xl transition-all cursor-pointer group border border-transparent hover:border-slate-100"
+                                className="grid grid-cols-[1fr,200px,150px,100px] gap-4 items-center px-6 py-4 hover:bg-slate-50/50 transition-all cursor-pointer group border-b border-slate-50 last:border-0"
                             >
                                 <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-sm text-slate-400 group-hover:bg-[var(--accent-cyan-glow)] group-hover:text-[var(--accent-cyan)] transition-colors">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-bold text-sm text-slate-400 group-hover:bg-[var(--accent-cyan-glow)] group-hover:text-[var(--accent-cyan)] group-hover:border-transparent transition-all">
                                         {c.name.charAt(0).toUpperCase()}
                                     </div>
-                                    <span className="font-bold text-slate-700 text-lg capitalize group-hover:text-[var(--accent-cyan)] transition-colors">
+                                    <span className="font-bold text-slate-700 text-base capitalize truncate group-hover:text-[var(--accent-cyan)] transition-colors">
                                         {c.name.toLowerCase()}
                                     </span>
                                 </div>
                                 
-                                <span className="text-sm font-bold text-slate-500 font-mono tracking-wider">
+                                <span className="text-sm font-bold text-slate-500 font-mono tracking-wider truncate">
                                     {c.phone || '-'}
                                 </span>
 
@@ -415,18 +415,18 @@ export default function ClientsPage() {
                                     {c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : '-'}
                                 </span>
 
-                                <div className="flex justify-end pr-2 gap-3">
+                                <div className="flex justify-end gap-1">
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleOpenClient(c); }}
-                                        className="w-9 h-9 flex items-center justify-center hover:bg-white rounded-xl text-slate-300 hover:text-[var(--accent-cyan)] transition-all shadow-sm md:shadow-none"
-                                        title="Ver/Editar Perfil"
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-300 hover:text-[var(--accent-cyan)] hover:bg-white transition-all"
+                                        title="Ver/Editar"
                                     >
                                         <Edit2 size={16} />
                                     </button>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleRemove(c.id, c.name); }}
-                                        className="w-9 h-9 flex items-center justify-center hover:bg-white rounded-xl text-slate-300 hover:text-red-500 transition-all shadow-sm md:shadow-none"
-                                        title="Remover Cliente"
+                                        className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-300 hover:text-red-500 hover:bg-white transition-all"
+                                        title="Remover"
                                     >
                                         <Trash2 size={16} />
                                     </button>

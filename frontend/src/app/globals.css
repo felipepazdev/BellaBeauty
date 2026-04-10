@@ -13,17 +13,17 @@
     --bg-card-hover: rgba(248, 249, 255, 1);
     
     /* Bordas e Acentos */
-    --border: rgba(0, 0, 0, 0.09);
-    --border-hover: rgba(139, 92, 246, 0.25);
-    --border-accent: #8b5cf6;
+    --border: transparent;
+    --border-hover: rgba(139, 92, 246, 0.15);
+    --border-accent: transparent;
     
     /* Cores de Marca */
     --accent: #7c3aed;
     --accent-deep: #6d28d9;
     --accent-cyan: #06b6d4;
     --accent-cyan-deep: #0891b2;
-    --accent-glow: rgba(124, 58, 237, 0.12);
-    --accent-cyan-glow: rgba(6, 182, 212, 0.18);
+    --accent-glow: rgba(124, 58, 237, 0.08);
+    --accent-cyan-glow: rgba(6, 182, 212, 0.12);
     
     /* Tipografia */
     --text-primary: #111827;
@@ -34,12 +34,12 @@
     /* Salão 99 Identity (Now Cyan) */
     --salao99-pink: #06b6d4;
     --salao99-pink-hover: #0891b2;
-    --salao99-pink-glow: rgba(6, 182, 212, 0.15);
+    --salao99-pink-glow: rgba(6, 182, 212, 0.10);
 
     /* Spacing & Radius */
     --p-card: 1.5rem;
-    --radius-card: 16px;
-    --radius-input: 10px;
+    --radius-card: 20px;
+    --radius-input: 12px;
     --bg-body: var(--bg-base);
 }
 
@@ -50,16 +50,16 @@
     --bg-card: rgba(22, 22, 32, 0.60);
     --bg-card-hover: rgba(30, 30, 44, 0.75);
     
-    --border: rgba(255, 255, 255, 0.07);
-    --border-hover: rgba(139, 92, 246, 0.28);
+    --border: transparent;
+    --border-hover: rgba(139, 92, 246, 0.18);
     
     --text-primary: #f1f5f9;
     --text-secondary: #94a3b8;
     --text-muted: #64748b;
     --text-cyan: #06b6d4;
 
-    --accent-glow: rgba(124, 58, 237, 0.18);
-    --accent-cyan-glow: rgba(6, 182, 212, 0.22);
+    --accent-glow: rgba(124, 58, 237, 0.12);
+    --accent-cyan-glow: rgba(6, 182, 212, 0.15);
 }
 
 * {
@@ -67,6 +67,8 @@
     margin: 0;
     padding: 0;
     -webkit-font-smoothing: antialiased;
+    border: none !important;
+    outline: none !important;
 }
 
 body {
@@ -89,7 +91,7 @@ h1, h2, h3, h4, .font-serif {
     background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-    background: var(--border);
+    background: rgba(0,0,0,0.05);
     border-radius: 10px;
     transition: background 0.2s ease;
 }
@@ -133,7 +135,6 @@ h1, h2, h3, h4, .font-serif {
 .btn-primary {
     background: linear-gradient(135deg, var(--accent), var(--accent-deep));
     color: #fff;
-    border: none;
     border-radius: var(--radius-input);
     padding: 0.7rem 1.5rem;
     font-weight: 600;
@@ -141,7 +142,7 @@ h1, h2, h3, h4, .font-serif {
     letter-spacing: 0.01em;
     cursor: pointer;
     transition: all 0.25s ease;
-    box-shadow: 0 2px 8px var(--accent-glow);
+    box-shadow: 0 4px 12px var(--accent-glow);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -150,7 +151,7 @@ h1, h2, h3, h4, .font-serif {
 
 .btn-primary:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px var(--accent-glow);
+    box-shadow: 0 8px 24px var(--accent-glow);
 }
 
 .btn-primary:active:not(:disabled) {
@@ -165,7 +166,6 @@ h1, h2, h3, h4, .font-serif {
 .btn-cyan {
     background: linear-gradient(135deg, var(--accent-cyan), var(--accent-cyan-deep));
     color: #3d2800;
-    border: none;
     border-radius: var(--radius-input);
     padding: 0.7rem 1.5rem;
     font-weight: 700;
@@ -174,7 +174,7 @@ h1, h2, h3, h4, .font-serif {
     text-transform: uppercase;
     cursor: pointer;
     transition: all 0.25s ease;
-    box-shadow: 0 2px 8px var(--accent-cyan-glow);
+    box-shadow: 0 4px 12px var(--accent-cyan-glow);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -183,7 +183,7 @@ h1, h2, h3, h4, .font-serif {
 
 .btn-cyan:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px var(--accent-cyan-glow);
+    box-shadow: 0 8px 24px var(--accent-cyan-glow);
     filter: brightness(1.05);
 }
 
@@ -200,7 +200,6 @@ h1, h2, h3, h4, .font-serif {
 .btn-secondary {
     background: var(--bg-surface);
     color: var(--text-secondary);
-    border: 1px solid var(--border);
     border-radius: var(--radius-input);
     padding: 0.7rem 1.25rem;
     font-weight: 600;
@@ -211,11 +210,12 @@ h1, h2, h3, h4, .font-serif {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .btn-secondary:hover:not(:disabled) {
     background: var(--bg-card-hover);
-    border-color: var(--border-hover);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .btn-secondary:disabled {
@@ -226,16 +226,14 @@ h1, h2, h3, h4, .font-serif {
 /* Card */
 .card {
     background: var(--bg-card);
-    border: 1px solid var(--border);
     border-radius: var(--radius-card);
     padding: var(--p-card);
     transition: all 0.25s ease;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06), 0 4px 16px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .card:hover {
-    border-color: var(--border-hover);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
 }
 
 .dark .card {
@@ -256,22 +254,21 @@ textarea,
     width: 100%;
     height: 48px;
     background: var(--bg-surface);
-    border: 1px solid var(--border);
     border-radius: var(--radius-input);
     padding: 0 16px;
     color: var(--text-primary);
     font-size: 0.9rem;
     font-weight: 400;
-    outline: none;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.02);
 }
 
 input:not([type="checkbox"]):not([type="radio"]):focus,
 select:focus,
 textarea:focus,
 .input-field:focus {
-    border-color: var(--accent);
     box-shadow: 0 0 0 3px var(--accent-glow);
+    background: #fff;
 }
 
 input::placeholder,

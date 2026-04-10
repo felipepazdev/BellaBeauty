@@ -369,7 +369,7 @@ export default function ClientsPage() {
                 </div>
             )}
 
-            {/* Lista Minimalista Sem Bordas */}
+            {/* Lista Ultra-Fiel ao Exemplo */}
             {loading ? (
                 <div className="flex justify-center py-32"><div className="w-12 h-12 border-4 border-slate-200 border-t-[var(--accent-cyan)] rounded-full animate-spin" /></div>
             ) : filtered.length === 0 ? (
@@ -382,53 +382,49 @@ export default function ClientsPage() {
                     </p>
                 </div>
             ) : (
-                <div className="mt-12 w-full">
-                    {/* Header da Lista - Alinhamento Fino */}
-                    <div className="grid grid-cols-[1fr,200px,150px,100px] gap-4 px-6 pb-4 border-b border-slate-100 mb-2">
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Nome</span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">WhatsApp / Contato</span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Cadastro</span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Ações</span>
+                <div className="mt-10 w-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.02)]">
+                    {/* Header da Lista - Estilo Minimalista */}
+                    <div className="grid grid-cols-[1fr,200px,120px,100px] gap-4 px-10 py-4 border-b border-slate-50">
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">Nome</span>
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300">WhatsApp</span>
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 text-center">Cadastro</span>
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 text-right">Ações</span>
                     </div>
 
-                    <div className="space-y-0">
+                    <div className="divide-y divide-slate-50">
                         {filtered.map((c) => (
                             <div 
                                 key={c.id} 
                                 onClick={() => handleOpenClient(c)}
-                                className="grid grid-cols-[1fr,200px,150px,100px] gap-4 items-center px-6 py-4 hover:bg-slate-50/50 transition-all cursor-pointer group border-b border-slate-50 last:border-0"
+                                className="grid grid-cols-[1fr,200px,120px,100px] gap-4 items-center px-10 py-3.5 hover:bg-slate-50/50 transition-all cursor-pointer group"
                             >
-                                <div className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center font-bold text-sm text-slate-400 group-hover:bg-[var(--accent-cyan-glow)] group-hover:text-[var(--accent-cyan)] group-hover:border-transparent transition-all">
-                                        {c.name.charAt(0).toUpperCase()}
-                                    </div>
-                                    <span className="font-bold text-slate-700 text-base capitalize truncate group-hover:text-[var(--accent-cyan)] transition-colors">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-slate-300 font-bold">.</span>
+                                    <span className="font-medium text-slate-700 text-[14px] capitalize truncate transition-colors group-hover:text-[var(--accent-cyan)]">
                                         {c.name.toLowerCase()}
                                     </span>
                                 </div>
                                 
-                                <span className="text-sm font-bold text-slate-500 font-mono tracking-wider truncate">
+                                <span className="text-[13px] font-medium text-slate-500 font-mono tracking-tight">
                                     {c.phone || '-'}
                                 </span>
 
-                                <span className="text-xs font-bold text-slate-400 text-center">
+                                <span className="text-[11px] font-medium text-slate-400 text-center">
                                     {c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : '-'}
                                 </span>
 
-                                <div className="flex justify-end gap-1">
+                                <div className="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleOpenClient(c); }}
-                                        className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-300 hover:text-[var(--accent-cyan)] hover:bg-white transition-all"
-                                        title="Ver/Editar"
+                                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-[var(--accent-cyan)] hover:bg-white transition-all"
                                     >
-                                        <Edit2 size={16} />
+                                        <Edit2 size={14} />
                                     </button>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleRemove(c.id, c.name); }}
-                                        className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-300 hover:text-red-500 hover:bg-white transition-all"
-                                        title="Remover"
+                                        className="w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-red-500 hover:bg-white transition-all"
                                     >
-                                        <Trash2 size={16} />
+                                        <Trash2 size={14} />
                                     </button>
                                 </div>
                             </div>

@@ -382,32 +382,32 @@ export default function ClientsPage() {
                     </p>
                 </div>
             ) : (
-                <div className="bg-white rounded-[24px] border border-slate-100 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-[32px] shadow-sm p-4">
                     {/* Header da Lista */}
-                    <div className="grid grid-cols-[1fr,150px,150px,80px] px-8 py-4 bg-slate-50/50 border-b border-slate-100">
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Nome</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">WhatsApp</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 text-center">Cadastro</span>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 text-right">Ações</span>
+                    <div className="grid grid-cols-[1.5fr,1fr,120px,100px] px-8 py-6 mb-2">
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">Nome do Cliente</span>
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">WhatsApp / Contato</span>
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 text-center">Cadastro</span>
+                        <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 text-right">Ações</span>
                     </div>
 
-                    <div className="divide-y divide-slate-50">
+                    <div className="space-y-2">
                         {filtered.map((c) => (
                             <div 
                                 key={c.id} 
                                 onClick={() => handleOpenClient(c)}
-                                className="grid grid-cols-[1fr,150px,150px,80px] items-center px-8 py-4 hover:bg-slate-50 transition-all cursor-pointer group"
+                                className="grid grid-cols-[1.5fr,1fr,120px,100px] items-center px-8 py-5 hover:bg-slate-50 rounded-2xl transition-all cursor-pointer group border border-transparent hover:border-slate-100"
                             >
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-400 group-hover:bg-[var(--accent-cyan-glow)] group-hover:text-[var(--accent-cyan)] transition-colors">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-sm text-slate-400 group-hover:bg-[var(--accent-cyan-glow)] group-hover:text-[var(--accent-cyan)] transition-colors">
                                         {c.name.charAt(0).toUpperCase()}
                                     </div>
-                                    <span className="font-bold text-slate-700 capitalize group-hover:text-[var(--accent-cyan)] transition-colors">
+                                    <span className="font-bold text-slate-700 text-lg capitalize group-hover:text-[var(--accent-cyan)] transition-colors">
                                         {c.name.toLowerCase()}
                                     </span>
                                 </div>
                                 
-                                <span className="text-sm font-medium text-slate-500 font-mono tracking-tight">
+                                <span className="text-sm font-bold text-slate-500 font-mono tracking-wider">
                                     {c.phone || '-'}
                                 </span>
 
@@ -415,17 +415,17 @@ export default function ClientsPage() {
                                     {c.createdAt ? new Date(c.createdAt).toLocaleDateString('pt-BR') : '-'}
                                 </span>
 
-                                <div className="flex justify-end pr-2 gap-2">
+                                <div className="flex justify-end pr-2 gap-3">
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleOpenClient(c); }}
-                                        className="p-2 hover:bg-white rounded-lg text-slate-300 hover:text-[var(--accent-cyan)] transition-all"
+                                        className="w-9 h-9 flex items-center justify-center hover:bg-white rounded-xl text-slate-300 hover:text-[var(--accent-cyan)] transition-all shadow-sm md:shadow-none"
                                         title="Ver/Editar Perfil"
                                     >
                                         <Edit2 size={16} />
                                     </button>
                                     <button 
                                         onClick={(e) => { e.stopPropagation(); handleRemove(c.id, c.name); }}
-                                        className="p-2 hover:bg-white rounded-lg text-slate-300 hover:text-red-500 transition-all"
+                                        className="w-9 h-9 flex items-center justify-center hover:bg-white rounded-xl text-slate-300 hover:text-red-500 transition-all shadow-sm md:shadow-none"
                                         title="Remover Cliente"
                                     >
                                         <Trash2 size={16} />

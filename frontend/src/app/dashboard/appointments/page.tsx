@@ -915,7 +915,8 @@ export default function AppointmentsPage() {
     };
 
     return (
-        <div className="animate-fade-in w-full flex flex-col" style={{ minHeight: 0 }}>
+        <>
+        <div className="animate-opacity-in w-full flex flex-col" style={{ minHeight: 0 }}>
 
             {/* ─── Header ────────────────────────────────────────────────────────────── */}
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
@@ -1196,29 +1197,31 @@ export default function AppointmentsPage() {
                 </div>
             )}
 
-            {/* ─── Modal de Agendamento ────────────────────────────────────────────────── */}
-            {modal && (
-                <BookingModal
-                    date={date}
-                    slot={modal.slot}
-                    professional={modal.professional}
-                    professionals={modalProfessionals}
-                    onClose={() => setModal(null)}
-                    onSaved={() => { setModal(null); fetchAppointments(); }}
-                    appointment={modal.appointment}
-                />
-            )}
-
-            {/* Modal de Detalhes de Agendamento Existente */}
-            {selectedAppointment && (
-                <AppointmentDetailsModal
-                    ap={selectedAppointment}
-                    professionals={modalProfessionals}
-                    onClose={() => setSelectedAppointment(null)}
-                    onSaved={() => { setSelectedAppointment(null); fetchAppointments(); }}
-                    onEdit={handleEdit}
-                />
-            )}
         </div>
+        
+        {/* ─── Modal de Agendamento ────────────────────────────────────────────────── */}
+        {modal && (
+            <BookingModal
+                date={date}
+                slot={modal.slot}
+                professional={modal.professional}
+                professionals={modalProfessionals}
+                onClose={() => setModal(null)}
+                onSaved={() => { setModal(null); fetchAppointments(); }}
+                appointment={modal.appointment}
+            />
+        )}
+
+        {/* Modal de Detalhes de Agendamento Existente */}
+        {selectedAppointment && (
+            <AppointmentDetailsModal
+                ap={selectedAppointment}
+                professionals={modalProfessionals}
+                onClose={() => setSelectedAppointment(null)}
+                onSaved={() => { setSelectedAppointment(null); fetchAppointments(); }}
+                onEdit={handleEdit}
+            />
+        )}
+        </>
     );
 }

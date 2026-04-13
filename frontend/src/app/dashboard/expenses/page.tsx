@@ -76,7 +76,9 @@ export default function ExpensesPage() {
     };
 
     return (
-        <div className="animate-fade-in w-full">
+    return (
+        <>
+        <div className="animate-opacity-in w-full">
             <div className="flex items-center justify-between mb-8">
                 <div>
                     <h1 className="text-[28px] leading-tight font-semibold tracking-tight text-white mb-1">Despesas</h1>
@@ -114,55 +116,6 @@ export default function ExpensesPage() {
                             </p>
                         </div>
                     ))}
-                </div>
-            )}
-
-            {/* Modal */}
-            {showForm && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
-                    <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }} />
-                    <div className="card w-full max-w-[440px] max-h-[90vh] overflow-y-auto custom-scrollbar animate-fade-in z-10 shadow-2xl" onClick={e => e.stopPropagation()}>
-                        <div className="flex items-center justify-between mb-5">
-                            <h2 className="font-bold">Registrar Despesa</h2>
-                            <button onClick={() => setShowForm(false)}
-                                style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                                <X size={18} />
-                            </button>
-                        </div>
-                        <div className="flex flex-col gap-4">
-                            <div>
-                                <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Categoria</label>
-                                <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
-                                    className="input-field">
-                                    {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
-                                        <option key={k} value={k}>{v}</option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Descrição</label>
-                                <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-                                    placeholder="Ex: Aluguel de fevereiro" className="input-field" />
-                            </div>
-                            <div>
-                                <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Valor (R$)</label>
-                                <input type="number" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })}
-                                    placeholder="0,00" className="input-field" min="0" step="0.01" />
-                            </div>
-                            {error && <p className="text-xs" style={{ color: 'var(--danger)' }}>{error}</p>}
-                            <div className="flex gap-3 mt-1">
-                                <button onClick={() => setShowForm(false)}
-                                    className="flex-1 px-4 py-2 rounded-xl text-sm font-medium"
-                                    style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
-                                    Cancelar
-                                </button>
-                                <button onClick={handleSave} disabled={saving} className="btn-primary flex-1 flex items-center justify-center gap-2">
-                                    {saving ? <span className="spinner" /> : null}
-                                    {saving ? 'Salvando...' : 'Registrar'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             )}
 
@@ -210,5 +163,55 @@ export default function ExpensesPage() {
                 </div>
             )}
         </div>
+
+        {/* Modal */}
+        {showForm && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={() => setShowForm(false)}>
+                <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }} />
+                <div className="card w-full max-w-[440px] max-h-[90vh] overflow-y-auto custom-scrollbar animate-fade-in z-10 shadow-2xl" onClick={e => e.stopPropagation()}>
+                    <div className="flex items-center justify-between mb-5">
+                        <h2 className="font-bold">Registrar Despesa</h2>
+                        <button onClick={() => setShowForm(false)}
+                            style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                            <X size={18} />
+                        </button>
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        <div>
+                            <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Categoria</label>
+                            <select value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}
+                                className="input-field">
+                                {Object.entries(CATEGORY_LABELS).map(([k, v]) => (
+                                    <option key={k} value={k}>{v}</option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Descrição</label>
+                            <input value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                placeholder="Ex: Aluguel de fevereiro" className="input-field" />
+                        </div>
+                        <div>
+                            <label className="text-sm mb-1 block" style={{ color: 'var(--text-secondary)' }}>Valor (R$)</label>
+                            <input type="number" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })}
+                                placeholder="0,00" className="input-field" min="0" step="0.01" />
+                        </div>
+                        {error && <p className="text-xs" style={{ color: 'var(--danger)' }}>{error}</p>}
+                        <div className="flex gap-3 mt-1">
+                            <button onClick={() => setShowForm(false)}
+                                className="flex-1 px-4 py-2 rounded-xl text-sm font-medium"
+                                style={{ background: 'var(--bg-surface)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                                Cancelar
+                            </button>
+                            <button onClick={handleSave} disabled={saving} className="btn-primary flex-1 flex items-center justify-center gap-2">
+                                {saving ? <span className="spinner" /> : null}
+                                {saving ? 'Salvando...' : 'Registrar'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }

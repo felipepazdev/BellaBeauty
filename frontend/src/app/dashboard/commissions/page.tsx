@@ -91,7 +91,6 @@ export default function CommissionsPage() {
         setYear(y);
     };
 
-    // ... (grouping logic)
     const groupedCommissions = Object.values(commissions.reduce((acc, c) => {
         const profId = c.professional?.id || 'unknown';
         if (!acc[profId]) {
@@ -113,7 +112,7 @@ export default function CommissionsPage() {
 
     return (
         <>
-            <div style={{ width: '100%', paddingBottom: 80 }}>
+            <div className="animate-opacity-in" style={{ width: '100%', paddingBottom: 80 }}>
                 {/* ── Header ──────────────────────────────────────────── */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24, marginBottom: 40 }}>
                     <div>
@@ -243,12 +242,13 @@ export default function CommissionsPage() {
                 </div>
             </div>
 
-            {/* MODAL DE PAGAMENTO (CEREJA DO BOLO) */}
+            {/* MODAL DE PAGAMENTO */}
             {payoutModal && (
                  <div
                  style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+                 onClick={() => setPayoutModal(null)}
              >
-                 <div className="card" style={{ width: '100%', maxWidth: 450, padding: 32, display: 'flex', flexDirection: 'column', gap: 24 }}>
+                 <div className="card shadow-2xl animate-scale-in" style={{ width: '100%', maxWidth: 450, padding: 32, display: 'flex', flexDirection: 'column', gap: 24 }} onClick={e => e.stopPropagation()}>
                      <div>
                          <h2 style={{ fontSize: 22, fontWeight: 700, color: 'var(--text-primary)' }}>Registrar Pagamento</h2>
                          <p style={{ fontSize: 13, color: 'var(--text-secondary)', marginTop: 4 }}>Fechamento de comissões para {payoutModal.name}</p>
@@ -264,7 +264,7 @@ export default function CommissionsPage() {
                             <>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: 13, color: 'var(--text-secondary)', fontWeight: 500 }}>Adiantamentos (Vales)</span>
-                                    <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--danger)' }}>- R$ {payoutDetails.advances.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                                    <span style={{ fontSize: 15, fontWeight: 700, color: '#ef4444' }}>- R$ {payoutDetails.advances.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
                                 </div>
                                 <div style={{ width: '100%', height: 1, borderTop: '1px dashed var(--border)' }} />
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -294,12 +294,13 @@ export default function CommissionsPage() {
             {/* Modal Detalhamento de Lançamentos */}
             {selectedProf && (
                 <div
-                    onClick={() => setSelectedProf(null)}
                     style={{ position: 'fixed', inset: 0, zIndex: 999, display: 'grid', placeItems: 'center', padding: 16 }}
+                    onClick={() => setSelectedProf(null)}
                 >
                     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(6px)' }} />
 
                     <div
+                        className="animate-scale-in"
                         style={{
                             position: 'relative', width: '100%', maxWidth: 700,
                             background: 'var(--bg-card)', border: '1px solid var(--border)',

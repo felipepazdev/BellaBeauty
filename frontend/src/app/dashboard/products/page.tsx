@@ -120,7 +120,8 @@ export default function ProductsPage() {
     const totalStats = products.reduce((acc, curr) => acc + (curr.costPrice || 0) * curr.stock, 0);
 
     return (
-        <div className="animate-fade-in w-full pb-20">
+        <>
+        <div className="animate-opacity-in w-full pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-12">
                 <div>
                     <h1 className="text-4xl font-serif font-bold tracking-tight text-white mb-2">Estoque</h1>
@@ -148,168 +149,6 @@ export default function ProductsPage() {
                 </div>
             )}
 
-            {/* Modal Novo Produto */}
-            {showForm && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-                    <div className="card w-full max-w-[480px] bg-[#0c0c10] border border-white/10 rounded-[32px] p-8 animate-scale-in max-h-[90vh] overflow-y-auto">
-                        <div className="flex items-center justify-between mb-6">
-                            <h2 className="text-2xl font-serif font-bold text-white">Novo Produto</h2>
-                            <button onClick={() => setShowForm(false)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
-                                <X size={18} />
-                            </button>
-                        </div>
-                        <div className="flex flex-col gap-5">
-                            <div>
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Nome *</label>
-                                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    placeholder="Ex: Tonalizante Wella" className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold" />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Custo (R$)</label>
-                                    <input type="number" value={form.costPrice} onChange={(e) => setForm({ ...form, costPrice: e.target.value })}
-                                        placeholder="0.00" className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold font-mono" min="0" step="0.01" />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Preço Venda *</label>
-                                    <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })}
-                                        placeholder="0.00" className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold font-mono" min="0" step="0.01" />
-                                </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Estoque Inicial</label>
-                                    <input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })}
-                                        className="h-14 w-full bg-white/5 border border-[var(--accent-cyan)]/20 shadow-[inset_0_0_15px_rgba(6,182,212,0.05)] rounded-2xl px-5 text-[var(--accent-cyan)] focus:border-[var(--accent-cyan)] transition-all outline-none font-bold font-mono" min="0" />
-                                </div>
-                                <div>
-                                    <label className="text-[10px] font-black justify-between flex items-center text-slate-500 uppercase tracking-widest ml-1 mb-2">Estoque Min. (Alerta)</label>
-                                    <input type="number" value={form.minStock} onChange={(e) => setForm({ ...form, minStock: e.target.value })}
-                                        className="h-14 w-full bg-white/5 border border-red-500/20 shadow-[inset_0_0_15px_rgba(239,68,68,0.05)] rounded-2xl px-5 text-red-400 focus:border-red-500/50 transition-all outline-none font-bold font-mono" min="0" />
-                                </div>
-                            </div>
-                            <div>
-                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Descrição (Opcional)</label>
-                                <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
-                                    className="h-24 py-4 resize-none w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold" />
-                            </div>
-                            {error && <p className="text-xs text-red-500 font-bold uppercase tracking-tight">{error}</p>}
-                            <div className="flex gap-3 mt-4 pt-6 border-t border-white/5">
-                                <button onClick={() => setShowForm(false)}
-                                    className="flex-1 h-14 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/10 transition-all">
-                                    Cancelar
-                                </button>
-                                <button onClick={handleSave} disabled={saving} className="flex-1 h-14 btn-cyan shadow-[var(--accent-cyan-glow)]">
-                                    {saving ? 'Salvando...' : 'Confirmar'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Ficha do Produto (Histórico de Movimento) */}
-            {selectedProduct && (
-                 <div className="fixed inset-0 z-50 flex items-center justify-end p-0 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedProduct(null)}>
-                    <div className="w-full max-w-[500px] h-full bg-[#0c0c10] border-l border-white/10 flex flex-col transform transition-transform animate-slide-left shadow-2xl" onClick={e => e.stopPropagation()}>
-                        
-                        {/* Header Perfil */}
-                        <div className="p-8 border-b border-white/5 relative shrink-0">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[var(--accent-cyan)] text-2xl shadow-[var(--accent-cyan-glow)]">
-                                    <Package size={28}/>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Custo / Venda</p>
-                                    <p className="font-mono text-sm text-slate-300">
-                                        R$ {selectedProduct.costPrice?.toFixed(2)||'0.00'} <span className="text-slate-600 mx-1">/</span> <span className="text-emerald-400 font-bold">R$ {selectedProduct.price.toFixed(2)}</span>
-                                    </p>
-                                </div>
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-serif font-bold text-white mb-2">{selectedProduct.name}</h2>
-                                {selectedProduct.description && <p className="text-sm font-medium text-slate-500">{selectedProduct.description}</p>}
-                            </div>
-
-                            <div className="flex gap-4 mt-8">
-                                <div className="flex-1 p-4 rounded-2xl bg-[var(--accent-cyan)]/5 border border-[var(--accent-cyan)]/20 flex flex-col items-center">
-                                    <span className="text-[10px] font-black text-[var(--accent-cyan)] uppercase tracking-widest mb-1">Atual</span>
-                                    <span className="text-3xl font-mono font-black text-white">{productDetails?.stock ?? selectedProduct.stock}</span>
-                                </div>
-                                <div className="flex-1 p-4 rounded-2xl bg-red-500/5 border border-red-500/20 flex flex-col items-center">
-                                    <span className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Segurança</span>
-                                    <span className="text-3xl font-mono font-black text-red-400">{selectedProduct.minStock}</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Corpo */}
-                        <div className="flex-1 overflow-y-auto p-8 relative flex flex-col">
-                            {/* Form de movimentação */}
-                            <div className="shrink-0 mb-8 p-5 rounded-2xl bg-white/5 border border-white/5">
-                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Lançar Movimentação</h4>
-                                <div className="flex gap-3 mb-4">
-                                    <button onClick={() => setMovType('IN')} className={`flex-1 h-10 rounded-xl text-xs font-black uppercase tracking-widest border transition-all ${movType==='IN'?'bg-emerald-500/10 border-emerald-500/30 text-emerald-400':'bg-transparent border-white/5 text-slate-500'}`}>Entrada</button>
-                                    <button onClick={() => setMovType('OUT')} className={`flex-1 h-10 rounded-xl text-xs font-black uppercase tracking-widest border transition-all ${movType==='OUT'?'bg-red-500/10 border-red-500/30 text-red-400':'bg-transparent border-white/5 text-slate-500'}`}>Saída</button>
-                                </div>
-                                <div className="flex gap-3 mb-4">
-                                    <div className="w-1/3">
-                                        <input type="number" min="1" value={movQuantity} onChange={e=>setMovQuantity(e.target.value)} className="h-12 w-full bg-black/20 border border-white/10 rounded-xl text-center text-white font-mono font-bold outline-none" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <select value={movReason} onChange={e=>setMovReason(e.target.value)} className="h-12 w-full bg-black/20 border border-white/10 rounded-xl px-4 text-slate-300 font-bold outline-none appearance-none text-xs uppercase tracking-widest">
-                                            {movType==='IN' ? (
-                                                <>
-                                                    <option value="PURCHASE">Registro de Compra</option>
-                                                    <option value="ADJUSTMENT">Ajuste Positivo</option>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <option value="SERVICE_USE">Uso no Lavatório / Serviços</option>
-                                                    <option value="SALE">Venda Avulsa</option>
-                                                    <option value="LOSS">Perda / Avaria / Vencido</option>
-                                                    <option value="ADJUSTMENT">Ajuste Negativo</option>
-                                                </>
-                                            )}
-                                        </select>
-                                    </div>
-                                </div>
-                                <button onClick={handleMovement} disabled={movSaving} className="w-full h-12 btn-cyan !text-xs !shadow-none opacity-90">
-                                    {movSaving ? 'Registrando...' : 'Confirmar Lançamento'}
-                                </button>
-                            </div>
-
-                            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 shrink-0">Últimas 20 movimentações</h4>
-                            
-                            <div className="flex-1 space-y-3">
-                                {loadingDetails ? (
-                                    <div className="flex justify-center p-10"><span className="w-8 h-8 border-2 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin" /></div>
-                                ) : (!productDetails?.stockMovements || productDetails.stockMovements.length === 0) ? (
-                                    <p className="text-sm text-slate-500 italic text-center mt-10">Nenhuma movimentação registrada.</p>
-                                ) : (
-                                    productDetails.stockMovements.map((mov: any) => (
-                                        <div key={mov.id} className="flex items-center justify-between p-4 rounded-xl bg-black/20 border border-white/5">
-                                            <div className="flex items-center gap-4">
-                                                <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black ${mov.type==='IN'?'bg-emerald-500/10 text-emerald-400':'bg-red-500/10 text-red-400'}`}>
-                                                    {mov.type==='IN'?'+':'-'}
-                                                </div>
-                                                <div>
-                                                    <p className="text-xs font-black uppercase tracking-wider text-slate-300">{translateReason(mov.reason)}</p>
-                                                    <p className="text-[10px] text-slate-500 font-mono mt-0.5">{new Date(mov.createdAt).toLocaleString('pt-BR')}</p>
-                                                </div>
-                                            </div>
-                                            <span className={`text-lg font-mono font-black ${mov.type==='IN'?'text-emerald-400':'text-red-400'}`}>
-                                                {mov.quantity}
-                                            </span>
-                                        </div>
-                                    ))
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {/* Lista */}
             {loading ? (
                 <div className="flex justify-center py-20"><span className="w-10 h-10 border-2 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin" /></div>
@@ -330,7 +169,7 @@ export default function ProductsPage() {
                                 onClick={() => openProductDetails(p)}
                                 className={`card flex items-center p-6 gap-5 bg-white/5 hover:bg-white/10 border transition-all cursor-pointer group/product ${isLow ? 'border-red-500/20 hover:border-red-500/40':'border-white/5 hover:border-[var(--accent-cyan)]/30'}`}
                             >
-                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border transition-all ${isLow ? 'bg-red-500/10 border-red-500/20 text-red-500' : 'bg-gradient-to-br from-[var(--bg-surface)] to-[var(--bg-card)] border-white/10 text-slate-400 group-hover/product:text-[var(--accent-cyan)] group-hover/product:border-[var(--accent-cyan)]/30'}`}>
+                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border transition-all ${isLow ? 'bg-red-500/10 border-red-500/20 text-red-500' : 'bg-gradient-to-br from-[var(--bg-surface)] to(--bg-card) border-white/10 text-slate-400 group-hover/product:text-[var(--accent-cyan)] group-hover/product:border-[var(--accent-cyan)]/30'}`}>
                                     {isLow ? <AlertTriangle size={24} /> : <Package size={24} />}
                                 </div>
                                 <div className="flex-1 min-w-0">
@@ -354,5 +193,168 @@ export default function ProductsPage() {
                 </div>
             )}
         </div>
+
+        {/* Modal Novo Produto */}
+        {showForm && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in" onClick={() => setShowForm(false)}>
+                <div className="card w-full max-w-[480px] bg-[#0c0c10] border border-white/10 rounded-[32px] p-8 animate-scale-in max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-2xl font-serif font-bold text-white">Novo Produto</h2>
+                        <button onClick={() => setShowForm(false)} className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-slate-500 hover:text-white transition-colors">
+                            <X size={18} />
+                        </button>
+                    </div>
+                    <div className="flex flex-col gap-5">
+                        <div>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Nome *</label>
+                            <input autoFocus value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                placeholder="Ex: Tonalizante Wella" className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Custo (R$)</label>
+                                <input type="number" value={form.costPrice} onChange={(e) => setForm({ ...form, costPrice: e.target.value })}
+                                    placeholder="0.00" className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold font-mono" min="0" step="0.01" />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Preço Venda *</label>
+                                <input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })}
+                                    placeholder="0.00" className="h-14 w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold font-mono" min="0" step="0.01" />
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Estoque Inicial</label>
+                                <input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })}
+                                    className="h-14 w-full bg-white/5 border border-[var(--accent-cyan)]/20 shadow-[inset_0_0_15px_rgba(6,182,212,0.05)] rounded-2xl px-5 text-[var(--accent-cyan)] focus:border-[var(--accent-cyan)] transition-all outline-none font-bold font-mono" min="0" />
+                            </div>
+                            <div>
+                                <label className="text-[10px] font-black justify-between flex items-center text-slate-500 uppercase tracking-widest ml-1 mb-2">Estoque Min. (Alerta)</label>
+                                <input type="number" value={form.minStock} onChange={(e) => setForm({ ...form, minStock: e.target.value })}
+                                    className="h-14 w-full bg-white/5 border border-red-500/20 shadow-[inset_0_0_15px_rgba(239,68,68,0.05)] rounded-2xl px-5 text-red-400 focus:border-red-500/50 transition-all outline-none font-bold font-mono" min="0" />
+                            </div>
+                        </div>
+                        <div>
+                            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Descrição (Opcional)</label>
+                            <textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })}
+                                className="h-24 py-4 resize-none w-full bg-white/5 border border-white/10 rounded-2xl px-5 text-white focus:border-[var(--accent-cyan)]/50 transition-all outline-none font-bold" />
+                        </div>
+                        {error && <p className="text-xs text-red-500 font-bold uppercase tracking-tight">{error}</p>}
+                        <div className="flex gap-3 mt-4 pt-6 border-t border-white/5">
+                            <button onClick={() => setShowForm(false)}
+                                className="flex-1 h-14 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                                Cancelar
+                            </button>
+                            <button onClick={handleSave} disabled={saving} className="flex-1 h-14 btn-cyan shadow-[var(--accent-cyan-glow)]">
+                                {saving ? 'Salvando...' : 'Confirmar'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* Ficha do Produto (Histórico de Movimento) */}
+        {selectedProduct && (
+             <div className="fixed inset-0 z-50 flex items-center justify-end p-0 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedProduct(null)}>
+                <div className="w-full max-w-[500px] h-full bg-[#0c0c10] border-l border-white/10 flex flex-col transform transition-transform animate-slide-left shadow-2xl" onClick={e => e.stopPropagation()}>
+                    
+                    {/* Header Perfil */}
+                    <div className="p-8 border-b border-white/5 relative shrink-0">
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[var(--accent-cyan)] text-2xl shadow-[var(--accent-cyan-glow)]">
+                                <Package size={28}/>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Custo / Venda</p>
+                                <p className="font-mono text-sm text-slate-300">
+                                    R$ {selectedProduct.costPrice?.toFixed(2)||'0.00'} <span className="text-slate-600 mx-1">/</span> <span className="text-emerald-400 font-bold">R$ {selectedProduct.price.toFixed(2)}</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-serif font-bold text-white mb-2">{selectedProduct.name}</h2>
+                            {selectedProduct.description && <p className="text-sm font-medium text-slate-500">{selectedProduct.description}</p>}
+                        </div>
+
+                        <div className="flex gap-4 mt-8">
+                            <div className="flex-1 p-4 rounded-2xl bg-[var(--accent-cyan)]/5 border border-[var(--accent-cyan)]/20 flex flex-col items-center">
+                                <span className="text-[10px] font-black text-[var(--accent-cyan)] uppercase tracking-widest mb-1">Atual</span>
+                                <span className="text-3xl font-mono font-black text-white">{productDetails?.stock ?? selectedProduct.stock}</span>
+                            </div>
+                            <div className="flex-1 p-4 rounded-2xl bg-red-500/5 border border-red-500/20 flex flex-col items-center">
+                                <span className="text-[10px] font-black text-red-500 uppercase tracking-widest mb-1">Segurança</span>
+                                <span className="text-3xl font-mono font-black text-red-400">{selectedProduct.minStock}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Corpo */}
+                    <div className="flex-1 overflow-y-auto p-8 relative flex flex-col">
+                        {/* Form de movimentação */}
+                        <div className="shrink-0 mb-8 p-5 rounded-2xl bg-white/5 border border-white/5">
+                            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4">Lançar Movimentação</h4>
+                            <div className="flex gap-3 mb-4">
+                                <button onClick={() => setMovType('IN')} className={`flex-1 h-10 rounded-xl text-xs font-black uppercase tracking-widest border transition-all ${movType==='IN'?'bg-emerald-500/10 border-emerald-500/30 text-emerald-400':'bg-transparent border-white/5 text-slate-500'}`}>Entrada</button>
+                                <button onClick={() => setMovType('OUT')} className={`flex-1 h-10 rounded-xl text-xs font-black uppercase tracking-widest border transition-all ${movType==='OUT'?'bg-red-500/10 border-red-500/30 text-red-400':'bg-transparent border-white/5 text-slate-500'}`}>Saída</button>
+                            </div>
+                            <div className="flex gap-3 mb-4">
+                                <div className="w-1/3">
+                                    <input type="number" min="1" value={movQuantity} onChange={e=>setMovQuantity(e.target.value)} className="h-12 w-full bg-black/20 border border-white/10 rounded-xl text-center text-white font-mono font-bold outline-none" />
+                                </div>
+                                <div className="flex-1">
+                                    <select value={movReason} onChange={e=>setMovReason(e.target.value)} className="h-12 w-full bg-black/20 border border-white/10 rounded-xl px-4 text-slate-300 font-bold outline-none appearance-none text-xs uppercase tracking-widest">
+                                        {movType==='IN' ? (
+                                            <>
+                                                <option value="PURCHASE">Registro de Compra</option>
+                                                <option value="ADJUSTMENT">Ajuste Positivo</option>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <option value="SERVICE_USE">Uso no Lavatório / Serviços</option>
+                                                <option value="SALE">Venda Avulsa</option>
+                                                <option value="LOSS">Perda / Avaria / Vencido</option>
+                                                <option value="ADJUSTMENT">Ajuste Negativo</option>
+                                            </>
+                                        )}
+                                    </select>
+                                </div>
+                            </div>
+                            <button onClick={handleMovement} disabled={movSaving} className="w-full h-12 btn-cyan !text-xs !shadow-none opacity-90">
+                                {movSaving ? 'Registrando...' : 'Confirmar Lançamento'}
+                            </button>
+                        </div>
+
+                        <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-4 shrink-0">Últimas 20 movimentações</h4>
+                        
+                        <div className="flex-1 space-y-3">
+                            {loadingDetails ? (
+                                <div className="flex justify-center p-10"><span className="w-8 h-8 border-2 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin" /></div>
+                            ) : (!productDetails?.stockMovements || productDetails.stockMovements.length === 0) ? (
+                                <p className="text-sm text-slate-500 italic text-center mt-10">Nenhuma movimentação registrada.</p>
+                            ) : (
+                                productDetails.stockMovements.map((mov: any) => (
+                                    <div key={mov.id} className="flex items-center justify-between p-4 rounded-xl bg-black/20 border border-white/5">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center font-black ${mov.type==='IN'?'bg-emerald-500/10 text-emerald-400':'bg-red-500/10 text-red-400'}`}>
+                                                {mov.type==='IN'?'+':'-'}
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-black uppercase tracking-wider text-slate-300">{translateReason(mov.reason)}</p>
+                                                <p className="text-[10px] text-slate-500 font-mono mt-0.5">{new Date(mov.createdAt).toLocaleString('pt-BR')}</p>
+                                            </div>
+                                        </div>
+                                        <span className={`text-lg font-mono font-black ${mov.type==='IN'?'text-emerald-400':'text-red-400'}`}>
+                                            {mov.quantity}
+                                        </span>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }

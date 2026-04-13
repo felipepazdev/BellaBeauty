@@ -134,6 +134,7 @@ export default function ClientsPage() {
     };
 
     return (
+        <>
         <div className="animate-opacity-in w-full pb-20">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div>
@@ -219,163 +220,6 @@ export default function ClientsPage() {
                 </div>
             </div>
 
-            {/* Modal Novo Cliente (Centralização Absoluta na Janela) */}
-            {showForm && (
-                <div className="fixed inset-0 w-screen h-screen z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-md">
-                    <div className="card w-full max-w-[480px] bg-[var(--bg-surface)] border border-[var(--border)] rounded-[32px] p-10 shadow-[0_30px_70px_rgba(0,0,0,0.4)] animate-scale-in">
-                        <h2 className="text-3xl font-serif font-bold text-[var(--text-primary)] mb-8 text-center">Novo Cadastro</h2>
-                        <div className="flex flex-col gap-6">
-                            <div>
-                                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Nome Completo *</label>
-                                <input autoFocus value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                    placeholder="Ex: Maria Oliveira" className="h-14 w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-semibold text-lg" />
-                            </div>
-                            <div>
-                                <label className="text-[12px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">WhatsApp / Telefone</label>
-                                <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                                    placeholder="(11) 99999-9999" className="h-14 w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-bold font-mono tracking-widest text-lg" />
-                            </div>
-                            {error && <p className="text-[11px] text-red-500 font-bold uppercase tracking-tight bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>}
-                            <div className="flex gap-4 mt-4 pt-8 border-t border-slate-100">
-                                <button onClick={() => setShowForm(false)}
-                                    className="flex-1 h-14 rounded-2xl bg-slate-100 text-[12px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-all">
-                                    Cancelar
-                                </button>
-                                 <button onClick={handleSave} disabled={saving} className="flex-1 h-14 btn-cyan shadow-[var(--accent-cyan-glow)] !text-[12px]">
-                                    {saving ? 'Gravando...' : 'Confirmar'}
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Modal Perfil Cliente (Histórico/Fichas) */}
-            {selectedClient && (
-                <div className="fixed inset-0 w-screen h-screen z-[99999] flex items-center justify-end bg-black/30 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedClient(null)}>
-                    <div className="w-full max-w-lg h-full bg-[var(--bg-surface)] border-l border-[var(--border)] flex flex-col transform transition-transform animate-slide-left shadow-2xl" onClick={e => e.stopPropagation()}>
-                        
-                        {/* Header Perfil */}
-                        <div className="p-8 border-b border-slate-100 relative shrink-0">
-                            <button onClick={() => setSelectedClient(null)} className="absolute top-8 right-8 w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan-glow)] transition-all"><Edit2 size={16}/></button>
-                            <div className="flex items-center gap-5 mb-2 mt-4">
-                                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-cyan-deep)] flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-[var(--accent-cyan-glow)]">
-                                    {selectedClient.name.charAt(0).toUpperCase()}
-                                </div>
-                                <div>
-                                    <h2 className="text-2xl font-serif font-bold text-[var(--text-primary)] capitalize">{selectedClient.name.toLowerCase()}</h2>
-                                    <p className="text-sm font-mono text-[var(--accent-cyan)] font-bold mt-1 tracking-wider">{selectedClient.phone || 'Nenhum telefone'}</p>
-                                </div>
-                            </div>
-                            
-                            {/* Tabs Estilizadas */}
-                            <div className="flex gap-6 mt-10">
-                                <button onClick={() => setActiveTab('H')} className={`pb-3 text-[11px] font-black uppercase tracking-[0.15em] transition-all relative ${activeTab === 'H' ? 'text-[var(--accent-cyan)]' : 'text-slate-400 hover:text-slate-600'}`}>
-                                    Histórico
-                                    {activeTab === 'H' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent-cyan)] shadow-[0_2px_8px_var(--accent-cyan-glow)]" />}
-                                </button>
-                                <button onClick={() => setActiveTab('F')} className={`pb-3 text-[11px] font-black uppercase tracking-[0.15em] transition-all relative ${activeTab === 'F' ? 'text-[var(--accent-cyan)]' : 'text-slate-400 hover:text-slate-600'}`}>
-                                    Fichas e Notas
-                                    {activeTab === 'F' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent-cyan)] shadow-[0_2px_8px_var(--accent-cyan-glow)]" />}
-                                </button>
-                            </div>
-                        </div>
-
-                        {/* Corpo com Scroll Suave */}
-                        <div className="flex-1 overflow-y-auto p-8 bg-slate-50/30">
-                            {loadingDetails ? (
-                                <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-400">
-                                    <div className="w-10 h-10 border-4 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin" />
-                                    <p className="text-[10px] uppercase tracking-widest font-bold">Carregando dados...</p>
-                                </div>
-                            ) : (
-                                <>
-                                    {activeTab === 'H' && (
-                                        <div className="space-y-4">
-                                            {(!clientDetails?.appointments || clientDetails.appointments.length === 0) ? (
-                                                <div className="flex flex-col items-center justify-center py-20 opacity-40">
-                                                    <Users size={40} className="mb-4 text-slate-300" />
-                                                    <p className="text-sm text-slate-500 font-medium italic text-center px-10 line-height-relaxed">
-                                                        Este cliente ainda não realizou nenhum serviço em nosso espaço.
-                                                    </p>
-                                                </div>
-                                            ) : (
-                                                clientDetails.appointments.map((app: any) => (
-                                                    <div key={app.id} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[var(--accent-cyan-glow)] transition-all">
-                                                        <div className="flex justify-between items-start mb-2">
-                                                            <div>
-                                                                <p className="text-[var(--text-primary)] font-bold text-base">{app.service?.name || 'Serviço'}</p>
-                                                                <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black mt-1">
-                                                                    {new Date(app.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
-                                                                </p>
-                                                            </div>
-                                                            <div className="text-right">
-                                                                <span className="text-lg font-mono font-bold text-[var(--accent-cyan-deep)]">
-                                                                    {app.payment?.amount ? `R$ ${app.payment.amount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : 'R$ 0,00'}
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                        <div className="flex items-center gap-2 mt-3">
-                                                            <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border ${
-                                                                app.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-600 border-slate-100'
-                                                            }`}>
-                                                                {app.status === 'COMPLETED' ? 'Concluído' : app.status}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                ))
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {activeTab === 'F' && (
-                                        <div className="flex flex-col h-full space-y-6">
-                                            <div className="flex-1 space-y-4">
-                                                {(!clientDetails?.records || clientDetails.records.length === 0) ? (
-                                                    <div className="flex flex-col items-center justify-center py-20 opacity-40">
-                                                        <Edit2 size={40} className="mb-4 text-slate-300" />
-                                                        <p className="text-sm text-slate-500 font-medium italic text-center px-10">
-                                                            Ainda não há observações ou restrições técnicas para este perfil.
-                                                        </p>
-                                                    </div>
-                                                ) : (
-                                                    clientDetails.records.map((rec: any) => (
-                                                        <div key={rec.id} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
-                                                            <div className="flex justify-between items-center mb-3">
-                                                                <span className="text-[9px] font-black uppercase tracking-widest text-[var(--accent-cyan)] bg-[var(--accent-cyan-glow)] px-2 py-1 rounded">
-                                                                    {rec.type === 'ANAMNESIS' ? 'Prontuário' : 'Nota'}
-                                                                </span>
-                                                                <span className="text-[10px] font-bold text-slate-400">
-                                                                    {new Date(rec.createdAt).toLocaleDateString('pt-BR')}
-                                                                </span>
-                                                            </div>
-                                                            <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap font-medium">{rec.content}</p>
-                                                        </div>
-                                                    ))
-                                                )}
-                                            </div>
-
-                                            <div className="shrink-0 pt-6 border-t border-slate-100 space-y-3">
-                                                <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Registrar Nova Observação</h4>
-                                                <textarea 
-                                                    value={newRecord} 
-                                                    onChange={e => setNewRecord(e.target.value)}
-                                                    placeholder="Digite aqui fórmulas químicas, restrições ou preferências..."
-                                                    className="w-full bg-white border border-slate-200 rounded-xl p-4 text-[var(--text-primary)] text-sm focus:border-[var(--accent-cyan)] transition-all outline-none resize-none h-28 font-medium shadow-inner"
-                                                />
-                                                <button onClick={handleSaveRecord} disabled={!newRecord.trim()} className="w-full h-12 btn-cyan shadow-[var(--accent-cyan-glow)]">
-                                                    Salvar no Histórico
-                                                </button>
-                                            </div>
-                                        </div>
-                                    )}
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            )}
-
             {/* Espaçador de Segurança para o Cabeçalho */}
             <div className="h-10" />
 
@@ -459,5 +303,163 @@ export default function ClientsPage() {
                 </div>
             )}
         </div>
+
+        {/* Modal Novo Cliente (Centralização Absoluta na Janela) */}
+        {showForm && (
+            <div className="fixed inset-0 w-screen h-screen z-[99999] flex items-center justify-center bg-black/50 backdrop-blur-md">
+                <div className="card w-full max-w-[480px] bg-[var(--bg-surface)] border border-[var(--border)] rounded-[32px] p-10 shadow-[0_30px_70px_rgba(0,0,0,0.4)] animate-scale-in" onClick={e => e.stopPropagation()}>
+                    <h2 className="text-3xl font-serif font-bold text-[var(--text-primary)] mb-8 text-center">Novo Cadastro</h2>
+                    <div className="flex flex-col gap-6">
+                        <div>
+                            <label className="text-[12px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">Nome Completo *</label>
+                            <input autoFocus value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
+                                placeholder="Ex: Maria Oliveira" className="h-14 w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-semibold text-lg" />
+                        </div>
+                        <div>
+                            <label className="text-[12px] font-bold text-slate-500 uppercase tracking-widest ml-1 mb-2 block">WhatsApp / Telefone</label>
+                            <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                                placeholder="(11) 99999-9999" className="h-14 w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 text-[var(--text-primary)] focus:border-[var(--accent-cyan)] transition-all outline-none font-bold font-mono tracking-widest text-lg" />
+                        </div>
+                        {error && <p className="text-[11px] text-red-500 font-bold uppercase tracking-tight bg-red-50 p-3 rounded-lg border border-red-100">{error}</p>}
+                        <div className="flex gap-4 mt-4 pt-8 border-t border-slate-100">
+                            <button onClick={() => setShowForm(false)}
+                                className="flex-1 h-14 rounded-2xl bg-slate-100 text-[12px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-200 hover:text-slate-600 transition-all">
+                                Cancelar
+                            </button>
+                             <button onClick={handleSave} disabled={saving} className="flex-1 h-14 btn-cyan shadow-[var(--accent-cyan-glow)] !text-[12px]">
+                                {saving ? 'Gravando...' : 'Confirmar'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {/* Modal Perfil Cliente (Histórico/Fichas) */}
+        {selectedClient && (
+            <div className="fixed inset-0 w-screen h-screen z-[99999] flex items-center justify-end bg-black/30 backdrop-blur-sm animate-fade-in" onClick={() => setSelectedClient(null)}>
+                <div className="w-full max-w-lg h-full bg-[var(--bg-surface)] border-l border-[var(--border)] flex flex-col transform transition-transform animate-slide-left shadow-2xl" onClick={e => e.stopPropagation()}>
+                    
+                    {/* Header Perfil */}
+                    <div className="p-8 border-b border-slate-100 relative shrink-0">
+                        <button onClick={() => setSelectedClient(null)} className="absolute top-8 right-8 w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400 hover:text-[var(--accent-cyan)] hover:bg-[var(--accent-cyan-glow)] transition-all"><Edit2 size={16}/></button>
+                        <div className="flex items-center gap-5 mb-2 mt-4">
+                            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[var(--accent-cyan)] to-[var(--accent-cyan-deep)] flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-[var(--accent-cyan-glow)]">
+                                {selectedClient.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-serif font-bold text-[var(--text-primary)] capitalize">{selectedClient.name.toLowerCase()}</h2>
+                                <p className="text-sm font-mono text-[var(--accent-cyan)] font-bold mt-1 tracking-wider">{selectedClient.phone || 'Nenhum telefone'}</p>
+                            </div>
+                        </div>
+                        
+                        {/* Tabs Estilizadas */}
+                        <div className="flex gap-6 mt-10">
+                            <button onClick={() => setActiveTab('H')} className={`pb-3 text-[11px] font-black uppercase tracking-[0.15em] transition-all relative ${activeTab === 'H' ? 'text-[var(--accent-cyan)]' : 'text-slate-400 hover:text-slate-600'}`}>
+                                Histórico
+                                {activeTab === 'H' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent-cyan)] shadow-[0_2px_8px_var(--accent-cyan-glow)]" />}
+                            </button>
+                            <button onClick={() => setActiveTab('F')} className={`pb-3 text-[11px] font-black uppercase tracking-[0.15em] transition-all relative ${activeTab === 'F' ? 'text-[var(--accent-cyan)]' : 'text-slate-400 hover:text-slate-600'}`}>
+                                Fichas e Notas
+                                {activeTab === 'F' && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent-cyan)] shadow-[0_2px_8px_var(--accent-cyan-glow)]" />}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Corpo com Scroll Suave */}
+                    <div className="flex-1 overflow-y-auto p-8 bg-slate-50/30">
+                        {loadingDetails ? (
+                            <div className="flex flex-col items-center justify-center h-full gap-4 text-slate-400">
+                                <div className="w-10 h-10 border-4 border-[var(--accent-cyan)] border-t-transparent rounded-full animate-spin" />
+                                <p className="text-[10px] uppercase tracking-widest font-bold">Carregando dados...</p>
+                            </div>
+                        ) : (
+                            <>
+                                {activeTab === 'H' && (
+                                    <div className="space-y-4">
+                                        {(!clientDetails?.appointments || clientDetails.appointments.length === 0) ? (
+                                            <div className="flex flex-col items-center justify-center py-20 opacity-40">
+                                                <Users size={40} className="mb-4 text-slate-300" />
+                                                <p className="text-sm text-slate-500 font-medium italic text-center px-10 line-height-relaxed">
+                                                    Este cliente ainda não realizou nenhum serviço em nosso espaço.
+                                                </p>
+                                            </div>
+                                        ) : (
+                                            clientDetails.appointments.map((app: any) => (
+                                                <div key={app.id} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm hover:border-[var(--accent-cyan-glow)] transition-all">
+                                                    <div className="flex justify-between items-start mb-2">
+                                                        <div>
+                                                            <p className="text-[var(--text-primary)] font-bold text-base">{app.service?.name || 'Serviço'}</p>
+                                                            <p className="text-[10px] text-slate-400 uppercase tracking-widest font-black mt-1">
+                                                                {new Date(app.date).toLocaleDateString('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' })}
+                                                            </p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <span className="text-lg font-mono font-bold text-[var(--accent-cyan-deep)]">
+                                                                {app.payment?.amount ? `R$ ${app.payment.amount.toLocaleString('pt-BR', {minimumFractionDigits: 2})}` : 'R$ 0,00'}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 mt-3">
+                                                        <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border ${
+                                                            app.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' : 'bg-slate-50 text-slate-600 border-slate-100'
+                                                        }`}>
+                                                            {app.status === 'COMPLETED' ? 'Concluído' : app.status}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                )}
+
+                                {activeTab === 'F' && (
+                                    <div className="flex flex-col h-full space-y-6">
+                                        <div className="flex-1 space-y-4">
+                                            {(!clientDetails?.records || clientDetails.records.length === 0) ? (
+                                                <div className="flex flex-col items-center justify-center py-20 opacity-40">
+                                                    <Edit2 size={40} className="mb-4 text-slate-300" />
+                                                    <p className="text-sm text-slate-500 font-medium italic text-center px-10">
+                                                        Ainda não há observações ou restrições técnicas para este perfil.
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                clientDetails.records.map((rec: any) => (
+                                                    <div key={rec.id} className="p-5 rounded-2xl bg-white border border-slate-100 shadow-sm">
+                                                        <div className="flex justify-between items-center mb-3">
+                                                            <span className="text-[9px] font-black uppercase tracking-widest text-[var(--accent-cyan)] bg-[var(--accent-cyan-glow)] px-2 py-1 rounded">
+                                                                {rec.type === 'ANAMNESIS' ? 'Prontuário' : 'Nota'}
+                                                            </span>
+                                                            <span className="text-[10px] font-bold text-slate-400">
+                                                                {new Date(rec.createdAt).toLocaleDateString('pt-BR')}
+                                                            </span>
+                                                        </div>
+                                                        <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-wrap font-medium">{rec.content}</p>
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+
+                                        <div className="shrink-0 pt-6 border-t border-slate-100 space-y-3">
+                                            <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Registrar Nova Observação</h4>
+                                            <textarea 
+                                                value={newRecord} 
+                                                onChange={e => setNewRecord(e.target.value)}
+                                                placeholder="Digite aqui fórmulas químicas, restrições ou preferências..."
+                                                className="w-full bg-white border border-slate-200 rounded-xl p-4 text-[var(--text-primary)] text-sm focus:border-[var(--accent-cyan)] transition-all outline-none resize-none h-28 font-medium shadow-inner"
+                                            />
+                                            <button onClick={handleSaveRecord} disabled={!newRecord.trim()} className="w-full h-12 btn-cyan shadow-[var(--accent-cyan-glow)]">
+                                                Salvar no Histórico
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+                </div>
+            </div>
+        )}
+        </>
     );
 }

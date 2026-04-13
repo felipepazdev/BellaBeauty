@@ -341,7 +341,7 @@ function BookingModal({ date, slot, professional, professionals, onClose, onSave
     const displayDate = new Date(selectedDate + 'T00:00:00');
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center lg:pl-[230px] p-4" onClick={onClose}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={onClose}>
             <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }} />
             <div className="card animate-fade-in z-10 shadow-2xl overflow-hidden" style={{ width: '100%', maxWidth: 480, maxHeight: '90vh', overflowY: 'auto' }}
                 onClick={e => e.stopPropagation()}>
@@ -631,7 +631,7 @@ function AppointmentDetailsModal({ ap, professionals, onClose, onSaved, onEdit }
     const st = STATUS_COLORS[ap.status] ?? STATUS_COLORS.SCHEDULED;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center lg:pl-[230px] p-4" onClick={onClose}>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={onClose}>
             <div className="fixed inset-0" style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }} />
             <div className="card animate-fade-in flex flex-col gap-4 z-10 shadow-2xl" style={{ width: '100%', maxWidth: 420 }} onClick={e => e.stopPropagation()}>
                 <div className="flex items-center justify-between">

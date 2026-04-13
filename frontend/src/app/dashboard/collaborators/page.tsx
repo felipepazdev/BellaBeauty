@@ -321,7 +321,7 @@ export default function CollaboratorsPage() {
             {showForm && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm" onClick={() => setShowForm(false)}>
                     <div 
-                        className="w-full max-w-lg lg:ml-[230px] bg-[var(--bg-surface)] border border-[var(--border)] p-8 rounded-[2rem] shadow-2xl animate-scale-in relative max-h-[90vh] overflow-y-auto custom-scrollbar"
+                        className="w-full max-w-lg bg-[var(--bg-surface)] border border-[var(--border)] p-8 rounded-[2rem] shadow-2xl animate-scale-in relative max-h-[90vh] overflow-y-auto custom-scrollbar"
                         onClick={e => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between mb-8">

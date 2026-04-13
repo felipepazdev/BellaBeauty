@@ -166,7 +166,6 @@ export default function CollaboratorsPage() {
     // But we don't return early here to keep the Modal and other common elements accessible
 
     return (
-    return (
         <>
         <div className="animate-opacity-in w-full">
             {selectedCollaborator ? (

@@ -76,7 +76,6 @@ export default function ExpensesPage() {
     };
 
     return (
-    return (
         <>
         <div className="animate-opacity-in w-full">
             <div className="flex items-center justify-between mb-8">
